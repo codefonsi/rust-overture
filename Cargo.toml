@@ -2,5 +2,18 @@
 name = "rust-overture"
 version = "0.1.0"
 edition = "2024"
+authors = ["Codefonsi <info@codefonsi.com>"]
+license = "MPL-2.0"
+description = "A rust overture library."
+repository = "https://github.com/codefonsi/rust-overture"
+homepage = "https://github.com/codefonsi/rust-overture"
+documentation = "https://docs.rs/rust-overture"
+keywords = ["rustoverture", "operators", "type-safe","functional-rust"]
+readme = "./README.md"
+include = ["src/**/*", "Cargo.toml", "../../README.md", "LICENSE"]
 
 [dependencies]
+
+
+[workspace]
+resolver = "3" # or "3"
