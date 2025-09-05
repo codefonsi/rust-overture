@@ -64,7 +64,7 @@ macro_rules! concat_tryfn {
 }
 
 #[macro_export]
-macro_rules! concat_mut {
+macro_rules! concat_mut_macro {
     ($($f:expr),+ $(,)?) => {{
         let funcs: Vec<Box<dyn FnMut(&mut _)>> = vec![$(Box::new($f)),+];
         concat_mut(funcs)
@@ -102,7 +102,7 @@ mod tests {
 
     #[test]
     fn test_concat_mut() {
-        let mut f = concat_mut!(|x: &mut i32| *x += 2, |x: &mut i32| *x *= 3);
+        let mut f = concat_mut_macro!(|x: &mut i32| *x += 2, |x: &mut i32| *x *= 3);
         let mut val = 1;
         f(&mut val);
         assert_eq!(val, 9);
