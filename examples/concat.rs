@@ -1,4 +1,4 @@
-use rust_overture::{concat::*, concat_fn, concat_mut, concat_tryfn, concat_trymut};
+use rust_overture::{concat::*, concat_fn, concat_mut_macro, concat_tryfn, concat_trymut};
 
 #[derive(Debug)]
 enum Error {
@@ -26,7 +26,7 @@ fn main() {
     println!("concat_tryfn!(2) => {:?}", f_try_single(2)); // Ok(200)
 
     // --- concat_mut! ---
-    let mut f_mut = concat_mut!(
+    let mut f_mut = concat_mut_macro!(
         |x: &mut i32| *x += 2,
          |x: &mut i32| *x *= 3,
          |x: &mut i32| *x -= 5
@@ -35,7 +35,7 @@ fn main() {
     f_mut(&mut val); // ((4+2)*3)-5 = 13
     println!("concat_mut!(4) => {}", val);
 
-    let mut f_mut_single = concat_mut!(|x: &mut i32| *x *= 10);
+    let mut f_mut_single = concat_mut_macro!(|x: &mut i32| *x *= 10);
     let mut val2 = 6;
     f_mut_single(&mut val2);
     println!("concat_mut!(6) => {}", val2); // 60
