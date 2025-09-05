@@ -3,4 +3,4 @@ pub mod combinig;
 pub mod chain;
 pub mod compose;
 pub mod concat;
-pub mod curry_sync;
+pub mod curry;
