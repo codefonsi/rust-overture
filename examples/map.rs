@@ -1,3 +1,5 @@
+use rust_overture::*;
+
 fn main() {
     // Test map
     let double = |x: i32| x * 2;
