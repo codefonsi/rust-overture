@@ -6,3 +6,4 @@ pub mod concat;
 pub mod curry;
 pub mod setter;
 pub mod with;
+pub mod flip;
