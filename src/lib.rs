@@ -8,3 +8,4 @@ pub mod setter;
 pub mod with;
 pub mod flip;
 pub mod lense;
+pub mod options;
