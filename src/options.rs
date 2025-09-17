@@ -35,27 +35,27 @@ pub fn zip_with<A, B, Z>(
 #[macro_export]
 macro_rules! map_macro {
     ($f:expr) => {
-        crate::map($f)
+        rust_overture::options::map($f)
     };
 }
 
 #[macro_export]
 macro_rules! map_try_macro {
     ($f:expr) => {
-        crate::map_try($f)
+        rust_overture::options::map_try($f)
     };
 }
 
 #[macro_export]
 macro_rules! zip_macro {
     ($a:expr, $b:expr) => {
-        crate::zip($a, $b)
+        rust_overture::options::zip($a, $b)
     };
 }
 
 #[macro_export]
 macro_rules! zip_with_macro {
     ($f:expr, $a:expr, $b:expr) => {
-        crate::zip_with($f, $a, $b)
+        rust_overture::options::zip_with($f, $a, $b)
     };
 }
