@@ -2,7 +2,7 @@ use rust_overture::{concat::*, concat_fn, concat_mut_macro, concat_tryfn, concat
 
 #[derive(Debug)]
 enum Error {
-    some_error
+    some_error,
 }
 fn main() {
     // --- concat_fn! ---
@@ -13,11 +13,11 @@ fn main() {
     println!("concat_fn!(7) => {}", f_single(7)); // 70
 
     // --- concat_tryfn! ---
-    let f_try = concat_tryfn!(
-        |x: i32| Ok(x + 1),
-         |x| Ok(x * 2),
-         |x| if x > 10 { Err("too big") } else { Ok(x - 3) }
-    );
+    let f_try = concat_tryfn!(|x: i32| Ok(x + 1), |x| Ok(x * 2), |x| if x > 10 {
+        Err("too big")
+    } else {
+        Ok(x - 3)
+    });
     println!("concat_tryfn!(5) => {:?}", f_try(5)); // Ok(((5+1)*2)-3) = Ok(9)
     println!("concat_tryfn!(20) => {:?}", f_try(20)); // Err("too big")
 
@@ -28,8 +28,8 @@ fn main() {
     // --- concat_mut! ---
     let mut f_mut = concat_mut_macro!(
         |x: &mut i32| *x += 2,
-         |x: &mut i32| *x *= 3,
-         |x: &mut i32| *x -= 5
+        |x: &mut i32| *x *= 3,
+        |x: &mut i32| *x -= 5
     );
     let mut val = 4;
     f_mut(&mut val); // ((4+2)*3)-5 = 13
@@ -42,11 +42,15 @@ fn main() {
 
     // --- concat_trymut! ---
     let mut f_trymut = concat_trymut!(
-        |x: &mut i32| { *x += 2; Ok(()) },
-         |x: &mut i32| { *x *= 3; Ok(()) },
-         |x: &mut i32| {
-            if *x > 50 { Err("too big") } else { Ok(()) }
-        }
+        |x: &mut i32| {
+            *x += 2;
+            Ok(())
+        },
+        |x: &mut i32| {
+            *x *= 3;
+            Ok(())
+        },
+        |x: &mut i32| { if *x > 50 { Err("too big") } else { Ok(()) } }
     );
     let mut val3 = 5;
     println!("concat_trymut!(5) => {:?}", f_trymut(&mut val3)); // Ok, val3 = ((5+2)*3) = 21
@@ -56,7 +60,10 @@ fn main() {
     println!("concat_trymut!(20) => {:?}", f_trymut(&mut val4)); // Err("too big"), stops early
     println!("val4 after => {}", val4); // still modified up to failure point
 
-    let mut f_trymut_single = concat_trymut!(|x: &mut i32| { *x *= 2; Ok::<(), Error>(()) });
+    let mut f_trymut_single = concat_trymut!(|x: &mut i32| {
+        *x *= 2;
+        Ok::<(), Error>(())
+    });
     let mut val5 = 9;
     println!("concat_trymut!(9) => {:?}", f_trymut_single(&mut val5)); // Ok, val5 = 18
     println!("val5 after => {}", val5);

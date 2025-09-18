@@ -64,7 +64,6 @@ pub fn pipe_result3<A, B, C, D, E>(
 
 // Similarly define pipe_result4, pipe_result5, pipe_result6 if needed
 
-
 #[macro_export]
 macro_rules! pipe_macro {
     ($f:expr, $g:expr) => {

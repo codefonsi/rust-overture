@@ -1,10 +1,7 @@
 use std::{cell::RefCell, rc::Rc};
 
-
 // Immutable getter
-pub fn get<Root, Value>(
-    getter: impl Fn(&Root) -> Value + Clone + 'static,
-) -> impl Fn(Root) -> Value
+pub fn get<Root, Value>(getter: impl Fn(&Root) -> Value + Clone + 'static) -> impl Fn(Root) -> Value
 where
     Value: Clone + 'static,
 {

@@ -1,6 +1,5 @@
 use rust_overture::{map_macro, map_try_macro, zip_macro, zip_with_macro};
 
-
 fn main() {
     // Test map
     let double = |x: i32| x * 2;

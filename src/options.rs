@@ -1,7 +1,5 @@
 /// Free `map` on Option for function composition.
-pub fn map<A, B>(
-    transform: impl Fn(A) -> B + Clone + 'static,
-) -> impl Fn(Option<A>) -> Option<B> {
+pub fn map<A, B>(transform: impl Fn(A) -> B + Clone + 'static) -> impl Fn(Option<A>) -> Option<B> {
     move |opt| opt.map(transform.clone())
 }
 

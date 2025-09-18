@@ -1,9 +1,7 @@
-use std::rc::{Rc};
+use std::rc::Rc;
 
 /// Flips a curried function from (A) -> (B) -> C into (B) -> (A) -> C
-pub fn flip<A, B, C>(
-    f: Rc<dyn Fn(A) -> Rc<dyn Fn(B) -> C>>,
-) -> Rc<dyn Fn(B) -> Rc<dyn Fn(A) -> C>>
+pub fn flip<A, B, C>(f: Rc<dyn Fn(A) -> Rc<dyn Fn(B) -> C>>) -> Rc<dyn Fn(B) -> Rc<dyn Fn(A) -> C>>
 where
     A: Clone + 'static,
     B: Clone + 'static,
@@ -16,9 +14,7 @@ where
 }
 
 /// Flip zero-argument curried function
-pub fn flip0<A, B>(
-    f: Rc<dyn Fn(A) -> Rc<dyn Fn() -> B>>,
-) -> Rc<dyn Fn() -> Rc<dyn Fn(A) -> B>>
+pub fn flip0<A, B>(f: Rc<dyn Fn(A) -> Rc<dyn Fn() -> B>>) -> Rc<dyn Fn() -> Rc<dyn Fn(A) -> B>>
 where
     A: Clone + 'static,
     B: 'static,
@@ -99,7 +95,6 @@ where
     })
 }
 
-
 #[test]
 fn test_tall_flip() {
     fn base(a: i32) -> Rc<dyn Fn(i32) -> i32> {
@@ -138,4 +133,3 @@ macro_rules! flip_macro {
         $crate::flip(Rc::new($f))
     };
 }
-

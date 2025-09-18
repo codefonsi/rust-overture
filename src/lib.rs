@@ -1,12 +1,12 @@
-pub mod keypath;
-pub mod combinig;
 pub mod chain;
+pub mod combinig;
 pub mod compose;
 pub mod concat;
 pub mod curry;
-pub mod setter;
-pub mod with;
 pub mod flip;
+pub mod keypath;
 pub mod lense;
 pub mod options;
 pub mod pipe;
+pub mod setter;
+pub mod with;

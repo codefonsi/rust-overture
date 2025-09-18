@@ -1,4 +1,3 @@
-
 /// Left-to-right function application (pipe-forward).
 ///
 /// Equivalent to `f(a)`.
@@ -10,7 +9,6 @@ pub fn with_mut<A>(mut a: A, mut f: impl FnMut(&mut A)) -> A {
     f(&mut a);
     a
 }
-
 
 #[macro_export]
 macro_rules! with_macro {

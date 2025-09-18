@@ -1,7 +1,5 @@
 use rust_overture::keypath::*;
 
-
-
 #[derive(Debug, Clone)]
 struct Person {
     name: String,
@@ -45,7 +43,6 @@ fn main() {
     //     name: "Alice".into(),
     //     age: 30,
     // }));
-
 
     // // Mutable set test
     // let age_mut_getter = |root: &mut Person| &mut root.age;

@@ -13,7 +13,7 @@ macro_rules! forward_compose {
     };
 }
 
-// backword composition 
+// backword composition
 #[macro_export]
 macro_rules! compose {
     ( $f:expr, $g:expr ) => {
@@ -23,8 +23,6 @@ macro_rules! compose {
         move |x| $f(compose!($g, $($rest),+)(x))
     };
 }
-
-
 
 // Function composition in Rust (normal functions)
 pub fn compose2<A, B, C, F, G>(f: F, g: G) -> impl Fn(A) -> C
@@ -44,12 +42,7 @@ where
     move |a: A| f(g(h(a)))
 }
 
-pub fn compose4<A, B, C, D, E, F1, F2, F3, F4>(
-    f: F1,
-    g: F2,
-    h: F3,
-    i: F4,
-) -> impl Fn(A) -> E
+pub fn compose4<A, B, C, D, E, F1, F2, F3, F4>(f: F1, g: F2, h: F3, i: F4) -> impl Fn(A) -> E
 where
     F1: Fn(D) -> E,
     F2: Fn(C) -> D,
@@ -71,11 +64,7 @@ where
     move |a: A| g(a).and_then(|b| f(b))
 }
 
-pub fn compose3_res<A, B, C, D, E, F1, F2, F3>(
-    f: F1,
-    g: F2,
-    h: F3,
-) -> impl Fn(A) -> Result<D, E>
+pub fn compose3_res<A, B, C, D, E, F1, F2, F3>(f: F1, g: F2, h: F3) -> impl Fn(A) -> Result<D, E>
 where
     F1: Fn(C) -> Result<D, E>,
     F2: Fn(B) -> Result<C, E>,
@@ -83,7 +72,6 @@ where
 {
     move |a: A| h(a).and_then(|b| g(b)).and_then(|c| f(c))
 }
-
 
 // ---------------------------------------------------
 // Tests
@@ -112,7 +100,13 @@ mod tests {
     #[test]
     fn test_compose_res() {
         let f = |x: i32| if x > 0 { Ok(x + 1) } else { Err("f failed") };
-        let g = |x: i32| if x % 2 == 0 { Ok(x / 2) } else { Err("g failed") };
+        let g = |x: i32| {
+            if x % 2 == 0 {
+                Ok(x / 2)
+            } else {
+                Err("g failed")
+            }
+        };
 
         let h = compose2_res(f, g);
         assert_eq!(h(4), Ok(3)); // g(4) = 2, f(2) = 3
@@ -129,7 +123,7 @@ mod tests {
         assert_eq!(comp(5), 5); // h(5)=2, g(2)=4, f(4)=5
     }
 
-        #[test]
+    #[test]
     #[test]
     fn test_forward_compose_two() {
         let f = |x: i32| x + 1;
@@ -167,6 +161,4 @@ mod tests {
         let comp = forward_compose!(id, f);
         assert_eq!(comp(0), 42);
     }
-
-
 }

@@ -1,7 +1,5 @@
 use rust_overture::*;
 
-
-
 fn main() {
     // Simple pipe
     let add_one = |x: i32| x + 1;

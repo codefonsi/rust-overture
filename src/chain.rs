@@ -8,7 +8,7 @@ macro_rules! chain {
 
     // recursive case: f, g, ...
     ($f:expr, $g:expr $(, $rest:expr)*) => {
-        |a| $f(a).and_then(|b| $g(b))$(.and_then(|x| $rest(x)))* 
+        |a| $f(a).and_then(|b| $g(b))$(.and_then(|x| $rest(x)))*
     };
 }
 
@@ -35,7 +35,6 @@ pub fn chain_vec<A, B, C>(
 ) -> impl Fn(A) -> Vec<C> {
     move |a| f(a).into_iter().flat_map(|b| g(b)).collect()
 }
-
 
 #[cfg(test)]
 mod tests {

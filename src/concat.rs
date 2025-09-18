@@ -1,7 +1,5 @@
 /// Concatenate pure functions (A -> A).
-pub fn concat_fn<A>(
-    fs: Vec<Box<dyn Fn(A) -> A>>
-) -> impl Fn(A) -> A {
+pub fn concat_fn<A>(fs: Vec<Box<dyn Fn(A) -> A>>) -> impl Fn(A) -> A {
     move |mut a: A| {
         for f in &fs {
             a = f(a);
@@ -12,7 +10,7 @@ pub fn concat_fn<A>(
 
 /// Concatenate throwing functions (A -> Result<A, E>).
 pub fn concat_fn_result<A, E>(
-    fs: Vec<Box<dyn Fn(A) -> Result<A, E>>>
+    fs: Vec<Box<dyn Fn(A) -> Result<A, E>>>,
 ) -> impl Fn(A) -> Result<A, E> {
     move |mut a: A| {
         for f in &fs {
@@ -23,9 +21,7 @@ pub fn concat_fn_result<A, E>(
 }
 
 /// Concatenate mutating functions (FnMut(&mut A)).
-pub fn concat_mut<A>(
-    mut fs: Vec<Box<dyn FnMut(&mut A)>>
-) -> impl FnMut(&mut A) {
+pub fn concat_mut<A>(mut fs: Vec<Box<dyn FnMut(&mut A)>>) -> impl FnMut(&mut A) {
     move |a: &mut A| {
         for f in &mut fs {
             f(a);
@@ -35,7 +31,7 @@ pub fn concat_mut<A>(
 
 /// Concatenate throwing mutating functions (FnMut(&mut A) -> Result<(), E>).
 pub fn concat_mut_result<A, E>(
-    mut fs: Vec<Box<dyn FnMut(&mut A) -> Result<(), E>>>
+    mut fs: Vec<Box<dyn FnMut(&mut A) -> Result<(), E>>>,
 ) -> impl FnMut(&mut A) -> Result<(), E> {
     move |a: &mut A| {
         for f in &mut fs {
@@ -92,10 +88,9 @@ mod tests {
 
     #[test]
     fn test_concat_tryfn() {
-        let f = concat_tryfn!(
-            |x: i32| if x > 0 { Ok(x + 1) } else { Err("neg") },
-            |x| Ok(x * 2)
-        );
+        let f = concat_tryfn!(|x: i32| if x > 0 { Ok(x + 1) } else { Err("neg") }, |x| Ok(
+            x * 2
+        ));
         assert_eq!(f(1), Ok(4));
         assert_eq!(f(-1), Err("neg"));
     }
@@ -111,8 +106,16 @@ mod tests {
     #[test]
     fn test_concat_trymut() {
         let mut f = concat_trymut!(
-            |x: &mut i32| if *x > 0 { *x += 1; Ok(()) } else { Err("bad") },
-            |x: &mut i32| { *x *= 2; Ok(()) }
+            |x: &mut i32| if *x > 0 {
+                *x += 1;
+                Ok(())
+            } else {
+                Err("bad")
+            },
+            |x: &mut i32| {
+                *x *= 2;
+                Ok(())
+            }
         );
         let mut val = 2;
         assert_eq!(f(&mut val), Ok(()));

@@ -14,7 +14,9 @@ where
     }
 }
 
-pub fn curry2_throwing<A1, A2, R, E, F>(function: F) -> impl Fn(A1) -> Arc<dyn Fn(A2) -> Result<R, E> + Send + Sync>
+pub fn curry2_throwing<A1, A2, R, E, F>(
+    function: F,
+) -> impl Fn(A1) -> Arc<dyn Fn(A2) -> Result<R, E> + Send + Sync>
 where
     F: Fn(A1, A2) -> Result<R, E> + Send + Sync + Copy + 'static,
     A1: Clone + Send + Sync + 'static,
@@ -28,7 +30,9 @@ where
     }
 }
 
-pub fn curry3<A1, A2, A3, R, F>(function: F) -> impl Fn(A1) -> Arc<dyn Fn(A2) -> Arc<dyn Fn(A3) -> R + Send + Sync> + Send + Sync>
+pub fn curry3<A1, A2, A3, R, F>(
+    function: F,
+) -> impl Fn(A1) -> Arc<dyn Fn(A2) -> Arc<dyn Fn(A3) -> R + Send + Sync> + Send + Sync>
 where
     F: Fn(A1, A2, A3) -> R + Send + Sync + Copy + 'static,
     A1: Clone + Send + Sync + 'static,
@@ -93,7 +97,7 @@ mod tests {
         };
         let curried = curry2_throwing(safe_divide);
         let divide_by_2 = curried(10.0);
-        
+
         assert_eq!(divide_by_2(2.0), Ok(5.0));
         assert_eq!(divide_by_2(0.0), Err("Division by zero".to_string()));
     }
@@ -134,11 +138,11 @@ mod tests {
     fn test_partial_application() {
         let add_three = |a: i32, b: i32, c: i32| a + b + c;
         let curried = curry3(add_three);
-        
+
         // Partial application
         let add_to_10 = curried(10);
         let add_to_10_and_5 = add_to_10(5);
-        
+
         assert_eq!(add_to_10_and_5(3), 18); // 10 + 5 + 3 = 18
         assert_eq!(add_to_10_and_5(7), 22); // 10 + 5 + 7 = 22
     }
@@ -162,7 +166,8 @@ mod tests {
 
     #[test]
     fn test_curry7_macro() {
-        let fn7 = |a: i32, b: i32, c: i32, d: i32, e: i32, f: i32, g: i32| a + b + c + d + e + f + g;
+        let fn7 =
+            |a: i32, b: i32, c: i32, d: i32, e: i32, f: i32, g: i32| a + b + c + d + e + f + g;
         let result = curry7(fn7)(1, 2, 3, 4, 5, 6, 7);
         assert_eq!(result, 28);
     }
@@ -173,11 +178,9 @@ mod tests {
         let add = |a: i32, b: i32| a + b;
         let curried = curry2(add);
         let add5 = curried(5);
-        
-        let handle = std::thread::spawn(move || {
-            add5(3)
-        });
-        
+
+        let handle = std::thread::spawn(move || add5(3));
+
         assert_eq!(handle.join().unwrap(), 8);
     }
 }
