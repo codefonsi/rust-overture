@@ -1,17 +1,17 @@
-use std::{cell::RefCell, rc::Rc};
+use std::rc::Rc;
 
 // Immutable getter
-pub fn get<Root, Value>(getter: impl Fn(&Root) -> Value + Clone + 'static) -> impl Fn(Root) -> Value
+pub fn get<Root, Value>(_getter: impl Fn(&Root) -> Value + Clone + 'static) -> impl Fn(Root) -> Value
 where
     Value: Clone + 'static,
 {
-    move |root: Root| getter(&root)
+    move |root: Root| _getter(&root)
 }
 
 // Immutable setter
 pub fn set<Root, Value>(
     setter: impl Fn(&mut Root, Value) + Clone + 'static,
-    getter: impl Fn(&Root) -> Value + Clone + 'static,
+    _getter: impl Fn(&Root) -> Value + Clone + 'static,
     value: Value,
 ) -> impl Fn(Root) -> Root
 where
@@ -28,7 +28,7 @@ where
 // Mutable setter using interior mutability (Rc<RefCell>)
 pub fn mut_<Root, Value>(
     setter: impl Fn(&mut Root, Value) + Clone + 'static,
-    getter: impl Fn(&mut Root) -> &mut Value + Clone + 'static,
+    _getter: impl Fn(&mut Root) -> &mut Value + Clone + 'static,
     value: Value,
 ) -> impl FnMut(&mut Root)
 where
@@ -113,7 +113,7 @@ where
     let setter = Rc::new(setter);
     let getter = Rc::new(getter);
     move |mut update: Box<dyn FnMut(&mut Value)>| {
-        let setter = setter.clone();
+        let _setter = setter.clone();
         let getter = getter.clone();
         Box::new(move |root: &mut Root| {
             let value = getter(root);
@@ -126,7 +126,7 @@ where
 pub fn mver<Root, Value>(
     setter: impl Fn(&mut Root, Value) + Clone + 'static,
     getter: impl Fn(&mut Root) -> &mut Value + Clone + 'static,
-    mut update: impl FnMut(&mut Value) + 'static,
+    update: impl FnMut(&mut Value) + 'static,
 ) -> impl FnMut(&mut Root)
 where
     Root: 'static,

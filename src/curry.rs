@@ -51,6 +51,7 @@ where
 }
 
 // Macro for higher arity functions - using Arc pattern
+#[allow(non_snake_case)]
 macro_rules! curry {
     ($name:ident, $($arg:ident),+) => {
         pub fn $name<F, R, $($arg),+>(function: F) -> impl Fn($($arg),+) -> R
