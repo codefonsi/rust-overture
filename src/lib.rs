@@ -17,3 +17,4 @@ pub mod with;
 pub mod zurry;
 pub mod zip_suites;
 pub mod zip_result;
+pub mod zip_option;
