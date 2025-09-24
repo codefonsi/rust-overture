@@ -4,6 +4,7 @@ pub mod compose;
 pub mod concat;
 pub mod curry;
 pub mod uncurry;
+pub mod update;
 pub mod flip;
 pub mod keypath;
 pub mod lense;
