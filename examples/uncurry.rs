@@ -1,5 +1,6 @@
 use rust_overture::uncurry::*;
 
+
 fn main() {
     // Example 1: uncurry2
     let curried_add = |a: i32| move |b: i32| a + b;

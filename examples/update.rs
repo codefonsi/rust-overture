@@ -34,9 +34,9 @@ fn main() {
     println!("Before: {:?}", person);
     
     update_many(&mut person, [
-        |p| p.age += 1,
-        |p| p.name = format!("{} Jr.", p.name),
-        |p| p.email = p.email.replace("bob", "bobby"),
+        |p: &mut Person| p.age += 1,
+        |p: &mut Person| p.name = format!("{} Jr.", p.name),
+        |p: &mut Person| p.email = p.email.replace("bob", "bobby"),
     ]);
     println!("After: {:?}\n", person);
 
@@ -58,9 +58,9 @@ fn main() {
     println!("Original: {:?}", person);
     
     let updated_person = update_value_many(person.clone(), [
-        |p| p.age += 2,
-        |p| p.name = p.name.to_uppercase(),
-        |p| p.email = p.email.replace("diana", "d.diana"),
+        |p: &mut Person| p.age += 2,
+        |p: &mut Person| p.name = p.name.to_uppercase(),
+        |p: &mut Person| p.email = p.email.replace("diana", "d.diana"),
     ]);
     println!("Updated: {:?}", updated_person);
     println!("Original unchanged: {:?}\n", person);
