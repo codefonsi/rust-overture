@@ -73,6 +73,7 @@ curry!(curry8, A1, A2, A3, A4, A5, A6, A7, A8);
 curry!(curry9, A1, A2, A3, A4, A5, A6, A7, A8, A9);
 curry!(curry10, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10);
 
+
 #[cfg(test)]
 mod tests {
     use super::*;
