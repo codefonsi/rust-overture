@@ -6,6 +6,7 @@ pub mod curry;
 pub mod uncurry;
 pub mod update;
 pub mod result;
+pub mod suites;
 pub mod flip;
 pub mod keypath;
 pub mod lense;
