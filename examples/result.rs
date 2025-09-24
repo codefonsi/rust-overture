@@ -46,11 +46,11 @@ fn main() {
 
     // Example 3: Combining multiple results
     println!("3. Combining multiple results:");
-    let results = vec![Ok(1), Ok(2), Ok(3), Ok(4)];
+    let results = vec![Ok(1) as Result<i32, &str>, Ok(2) as Result<i32, &str>, Ok(3) as Result<i32, &str>, Ok(4) as Result<i32, &str>];
     let sequenced = sequence(results);
     println!("sequence([Ok(1), Ok(2), Ok(3), Ok(4)]) = {:?}", sequenced);
     
-    let error_results = vec![Ok(1), Err("error"), Ok(3)];
+    let error_results = vec![Ok(1) as Result<i32, &str>, Err("error"), Ok(3) as Result<i32, &str>];
     let sequenced_error = sequence(error_results);
     println!("sequence([Ok(1), Err(\"error\"), Ok(3)]) = {:?}", sequenced_error);
     println!();
@@ -64,7 +64,7 @@ fn main() {
     let zipped3 = zip3(result1, result2, result3);
     println!("zip3(Ok(1), Ok(2), Ok(3)) = {:?}", zipped3);
     
-    let zipped3_with = zip3_with(Ok(1), Ok(2), Ok(3), |a, b, c| a * b + c);
+    let zipped3_with = zip3_with(Ok(1) as Result<i32, &str>, Ok(2) as Result<i32, &str>, Ok(3) as Result<i32, &str>, |a, b, c| a * b + c);
     println!("zip3_with(Ok(1), Ok(2), Ok(3), |a, b, c| a * b + c) = {:?}", zipped3_with);
     println!();
 
@@ -78,7 +78,7 @@ fn main() {
     let zipped4 = zip4(result1, result2, result3, result4);
     println!("zip4(Ok(1), Ok(2), Ok(3), Ok(4)) = {:?}", zipped4);
     
-    let zipped4_with = zip4_with(Ok(1), Ok(2), Ok(3), Ok(4), |a, b, c, d| a + b + c + d);
+    let zipped4_with = zip4_with(Ok(1) as Result<i32, &str>, Ok(2) as Result<i32, &str>, Ok(3) as Result<i32, &str>, Ok(4) as Result<i32, &str>, |a, b, c, d| a + b + c + d);
     println!("zip4_with(Ok(1), Ok(2), Ok(3), Ok(4), |a, b, c, d| a + b + c + d) = {:?}", zipped4_with);
     println!();
 
@@ -162,7 +162,7 @@ fn main() {
     // Compose functions that return Results
     let process_number = pipe3_throwing(add_one, multiply_by_two, square);
     
-    let result = process_number(5);
+    let result: Result<i32, &str> = process_number(5);
     println!("process_number(5) = {:?}", result);
     
     // Using flat_map for more complex transformations
@@ -174,10 +174,10 @@ fn main() {
         }
     };
     
-    let flat_mapped = flat_map(Ok(5), complex_transform);
+    let flat_mapped = flat_map(Ok(5) as Result<i32, &str>, complex_transform);
     println!("flat_map(Ok(5), complex_transform) = {:?}", flat_mapped);
     
-    let flat_mapped_error = flat_map(Ok(-5), complex_transform);
+    let flat_mapped_error = flat_map(Ok(-5) as Result<i32, &str>, complex_transform);
     println!("flat_map(Ok(-5), complex_transform) = {:?}", flat_mapped_error);
     println!();
 
@@ -190,7 +190,7 @@ fn main() {
     let recovered = or(primary_result, fallback_result);
     println!("or(Err(\"Primary failed\"), Ok(42)) = {:?}", recovered);
     
-    let fallback_fn = || Ok(100);
+    let fallback_fn = || Ok(100) as Result<i32, &str>;
     let recovered_with_fn = or_else(Err("Error"), fallback_fn);
     println!("or_else(Err(\"Error\"), || Ok(100)) = {:?}", recovered_with_fn);
     
