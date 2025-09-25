@@ -786,3 +786,65 @@ fn main() {
     println!("- Superior performance through algorithmic optimizations");
     println!("- Thread-safe parallel processing capabilities");
 }
+
+/*
+Fraud Detection Tool - Functional vs Imperative Comparison (with Rc)
+==================================================================
+
+Fraud Detection Results:
+=======================
+Transaction ID: txn_001
+Risk Score: 0.60
+High Risk: false
+Risk Factors: ["High amount", "Unusual location", "Unusual device"]
+
+Performance Comparison (10000 iterations):
+==========================================
+Functional approach: 15.388417ms
+Ultra-optimized functional: 19.535125ms
+Imperative approach: 11.89525ms
+
+Average time per operation:
+Functional: 1538.84 ns
+Ultra-optimized functional: 1953.51 ns
+Imperative: 1189.53 ns
+
+Ultra-optimized functional has 64.2% overhead vs imperative
+Ultra-optimized functional has 26.9% overhead vs basic functional
+
+Functional Composition Benefits:
+===============================
+Pipeline processing: Total: $1650.00
+Curried validation: true
+Option chaining - merchant length: Some(12)
+
+Rc Benefits Demonstration:
+==========================
+Reference count: 4
+All references point to same data: true
+Created 3 transaction references with minimal memory overhead
+Reference count after vector: 7
+
+Optimization Techniques Applied:
+===============================
+1. Single-pass algorithms: O(n) instead of O(2n) for risk calculations
+2. Pre-calculated thresholds: Avoid repeated multiplications
+3. Early termination: Break loops when max risk is reached
+4. Pre-allocated vectors: Vec::with_capacity() to avoid reallocations
+5. Match expressions: Faster than if-else chains for risk categorization
+6. Arc for thread-safety: Better for parallel processing scenarios
+7. Reduced function call overhead: Inline calculations where possible
+8. Memory-efficient data structures: Rc/Arc for shared immutable data
+
+Functional approach with optimizations provides:
+- Better composability and reusability
+- Cleaner error handling with Result types
+- More testable and maintainable code
+- Easier to reason about data transformations
+- Reduced cognitive load through declarative style
+- Memory efficiency through shallow copying with Rc/Arc
+- Zero-cost abstractions for shared immutable data
+- Superior performance through algorithmic optimizations
+- Thread-safe parallel processing capabilities
+ *  Terminal will be reused by tasks, press any key to close it. 
+*/

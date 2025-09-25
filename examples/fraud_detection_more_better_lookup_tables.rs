@@ -738,3 +738,68 @@ fn main() {
     println!("- Thread-safe parallel processing capabilities");
     println!("- Compiler optimizations through pure functional patterns");
 }
+
+/*
+Fraud Detection Tool - Functional vs Imperative Comparison (with Rc)
+==================================================================
+
+Fraud Detection Results:
+=======================
+Transaction ID: txn_001
+Risk Score: 0.60
+High Risk: false
+Risk Factors: ["High amount", "Unusual location", "Unusual device"]
+
+Performance Comparison (10000 iterations):
+==========================================
+Functional approach: 14.324291ms
+Ultra-optimized functional: 11.753875ms
+Imperative approach: 11.937209ms
+
+Average time per operation:
+Functional: 1432.43 ns
+Ultra-optimized functional: 1175.39 ns
+Imperative: 1193.72 ns
+
+🎉 Ultra-optimized functional is 1.5% faster than imperative!
+Ultra-optimized functional is 17.9% faster than basic functional
+
+Functional Composition Benefits:
+===============================
+Pipeline processing: Total: $1650.00
+Curried validation: true
+Option chaining - merchant length: Some(12)
+
+Rc Benefits Demonstration:
+==========================
+Reference count: 4
+All references point to same data: true
+Created 3 transaction references with minimal memory overhead
+Reference count after vector: 7
+
+🚀 Optimization Techniques Applied:
+===================================
+1. Single-pass algorithms: O(n) instead of O(2n) for risk calculations
+2. Pre-calculated thresholds: Avoid repeated multiplications
+3. Early termination: Break loops when max risk is reached
+4. Pre-allocated vectors: Vec::with_capacity() to avoid reallocations
+5. Match expressions: Faster than if-else chains for risk categorization
+6. Lookup tables: Pre-computed arrays for O(1) risk lookups
+7. Extension traits: Zero-cost abstractions for functional composition
+8. Inline validation: Single check instead of multiple function calls
+9. Memory-efficient data structures: Rc for shared immutable data
+10. Functional composition: Method chaining with zero overhead
+
+✨ Functional approach with optimizations provides:
+- Better composability and reusability
+- Cleaner error handling with Result types
+- More testable and maintainable code
+- Easier to reason about data transformations
+- Reduced cognitive load through declarative style
+- Memory efficiency through shallow copying with Rc
+- Zero-cost abstractions for shared immutable data
+- Superior performance through algorithmic optimizations
+- Thread-safe parallel processing capabilities
+- Compiler optimizations through pure functional patterns
+ *  Terminal will be reused by tasks, press any key to close it. 
+*/

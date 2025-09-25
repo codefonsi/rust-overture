@@ -447,3 +447,46 @@ fn main() {
     println!("- Memory efficiency through shallow copying with Rc");
     println!("- Zero-cost abstractions for shared immutable data");
 }
+
+/*
+Fraud Detection Tool - Functional vs Imperative Comparison (with Rc)
+==================================================================
+
+Fraud Detection Results:
+=======================
+Transaction ID: txn_001
+Risk Score: 0.60
+High Risk: false
+Risk Factors: ["High amount", "Unusual location", "New device"]
+
+Performance Comparison (10000 iterations):
+==========================================
+Functional approach: 35.72875ms
+Imperative approach: 11.412708ms
+Functional average: 3572.88 ns per operation
+Imperative average: 1141.27 ns per operation
+Functional approach has 213.1% overhead
+
+Functional Composition Benefits:
+===============================
+Pipeline processing: Total: $1650.00
+Curried validation: true
+Option chaining - merchant length: Some(12)
+
+Rc Benefits Demonstration:
+==========================
+Reference count: 4
+All references point to same data: true
+Created 3 transaction references with minimal memory overhead
+Reference count after vector: 7
+
+Functional approach with Rc provides:
+- Better composability and reusability
+- Cleaner error handling with Result types
+- More testable and maintainable code
+- Easier to reason about data transformations
+- Reduced cognitive load through declarative style
+- Memory efficiency through shallow copying with Rc
+- Zero-cost abstractions for shared immutable data
+ *  Terminal will be reused by tasks, press any key to close it. 
+*/
