@@ -73,6 +73,16 @@ where
     move |a: A| h(a).and_then(|b| g(b)).and_then(|c| f(c))
 }
 
+// pub fn compose4_res<A, B, C, D, E, F, G, F1, F2, F3, F4>(f: F1, g: F2, h: F3, i: F4) -> impl Fn(A) -> Result<D, E>
+// where
+//     F1: Fn(E) -> Result<F, E>,
+//     F2: Fn(D) -> Result<E, E>,
+//     F3: Fn(C) -> Result<D, E>,
+//     F4: Fn(A) -> Result<C, E>,
+// {
+//     move |a: A| f(a).and_then(|b| g(b)).and_then(|c| h(c)).and_then(|d| i(d))
+// }
+
 // ---------------------------------------------------
 // Tests
 // ---------------------------------------------------
