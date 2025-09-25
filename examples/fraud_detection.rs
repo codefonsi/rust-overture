@@ -7,8 +7,9 @@ use rust_overture::{
 };
 
 use std::time::Instant;
+use std::rc::Rc;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, PartialEq)]
 struct Transaction {
     id: String,
     amount: f64,
@@ -20,7 +21,7 @@ struct Transaction {
     ip_address: String,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, PartialEq)]
 struct UserProfile {
     user_id: String,
     average_transaction: f64,
@@ -29,7 +30,7 @@ struct UserProfile {
     account_age_days: u32,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, PartialEq)]
 struct FraudRisk {
     transaction_id: String,
     risk_score: f64,
@@ -37,11 +38,11 @@ struct FraudRisk {
     is_high_risk: bool,
 }
 
-// Functional approach using our operators
+// Functional approach using our operators with Rc for shallow copying
 fn functional_fraud_detection(
-    transaction: Transaction,
-    user_profile: UserProfile,
-    recent_transactions: Vec<Transaction>,
+    transaction: Rc<Transaction>,
+    user_profile: Rc<UserProfile>,
+    recent_transactions: Rc<Vec<Transaction>>,
 ) -> Result<FraudRisk, String> {
     // Step 1: Validate transaction data using pipe and result operators
     let validate_transaction = pipe3_throwing(
@@ -75,11 +76,11 @@ fn functional_fraud_detection(
     Ok(fraud_risk)
 }
 
-// Traditional imperative approach for comparison
+// Traditional imperative approach for comparison (also using Rc for fair comparison)
 fn imperative_fraud_detection(
-    transaction: Transaction,
-    user_profile: UserProfile,
-    recent_transactions: Vec<Transaction>,
+    transaction: Rc<Transaction>,
+    user_profile: Rc<UserProfile>,
+    recent_transactions: Rc<Vec<Transaction>>,
 ) -> Result<FraudRisk, String> {
     // Step 1: Validate transaction data (imperative)
     if transaction.amount <= 0.0 {
@@ -130,7 +131,7 @@ fn imperative_fraud_detection(
     
     // Step 5: Create fraud risk (imperative)
     let fraud_risk = FraudRisk {
-        transaction_id: transaction.id,
+        transaction_id: transaction.id.clone(),
         risk_score: combined_risk,
         risk_factors,
         is_high_risk: combined_risk > 0.7,
@@ -140,7 +141,7 @@ fn imperative_fraud_detection(
 }
 
 // Helper functions for functional approach
-fn validate_amount(transaction: Transaction) -> Result<Transaction, String> {
+fn validate_amount(transaction: Rc<Transaction>) -> Result<Rc<Transaction>, String> {
     if transaction.amount > 0.0 {
         Ok(transaction)
     } else {
@@ -148,7 +149,7 @@ fn validate_amount(transaction: Transaction) -> Result<Transaction, String> {
     }
 }
 
-fn validate_merchant(transaction: Transaction) -> Result<Transaction, String> {
+fn validate_merchant(transaction: Rc<Transaction>) -> Result<Rc<Transaction>, String> {
     if !transaction.merchant.is_empty() {
         Ok(transaction)
     } else {
@@ -156,7 +157,7 @@ fn validate_merchant(transaction: Transaction) -> Result<Transaction, String> {
     }
 }
 
-fn validate_location(transaction: Transaction) -> Result<Transaction, String> {
+fn validate_location(transaction: Rc<Transaction>) -> Result<Rc<Transaction>, String> {
     if !transaction.location.is_empty() {
         Ok(transaction)
     } else {
@@ -274,11 +275,11 @@ fn calculate_device_risk_imperative(transaction: &Transaction, recent_transactio
 }
 
 fn main() {
-    println!("Fraud Detection Tool - Functional vs Imperative Comparison");
-    println!("=========================================================");
+    println!("Fraud Detection Tool - Functional vs Imperative Comparison (with Rc)");
+    println!("==================================================================");
     
-    // Create test data
-    let transaction = Transaction {
+    // Create test data using Rc for shallow copying
+    let transaction = Rc::new(Transaction {
         id: "txn_001".to_string(),
         amount: 1500.0,
         merchant: "Online Store".to_string(),
@@ -287,17 +288,17 @@ fn main() {
         user_id: "user_123".to_string(),
         device_id: "device_456".to_string(),
         ip_address: "192.168.1.1".to_string(),
-    };
+    });
     
-    let user_profile = UserProfile {
+    let user_profile = Rc::new(UserProfile {
         user_id: "user_123".to_string(),
         average_transaction: 200.0,
         common_locations: vec!["California".to_string(), "Texas".to_string()],
         risk_score: 0.3,
         account_age_days: 365,
-    };
+    });
     
-    let recent_transactions = vec![
+    let recent_transactions = Rc::new(vec![
         Transaction {
             id: "txn_002".to_string(),
             amount: 100.0,
@@ -318,7 +319,7 @@ fn main() {
             device_id: "device_789".to_string(),
             ip_address: "192.168.1.2".to_string(),
         },
-    ];
+    ]);
     
     // Performance comparison
     let iterations = 10000;
@@ -327,9 +328,9 @@ fn main() {
     let start = Instant::now();
     for _ in 0..iterations {
         let _ = functional_fraud_detection(
-            transaction.clone(),
-            user_profile.clone(),
-            recent_transactions.clone(),
+            Rc::clone(&transaction),
+            Rc::clone(&user_profile),
+            Rc::clone(&recent_transactions),
         );
     }
     let functional_duration = start.elapsed();
@@ -338,9 +339,9 @@ fn main() {
     let start = Instant::now();
     for _ in 0..iterations {
         let _ = imperative_fraud_detection(
-            transaction.clone(),
-            user_profile.clone(),
-            recent_transactions.clone(),
+            Rc::clone(&transaction),
+            Rc::clone(&user_profile),
+            Rc::clone(&recent_transactions),
         );
     }
     let imperative_duration = start.elapsed();
@@ -349,7 +350,11 @@ fn main() {
     println!("\nFraud Detection Results:");
     println!("=======================");
     
-    match functional_fraud_detection(transaction.clone(), user_profile.clone(), recent_transactions.clone()) {
+    match functional_fraud_detection(
+        Rc::clone(&transaction),
+        Rc::clone(&user_profile),
+        Rc::clone(&recent_transactions),
+    ) {
         Ok(fraud_risk) => {
             println!("Transaction ID: {}", fraud_risk.transaction_id);
             println!("Risk Score: {:.2}", fraud_risk.risk_score);
@@ -383,15 +388,15 @@ fn main() {
     println!("\nFunctional Composition Benefits:");
     println!("===============================");
     
-    // Example 1: Pipeline processing
+    // Example 1: Pipeline processing with Rc
     let process_transaction = pipe4(
-        |t: Transaction| t.amount,
+        |t: Rc<Transaction>| t.amount,
         |amount: f64| amount * 1.1, // Add tax
         |amount: f64| format!("${:.2}", amount),
         |formatted: String| format!("Total: {}", formatted),
     );
     
-    let result = process_transaction(transaction.clone());
+    let result = process_transaction(Rc::clone(&transaction));
     println!("Pipeline processing: {}", result);
     
     // Example 2: Curried validation
@@ -409,45 +414,36 @@ fn main() {
     let merchant_length = get_merchant(&transaction).and_then(get_merchant_length);
     println!("Option chaining - merchant length: {:?}", merchant_length);
     
-    println!("\nFunctional approach provides:");
+    // Example 4: Rc benefits demonstration
+    println!("\nRc Benefits Demonstration:");
+    println!("==========================");
+    
+    // Multiple references to the same data without deep copying
+    let transaction_ref1 = Rc::clone(&transaction);
+    let transaction_ref2 = Rc::clone(&transaction);
+    let transaction_ref3 = Rc::clone(&transaction);
+    
+    println!("Reference count: {}", Rc::strong_count(&transaction));
+    println!("All references point to same data: {}", 
+        transaction_ref1.id == transaction_ref2.id && 
+        transaction_ref2.id == transaction_ref3.id);
+    
+    // Memory efficiency demonstration
+    let transactions = vec![
+        Rc::clone(&transaction),
+        Rc::clone(&transaction),
+        Rc::clone(&transaction),
+    ];
+    
+    println!("Created {} transaction references with minimal memory overhead", transactions.len());
+    println!("Reference count after vector: {}", Rc::strong_count(&transaction));
+    
+    println!("\nFunctional approach with Rc provides:");
     println!("- Better composability and reusability");
     println!("- Cleaner error handling with Result types");
     println!("- More testable and maintainable code");
     println!("- Easier to reason about data transformations");
     println!("- Reduced cognitive load through declarative style");
+    println!("- Memory efficiency through shallow copying with Rc");
+    println!("- Zero-cost abstractions for shared immutable data");
 }
-
-
-/*
-Fraud Detection Tool - Functional vs Imperative Comparison
-=========================================================
-
-Fraud Detection Results:
-=======================
-Transaction ID: txn_001
-Risk Score: 0.60
-High Risk: false
-Risk Factors: ["High amount", "Unusual location", "New device"]
-
-Performance Comparison (10000 iterations):
-==========================================
-Functional approach: 43.255917ms
-Imperative approach: 23.178625ms
-Functional average: 4325.59 ns per operation
-Imperative average: 2317.86 ns per operation
-Functional approach has 86.6% overhead
-
-Functional Composition Benefits:
-===============================
-Pipeline processing: Total: $1650.00
-Curried validation: true
-Option chaining - merchant length: Some(12)
-
-Functional approach provides:
-- Better composability and reusability
-- Cleaner error handling with Result types
-- More testable and maintainable code
-- Easier to reason about data transformations
-- Reduced cognitive load through declarative style
- *  Terminal will be reused by tasks, press any key to close it. 
-*/
