@@ -1,6 +1,6 @@
 [package]
 name = "rust-overture"
-version = "0.5.0"
+version = "0.6.0"
 edition = "2024"
 authors = ["Codefonsi <info@codefonsi.com>"]
 license = "MPL-2.0"
@@ -20,7 +20,7 @@ members = ["overture-core"]
 overture-core = { path = "overture-core" }
 
 [dependencies]
-overture-core = { path = "overture-core", version = "0.1.0" }
+overture-core = { path = "overture-core", version = "0.2.0" }
 
 
 [features]
