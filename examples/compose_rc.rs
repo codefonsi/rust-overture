@@ -318,7 +318,7 @@ fn main() {
     let create_math_pipeline = |multiplier: f64| {
         compose3_rs(
             |x: f64| format!("Result: {:.2}", x),
-            |x: f64| x * multiplier,
+            move |x: f64| x * multiplier,
             |x: f64| x + 1.0,
         )
     };

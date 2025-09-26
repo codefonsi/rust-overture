@@ -118,10 +118,10 @@ where
 /// * `j` - A function that takes a value in `A` and returns a value in `B`
 ///
 /// # Returns
-/// A new function that takes a value in `A` and returns a value in `F`
-pub fn compose5_rs<A, B, C, D, E, F, G, H, I, J>(f: F, g: G, h: H, i: I, j: J) -> impl Fn(A) -> F
+/// A new function that takes a value in `A` and returns a value in `R`
+pub fn compose5_rs<A, B, C, D, E, R, F, G, H, I, J>(f: F, g: G, h: H, i: I, j: J) -> impl Fn(A) -> R
 where
-    F: Fn(E) -> F + 'static,
+    F: Fn(E) -> R + 'static,
     G: Fn(D) -> E + 'static,
     H: Fn(C) -> D + 'static,
     I: Fn(B) -> C + 'static,
@@ -153,11 +153,11 @@ where
 /// * `k` - A function that takes a value in `A` and returns a value in `B`
 ///
 /// # Returns
-/// A new function that takes a value in `A` and returns a value in `G`
-pub fn compose6_rs<A, B, C, D, E, F, G, H, I, J, K>(f: F, g: G, h: H, i: I, j: J, k: K) -> impl Fn(A) -> G
+/// A new function that takes a value in `A` and returns a value in `R`
+pub fn compose6_rs<A, B, C, D, E, F_IN, R, F, G, H, I, J, K>(f: F, g: G, h: H, i: I, j: J, k: K) -> impl Fn(A) -> R
 where
-    F: Fn(F) -> G + 'static,
-    G: Fn(E) -> F + 'static,
+    F: Fn(F_IN) -> R + 'static,
+    G: Fn(E) -> F_IN + 'static,
     H: Fn(D) -> E + 'static,
     I: Fn(C) -> D + 'static,
     J: Fn(B) -> C + 'static,
@@ -318,11 +318,11 @@ where
 /// * `k` - A function that takes a value in `A` and returns a `Result<B, Err>`
 ///
 /// # Returns
-/// A new function that takes a value in `A` and returns a `Result<G, Err>`
-pub fn compose6_rs_throwing<A, B, C, D, E, F, G, Err, H, I, J, K>(f: F, g: G, h: H, i: I, j: J, k: K) -> impl Fn(A) -> Result<G, Err>
+/// A new function that takes a value in `A` and returns a `Result<R, Err>`
+pub fn compose6_rs_throwing<A, B, C, D, E, F_IN, R, Err, F, G, H, I, J, K>(f: F, g: G, h: H, i: I, j: J, k: K) -> impl Fn(A) -> Result<R, Err>
 where
-    F: Fn(F) -> Result<G, Err> + 'static,
-    G: Fn(E) -> Result<F, Err> + 'static,
+    F: Fn(F_IN) -> Result<R, Err> + 'static,
+    G: Fn(E) -> Result<F_IN, Err> + 'static,
     H: Fn(D) -> Result<E, Err> + 'static,
     I: Fn(C) -> Result<D, Err> + 'static,
     J: Fn(B) -> Result<C, Err> + 'static,
