@@ -4,7 +4,7 @@
 //! smart pointers to enable shallow cloning of functions, reducing memory overhead
 //! when functions are used multiple times in composed pipelines.
 
-use overture_core::compose_rs::{
+use overture_core::compose_rc::{
     compose_rs, compose3_rs, compose4_rs, compose5_rs, compose6_rs,
     compose3_rs_throwing,
 };
