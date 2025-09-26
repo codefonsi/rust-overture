@@ -3,6 +3,12 @@
 version = 4
 
 [[package]]
+name = "key-paths-core"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ebf363fcfe4273d390d6c1cd5e86c652042d7e43e81fa255caaa7c985d02686e"
+
+[[package]]
 name = "overture-core"
 version = "0.2.0"
 
@@ -10,5 +16,6 @@ version = "0.2.0"
 name = "rust-overture"
 version = "0.6.0"
 dependencies = [
+ "key-paths-core",
  "overture-core",
 ]

@@ -20,6 +20,7 @@ members = ["overture-core"]
 overture-core = { path = "overture-core" }
 
 [dependencies]
+key-paths-core = "0.9.0"
 overture-core = { path = "overture-core", version = "0.2.0" }
 
 
