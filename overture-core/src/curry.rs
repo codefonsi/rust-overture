@@ -6,7 +6,7 @@
 ///
 /// # Examples
 /// ```
-/// use rust_overture::curry::curry;
+/// use overture_core::curry::curry;
 /// 
 /// let add = |a: i32, b: i32| a + b;
 /// let curried = curry(add);
@@ -30,7 +30,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::curry::curry_throwing;
+/// use overture_core::curry::curry_throwing;
 /// 
 /// let safe_divide = |a: f64, b: f64| {
 ///     if b == 0.0 {

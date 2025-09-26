@@ -6,7 +6,7 @@
 ///
 /// # Examples
 /// ```
-/// use rust_overture::zip_result::zip3;
+/// use overture_core::zip_result::zip3;
 /// 
 /// let a: Result<i32, &str> = Ok(1);
 /// let b: Result<i32, &str> = Ok(2);
@@ -28,7 +28,7 @@ pub fn zip3<A, B, C, E>(a: Result<A, E>, b: Result<B, E>, c: Result<C, E>) -> Re
 ///
 /// # Examples
 /// ```
-/// use rust_overture::zip_result::zip3_with;
+/// use overture_core::zip_result::zip3_with;
 /// 
 /// let a: Result<i32, &str> = Ok(1);
 /// let b: Result<i32, &str> = Ok(2);

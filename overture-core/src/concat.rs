@@ -6,7 +6,7 @@
 ///
 /// # Examples
 /// ```
-/// use rust_overture::concat::concat;
+/// use overture_core::concat::concat;
 /// 
 /// let functions = vec![
 ///     Box::new(|x: i32| x + 1) as Box<dyn Fn(i32) -> i32>,
@@ -30,7 +30,7 @@ pub fn concat<A>(fs: Vec<Box<dyn Fn(A) -> A>>) -> impl Fn(A) -> A {
 ///
 /// # Examples
 /// ```
-/// use rust_overture::concat::concat_with;
+/// use overture_core::concat::concat_with;
 /// 
 /// let composed = concat_with(
 ///     |x: i32| x + 1,
@@ -56,7 +56,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::concat::concat_throwing;
+/// use overture_core::concat::concat_throwing;
 /// 
 /// let functions = vec![
 ///     Box::new(|x: i32| if x > 0 { Ok(x + 1) } else { Err("negative") }) as Box<dyn Fn(i32) -> Result<i32, &'static str>>,
@@ -94,7 +94,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::concat::concat_mut;
+/// use overture_core::concat::concat_mut;
 /// 
 /// let functions = vec![
 ///     Box::new(|x: &mut i32| *x += 2) as Box<dyn FnMut(&mut i32)>,
@@ -131,7 +131,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::concat::concat_mut_throwing;
+/// use overture_core::concat::concat_mut_throwing;
 /// 
 /// let functions = vec![
 ///     Box::new(|x: &mut i32| if *x > 0 { *x += 1; Ok(()) } else { Err("negative") }) as Box<dyn FnMut(&mut i32) -> Result<(), &'static str>>,
@@ -170,7 +170,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::concat::concat_ref_mut;
+/// use overture_core::concat::concat_ref_mut;
 /// use std::rc::Rc;
 /// use std::cell::RefCell;
 /// 
@@ -213,7 +213,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::concat::concat_ref_mut_throwing;
+/// use overture_core::concat::concat_ref_mut_throwing;
 /// use std::rc::Rc;
 /// use std::cell::RefCell;
 /// 

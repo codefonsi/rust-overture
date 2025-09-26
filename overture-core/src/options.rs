@@ -3,7 +3,7 @@
 ///
 /// # Examples
 /// ```
-/// use rust_overture::options::map;
+/// use overture_core::options::map;
 ///
 /// let double = map(|x: i32| x * 2);
 /// assert_eq!(double(Some(5)), Some(10));
@@ -18,7 +18,7 @@ pub fn map<A, B>(transform: impl Fn(A) -> B + Clone + 'static) -> impl Fn(Option
 ///
 /// # Examples
 /// ```
-/// use rust_overture::options::map_throwing;
+/// use overture_core::options::map_throwing;
 ///
 /// let safe_divide = map_throwing(|x: i32| {
 ///     if x == 0 { Err("Division by zero") } else { Ok(10 / x) }
@@ -50,7 +50,7 @@ pub fn map_try<A, B, E>(
 ///
 /// # Examples
 /// ```
-/// use rust_overture::options::zip;
+/// use overture_core::options::zip;
 ///
 /// assert_eq!(zip(Some(1), Some(2)), Some((1, 2)));
 /// assert_eq!(zip(Some(1), None), None);
@@ -69,7 +69,7 @@ pub fn zip<A, B>(opt1: Option<A>, opt2: Option<B>) -> Option<(A, B)> {
 ///
 /// # Examples
 /// ```
-/// use rust_overture::options::zip_with;
+/// use overture_core::options::zip_with;
 ///
 /// let add = |a: i32, b: i32| a + b;
 /// assert_eq!(zip_with(add, Some(1), Some(2)), Some(3));

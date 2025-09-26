@@ -6,7 +6,7 @@
 ///
 /// # Examples
 /// ```
-/// use rust_overture::chain::chain;
+/// use overture_core::chain::chain;
 /// 
 /// let parse_int = |s: &str| s.parse::<i32>().ok();
 /// let double = |n: i32| Some(n * 2);

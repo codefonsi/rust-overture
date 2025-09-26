@@ -6,7 +6,7 @@
 ///
 /// # Examples
 /// ```
-/// use rust_overture::setter::over;
+/// use overture_core::setter::over;
 /// 
 /// let setter = |f: Box<dyn Fn(i32) -> i32>| Box::new(move |x: i32| f(x));
 /// let transform = over(setter, |x| x * 2);
@@ -33,7 +33,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::setter::set;
+/// use overture_core::setter::set;
 /// 
 /// let setter = |f: Box<dyn Fn(i32) -> i32>| Box::new(move |x: i32| f(x));
 /// let set_value = set(setter, 42);
@@ -61,7 +61,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::setter::mver;
+/// use overture_core::setter::mver;
 /// 
 /// let setter = |f: Box<dyn FnMut(&mut i32)>| Box::new(move |x: &mut i32| f(x));
 /// let mut_transform = mver(setter, |x| *x *= 2);
@@ -87,7 +87,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::setter::mver_ref;
+/// use overture_core::setter::mver_ref;
 /// use std::rc::Rc;
 /// use std::cell::RefCell;
 /// 
@@ -115,7 +115,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::setter::mver_ref_mut;
+/// use overture_core::setter::mver_ref_mut;
 /// use std::rc::Rc;
 /// use std::cell::RefCell;
 /// 
@@ -143,7 +143,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::setter::mut_set;
+/// use overture_core::setter::mut_set;
 /// 
 /// let setter = |f: Box<dyn FnMut(&mut i32)>| Box::new(move |x: &mut i32| f(x));
 /// let set_value = mut_set(setter, 42);
@@ -168,7 +168,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::setter::mut_set_ref;
+/// use overture_core::setter::mut_set_ref;
 /// use std::rc::Rc;
 /// use std::cell::RefCell;
 /// 

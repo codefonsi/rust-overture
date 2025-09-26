@@ -6,7 +6,7 @@
 ///
 /// # Examples
 /// ```
-/// use rust_overture::zurry::zurry;
+/// use overture_core::zurry::zurry;
 /// 
 /// let result = zurry(|| 42);
 /// assert_eq!(result, 42);
@@ -20,7 +20,7 @@ pub fn zurry<A>(function: impl FnOnce() -> A) -> A {
 ///
 /// # Examples
 /// ```
-/// use rust_overture::zurry::zurry_throwing;
+/// use overture_core::zurry::zurry_throwing;
 /// 
 /// let result = zurry_throwing(|| {
 ///     if true { Ok(42) } else { Err("Error") }
@@ -36,7 +36,7 @@ pub fn zurry_throwing<A, E>(function: impl FnOnce() -> Result<A, E>) -> Result<A
 ///
 /// # Examples
 /// ```
-/// use rust_overture::zurry::unzurry;
+/// use overture_core::zurry::unzurry;
 /// 
 /// let lazy_value = unzurry(|| 42);
 /// let result = lazy_value();
@@ -51,7 +51,7 @@ pub fn unzurry<A>(value: impl FnOnce() -> A) -> impl FnOnce() -> A {
 ///
 /// # Examples
 /// ```
-/// use rust_overture::zurry::unzurry_throwing;
+/// use overture_core::zurry::unzurry_throwing;
 /// 
 /// let lazy_value = unzurry_throwing(|| {
 ///     if true { Ok(42) } else { Err("Error") }
@@ -68,7 +68,7 @@ pub fn unzurry_throwing<A, E>(value: impl FnOnce() -> Result<A, E>) -> impl FnOn
 ///
 /// # Examples
 /// ```
-/// use rust_overture::zurry::unzurry_repeatable;
+/// use overture_core::zurry::unzurry_repeatable;
 /// 
 /// let mut counter = 0;
 /// let lazy_value = unzurry_repeatable(|| {
@@ -94,7 +94,7 @@ pub fn unzurry_repeatable_throwing<A, E>(value: impl Fn() -> Result<A, E> + 'sta
 ///
 /// # Examples
 /// ```
-/// use rust_overture::zurry::unzurry_capture;
+/// use overture_core::zurry::unzurry_capture;
 /// 
 /// let multiplier = 2;
 /// let lazy_value = unzurry_capture(move || 42 * multiplier);
@@ -121,7 +121,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::zurry::lazy;
+/// use overture_core::zurry::lazy;
 /// use std::sync::{Arc, Mutex};
 /// 
 /// let lazy_value = lazy(|| {
@@ -184,7 +184,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::zurry::memoize;
+/// use overture_core::zurry::memoize;
 /// use std::collections::HashMap;
 /// use std::sync::{Arc, Mutex};
 /// 
@@ -252,7 +252,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::zurry::thunk;
+/// use overture_core::zurry::thunk;
 /// 
 /// let value = 42;
 /// let thunk = thunk(value);

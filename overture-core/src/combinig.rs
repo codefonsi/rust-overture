@@ -6,7 +6,7 @@
 ///
 /// # Examples
 /// ```
-/// use rust_overture::combinig::combining;
+/// use overture_core::combinig::combining;
 /// 
 /// struct User { age: u32 }
 /// let user = User { age: 30 };
@@ -31,7 +31,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::combinig::combining_mut;
+/// use overture_core::combinig::combining_mut;
 /// 
 /// struct User { age: u32 }
 /// let user = User { age: 5 };
@@ -58,7 +58,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::combinig::their;
+/// use overture_core::combinig::their;
 /// 
 /// struct User { age: u32 }
 /// let alice = User { age: 20 };
@@ -85,7 +85,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::combinig::their_cmp;
+/// use overture_core::combinig::their_cmp;
 /// 
 /// struct User { age: u32 }
 /// let alice = User { age: 20 };
@@ -107,7 +107,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::combinig::their_eq;
+/// use overture_core::combinig::their_eq;
 /// 
 /// struct User { name: String }
 /// let alice = User { name: "Alice".to_string() };
@@ -128,7 +128,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::combinig::their_gt;
+/// use overture_core::combinig::their_gt;
 /// 
 /// struct User { age: u32 }
 /// let alice = User { age: 20 };
@@ -149,7 +149,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::combinig::their_le;
+/// use overture_core::combinig::their_le;
 /// 
 /// struct User { age: u32 }
 /// let alice = User { age: 20 };
@@ -170,7 +170,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::combinig::their_ge;
+/// use overture_core::combinig::their_ge;
 /// 
 /// struct User { age: u32 }
 /// let alice = User { age: 20 };
@@ -191,7 +191,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::combinig::their_max;
+/// use overture_core::combinig::their_max;
 /// 
 /// struct User { age: u32 }
 /// let alice = User { age: 20 };
@@ -212,7 +212,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::combinig::their_min;
+/// use overture_core::combinig::their_min;
 /// 
 /// struct User { age: u32 }
 /// let alice = User { age: 20 };
@@ -233,7 +233,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::combinig::their_add;
+/// use overture_core::combinig::their_add;
 /// 
 /// struct User { score: u32 }
 /// let alice = User { score: 100 };
@@ -254,7 +254,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::combinig::their_sub;
+/// use overture_core::combinig::their_sub;
 /// 
 /// struct User { score: u32 }
 /// let alice = User { score: 200 };
@@ -275,7 +275,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::combinig::their_mul;
+/// use overture_core::combinig::their_mul;
 /// 
 /// struct User { multiplier: u32 }
 /// let alice = User { multiplier: 3 };
@@ -296,7 +296,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::combinig::their_div;
+/// use overture_core::combinig::their_div;
 /// 
 /// struct User { value: f64 }
 /// let alice = User { value: 12.0 };

@@ -6,7 +6,7 @@
 ///
 /// # Examples
 /// ```
-/// use rust_overture::with::with;
+/// use overture_core::with::with;
 /// 
 /// let result = with(5, |x| x * 2);
 /// assert_eq!(result, 10);
@@ -20,7 +20,7 @@ pub fn with<A, B>(a: A, f: impl FnOnce(A) -> B) -> B {
 ///
 /// # Examples
 /// ```
-/// use rust_overture::with::with_throwing;
+/// use overture_core::with::with_throwing;
 /// 
 /// let result = with_throwing(5, |x| {
 ///     if x > 0 { Ok(x * 2) } else { Err("Negative number") }
@@ -36,7 +36,7 @@ pub fn with_throwing<A, B, E>(a: A, f: impl FnOnce(A) -> Result<B, E>) -> Result
 ///
 /// # Examples
 /// ```
-/// use rust_overture::with::with_mut;
+/// use overture_core::with::with_mut;
 /// 
 /// let result = with_mut(vec![1, 2, 3], |v| v.push(4));
 /// assert_eq!(result, vec![1, 2, 3, 4]);
@@ -57,7 +57,7 @@ pub fn with_mut_throwing<A, E>(mut a: A, f: impl FnOnce(&mut A) -> Result<(), E>
 ///
 /// # Examples
 /// ```
-/// use rust_overture::with::with_ref;
+/// use overture_core::with::with_ref;
 /// 
 /// let result = with_ref(vec![1, 2, 3], |v| println!("Length: {}", v.len()));
 /// assert_eq!(result, vec![1, 2, 3]);
@@ -78,7 +78,7 @@ pub fn with_ref_throwing<A, E>(a: A, f: impl FnOnce(&A) -> Result<(), E>) -> Res
 ///
 /// # Examples
 /// ```
-/// use rust_overture::with::with_chain;
+/// use overture_core::with::with_chain;
 /// 
 /// let result = with_chain(5, [
 ///     |x| x * 2,
@@ -106,7 +106,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::with::with_tap;
+/// use overture_core::with::with_tap;
 /// 
 /// let (result, original) = with_tap(5, |x| x * 2);
 /// assert_eq!(result, 10);
@@ -122,7 +122,7 @@ pub fn with_tap<A, B>(a: A, f: impl FnOnce(&A) -> B) -> (B, A) {
 ///
 /// # Examples
 /// ```
-/// use rust_overture::with::with_side_effect;
+/// use overture_core::with::with_side_effect;
 /// 
 /// let result = with_side_effect(5, |x| println!("Value: {}", x));
 /// assert_eq!(result, 5);
@@ -143,7 +143,7 @@ pub fn with_side_effect_throwing<A, E>(a: A, f: impl FnOnce(&A) -> Result<(), E>
 ///
 /// # Examples
 /// ```
-/// use rust_overture::with::with_if;
+/// use overture_core::with::with_if;
 /// 
 /// let result = with_if(5, true, |x| x * 2);
 /// assert_eq!(result, 10);
@@ -178,7 +178,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::with::with_default;
+/// use overture_core::with::with_default;
 /// 
 /// let result = with_default("hello", |s| s.parse::<i32>(), 0);
 /// assert_eq!(result, 0);

@@ -90,7 +90,7 @@ impl<Root, Value> ReferenceWritableKeyPath<Root, Value> {
 ///
 /// # Examples
 /// ```
-/// use rust_overture::keypath::{KeyPath, get};
+/// use overture_core::keypath::{KeyPath, get};
 ///
 /// let name_keypath = KeyPath::new(|person: &Person| person.name.clone());
 /// let get_name = get(name_keypath);
@@ -109,7 +109,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::keypath::{WritableKeyPath, prop};
+/// use overture_core::keypath::{WritableKeyPath, prop};
 ///
 /// let age_keypath = WritableKeyPath::new(
 ///     |person: &Person| person.age,
@@ -145,7 +145,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::keypath::{WritableKeyPath, over};
+/// use overture_core::keypath::{WritableKeyPath, over};
 ///
 /// let age_keypath = WritableKeyPath::new(
 ///     |person: &Person| person.age,
@@ -173,7 +173,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::keypath::{WritableKeyPath, set};
+/// use overture_core::keypath::{WritableKeyPath, set};
 ///
 /// let age_keypath = WritableKeyPath::new(
 ///     |person: &Person| person.age,
@@ -202,7 +202,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::keypath::{WritableKeyPath, mprop};
+/// use overture_core::keypath::{WritableKeyPath, mprop};
 ///
 /// let age_keypath = WritableKeyPath::new(
 ///     |person: &Person| person.age,
@@ -237,7 +237,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::keypath::{WritableKeyPath, mver};
+/// use overture_core::keypath::{WritableKeyPath, mver};
 ///
 /// let age_keypath = WritableKeyPath::new(
 ///     |person: &Person| person.age,
@@ -267,7 +267,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::keypath::{ReferenceWritableKeyPath, mprop_ref};
+/// use overture_core::keypath::{ReferenceWritableKeyPath, mprop_ref};
 ///
 /// let name_keypath = ReferenceWritableKeyPath::new(
 ///     |person: &Person| person.name.clone(),
@@ -299,7 +299,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::keypath::{ReferenceWritableKeyPath, mver_object};
+/// use overture_core::keypath::{ReferenceWritableKeyPath, mver_object};
 ///
 /// let name_keypath = ReferenceWritableKeyPath::new(
 ///     |person: &Person| person.name.clone(),
@@ -327,7 +327,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::keypath::{ReferenceWritableKeyPath, mprop_ref_mut};
+/// use overture_core::keypath::{ReferenceWritableKeyPath, mprop_ref_mut};
 ///
 /// let name_keypath = ReferenceWritableKeyPath::new(
 ///     |person: &Person| person.name.clone(),
@@ -363,7 +363,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::keypath::{ReferenceWritableKeyPath, mver_ref};
+/// use overture_core::keypath::{ReferenceWritableKeyPath, mver_ref};
 ///
 /// let name_keypath = ReferenceWritableKeyPath::new(
 ///     |person: &Person| person.name.clone(),
@@ -391,7 +391,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::keypath::{WritableKeyPath, mut_set};
+/// use overture_core::keypath::{WritableKeyPath, mut_set};
 ///
 /// let age_keypath = WritableKeyPath::new(
 ///     |person: &Person| person.age,
@@ -418,7 +418,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::keypath::{ReferenceWritableKeyPath, mut_set_ref};
+/// use overture_core::keypath::{ReferenceWritableKeyPath, mut_set_ref};
 ///
 /// let name_keypath = ReferenceWritableKeyPath::new(
 ///     |person: &Person| person.name.clone(),

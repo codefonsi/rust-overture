@@ -8,7 +8,7 @@ use std::iter::{Iterator, IntoIterator};
 ///
 /// # Examples
 /// ```
-/// use rust_overture::zip_suites::zip3;
+/// use overture_core::zip_suites::zip3;
 /// 
 /// let a = vec![1, 2, 3];
 /// let b = vec![4, 5, 6];
@@ -35,7 +35,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::zip_suites::zip3_with;
+/// use overture_core::zip_suites::zip3_with;
 /// 
 /// let a = vec![1, 2, 3];
 /// let b = vec![4, 5, 6];

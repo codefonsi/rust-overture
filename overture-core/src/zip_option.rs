@@ -6,7 +6,7 @@
 ///
 /// # Examples
 /// ```
-/// use rust_overture::zip_option::zip3;
+/// use overture_core::zip_option::zip3;
 /// 
 /// let a: Option<i32> = Some(1);
 /// let b: Option<i32> = Some(2);
@@ -28,7 +28,7 @@ pub fn zip3<A, B, C>(a: Option<A>, b: Option<B>, c: Option<C>) -> Option<(A, B, 
 ///
 /// # Examples
 /// ```
-/// use rust_overture::zip_option::zip3_with;
+/// use overture_core::zip_option::zip3_with;
 /// 
 /// let a: Option<i32> = Some(1);
 /// let b: Option<i32> = Some(2);

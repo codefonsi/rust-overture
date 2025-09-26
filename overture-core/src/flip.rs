@@ -6,7 +6,7 @@
 ///
 /// # Examples
 /// ```
-/// use rust_overture::flip::flip;
+/// use overture_core::flip::flip;
 ///
 /// let curried = |a: i32| Box::new(move || a * 2);
 /// let flipped = flip(curried);
@@ -30,7 +30,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::flip::flip2;
+/// use overture_core::flip::flip2;
 ///
 /// let curried = |a: i32| Box::new(move |b: i32| a + b);
 /// let flipped = flip2(curried);
@@ -55,7 +55,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::flip::flip3;
+/// use overture_core::flip::flip3;
 ///
 /// let curried = |a: i32| Box::new(move |b: i32, c: i32| a + b + c);
 /// let flipped = flip3(curried);
@@ -81,7 +81,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::flip::flip4;
+/// use overture_core::flip::flip4;
 ///
 /// let curried = |a: i32| Box::new(move |b: i32, c: i32, d: i32| a + b + c + d);
 /// let flipped = flip4(curried);
@@ -108,7 +108,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::flip::flip5;
+/// use overture_core::flip::flip5;
 ///
 /// let curried = |a: i32| Box::new(move |b: i32, c: i32, d: i32, e: i32| a + b + c + d + e);
 /// let flipped = flip5(curried);
@@ -136,7 +136,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::flip::flip6;
+/// use overture_core::flip::flip6;
 ///
 /// let curried = |a: i32| Box::new(move |b: i32, c: i32, d: i32, e: i32, f: i32| a + b + c + d + e + f);
 /// let flipped = flip6(curried);
@@ -167,7 +167,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::flip::flip_throwing;
+/// use overture_core::flip::flip_throwing;
 ///
 /// let curried = |a: i32| Box::new(move || {
 ///     if a == 0 { Err("Zero not allowed") } else { Ok(a * 2) }
@@ -194,7 +194,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::flip::flip2_throwing;
+/// use overture_core::flip::flip2_throwing;
 ///
 /// let curried = |a: i32| Box::new(move |b: i32| {
 ///     if b == 0 { Err("Division by zero") } else { Ok(a / b) }
@@ -222,7 +222,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::flip::flip3_throwing;
+/// use overture_core::flip::flip3_throwing;
 ///
 /// let curried = |a: i32| Box::new(move |b: i32, c: i32| {
 ///     if c == 0 { Err("Division by zero") } else { Ok((a + b) / c) }
@@ -251,7 +251,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::flip::flip4_throwing;
+/// use overture_core::flip::flip4_throwing;
 ///
 /// let curried = |a: i32| Box::new(move |b: i32, c: i32, d: i32| {
 ///     if d == 0 { Err("Division by zero") } else { Ok((a + b + c) / d) }
@@ -281,7 +281,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::flip::flip5_throwing;
+/// use overture_core::flip::flip5_throwing;
 ///
 /// let curried = |a: i32| Box::new(move |b: i32, c: i32, d: i32, e: i32| {
 ///     if e == 0 { Err("Division by zero") } else { Ok((a + b + c + d) / e) }
@@ -312,7 +312,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use rust_overture::flip::flip6_throwing;
+/// use overture_core::flip::flip6_throwing;
 ///
 /// let curried = |a: i32| Box::new(move |b: i32, c: i32, d: i32, e: i32, f: i32| {
 ///     if f == 0 { Err("Division by zero") } else { Ok((a + b + c + d + e) / f) }
