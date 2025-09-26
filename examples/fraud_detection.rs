@@ -1,4 +1,4 @@
-use rust_overture::{
+overture_core{
     pipe::{pipe3_throwing, pipe4},
     result::{zip4_with},
     options::{map},

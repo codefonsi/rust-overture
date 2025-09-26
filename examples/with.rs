@@ -1,5 +1,5 @@
-use rust_overture::with::with;
-use rust_overture::pipe::{pipe2, pipe3};
+overture_corewith::with;
+overture_corepipe::{pipe2, pipe3};
 
 fn main() {
     println!("With Examples:");

@@ -1,4 +1,4 @@
-use rust_overture::options::{map, map_throwing, zip, zip_with};
+overture_coreoptions::{map, map_throwing, zip, zip_with};
 
 fn main() {
     println!("Options Examples:");

@@ -1,4 +1,4 @@
-use rust_overture::uncurry::*;
+overture_coreuncurry::*;
 
 
 fn main() {

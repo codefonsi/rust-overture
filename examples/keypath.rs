@@ -1,4 +1,4 @@
-use rust_overture::keypath::{
+overture_corekeypath::{
     KeyPath, WritableKeyPath, ReferenceWritableKeyPath,
     get, prop, over, set, mprop, mver, mprop_ref, mver_object, mprop_ref_mut, mver_ref,
     mut_set, mut_set_ref, mset, mset_ref

@@ -1,4 +1,4 @@
-use rust_overture::{pipe::*};
+overture_core{pipe::*};
 
 #[derive(Debug, Clone)]
 struct User {

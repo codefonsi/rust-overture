@@ -1,9 +1,9 @@
-use rust_overture::zip_result::{
+overture_corezip_result::{
     zip3, zip3_with, zip4, zip4_with, zip5, zip5_with, zip6, zip6_with,
     zip7, zip7_with, zip8, zip8_with, zip9, zip9_with, zip10, zip10_with
 };
-use rust_overture::pipe::{pipe2, pipe3};
-use rust_overture::result::{zip, zip_with};
+overture_corepipe::{pipe2, pipe3};
+overture_coreresult::{zip, zip_with};
 
 fn main() {
     println!("Zip Result Examples:");

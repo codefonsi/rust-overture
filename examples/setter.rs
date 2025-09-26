@@ -1,4 +1,4 @@
-use rust_overture::setter::{
+overture_coresetter::{
     over, set, mver, mver_ref, mver_ref_mut, mut_set, mut_set_ref, mset, mset_ref
 };
 use std::rc::Rc;

@@ -1,4 +1,4 @@
-use rust_overture::curry::*;
+overture_corecurry::*;
 
 fn main() {
     println!("Curry Examples:");

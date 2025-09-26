@@ -1,10 +1,10 @@
-use rust_overture::suites::{
+overture_coresuites::{
     map as seq_map, map_throwing, mut_each, zip_with, zip, filter, reduce, 
     flat_map, compact_map, partition, group_by, chunk, window, take, skip, 
     take_while, distinct, sort, reverse
 };
-use rust_overture::pipe::{pipe3, pipe3_throwing};
-use rust_overture::result::{zip_with as result_zip_with, zip as result_zip};
+overture_corepipe::{pipe3, pipe3_throwing};
+overture_coreresult::{zip_with as result_zip_with, zip as result_zip};
 
 #[derive(Debug, Clone, PartialEq)]
 struct Person {

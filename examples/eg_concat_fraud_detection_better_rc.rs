@@ -1,4 +1,4 @@
-use rust_overture::{
+overture_core{
     pipe::pipe4,
     curry::curry,
     uncurry::uncurry2,

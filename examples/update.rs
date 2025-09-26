@@ -1,4 +1,4 @@
-use rust_overture::update::*;
+overture_coreupdate::*;
 
 #[derive(Debug, Clone)]
 struct Person {

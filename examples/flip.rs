@@ -1,4 +1,4 @@
-use rust_overture::flip::{
+overture_coreflip::{
     flip, flip2, flip3, flip4, flip5, flip6,
     flip_throwing, flip2_throwing, flip3_throwing, flip4_throwing, flip5_throwing, flip6_throwing,
     flip0, flip_throw

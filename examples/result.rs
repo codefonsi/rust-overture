@@ -1,5 +1,5 @@
-use rust_overture::result::*;
-use rust_overture::pipe::*;
+overture_coreresult::*;
+overture_corepipe::*;
 
 #[derive(Debug, Clone)]
 struct User {
