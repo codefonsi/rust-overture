@@ -1,4 +1,4 @@
-overture_coreconcat::{
+use overture_core::concat::{
     concat, concat_with, concat_throwing, concat_with_throwing,
     concat_mut, concat_with_mut, concat_mut_throwing, concat_with_mut_throwing,
     concat_ref_mut, concat_with_ref_mut, concat_ref_mut_throwing, concat_with_ref_mut_throwing

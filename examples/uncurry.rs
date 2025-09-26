@@ -1,4 +1,4 @@
-overture_coreuncurry::*;
+use overture_core::uncurry::*;
 
 
 fn main() {

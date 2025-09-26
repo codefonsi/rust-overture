@@ -1,5 +1,5 @@
-overture_corewith::with;
-overture_corepipe::{pipe2, pipe3};
+use overture_core::with::with;
+use overture_core::pipe::{pipe2, pipe3};
 
 fn main() {
     println!("With Examples:");

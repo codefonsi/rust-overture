@@ -1,4 +1,4 @@
-overture_coresetter::{
+use overture_core::setter::{
     over, set, mver, mver_ref, mver_ref_mut, mut_set, mut_set_ref, mset, mset_ref
 };
 use std::rc::Rc;

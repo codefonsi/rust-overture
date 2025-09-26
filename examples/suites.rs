@@ -1,10 +1,10 @@
-overture_coresuites::{
+use overture_core::suites::{
     map as seq_map, map_throwing, mut_each, zip_with, zip, filter, reduce, 
     flat_map, compact_map, partition, group_by, chunk, window, take, skip, 
     take_while, distinct, sort, reverse
 };
-overture_corepipe::{pipe3, pipe3_throwing};
-overture_coreresult::{zip_with as result_zip_with, zip as result_zip};
+use overture_core::pipe::{pipe3, pipe3_throwing};
+use overture_core::result::{zip_with as result_zip_with, zip as result_zip};
 
 #[derive(Debug, Clone, PartialEq)]
 struct Person {

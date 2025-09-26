@@ -1,4 +1,4 @@
-overture_corecurry::*;
+use overture_core::curry::*;
 
 fn main() {
     println!("Curry Examples:");

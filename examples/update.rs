@@ -1,4 +1,4 @@
-overture_coreupdate::*;
+use overture_core::update::*;
 
 #[derive(Debug, Clone)]
 struct Person {

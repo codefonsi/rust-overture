@@ -1,9 +1,9 @@
-overture_corezip_suites::{
+use overture_core::zip_suites::{
     zip3, zip3_with, zip4, zip4_with, zip5, zip5_with, zip6, zip6_with,
     zip7, zip7_with, zip8, zip8_with, zip9, zip9_with, zip10, zip10_with
 };
-overture_corepipe::{pipe2, pipe3};
-overture_coresuites::{map as seq_map, filter};
+use overture_core::pipe::{pipe2, pipe3};
+use overture_core::suites::{map as seq_map, filter};
 
 fn main() {
     println!("Zip Suites Examples:");

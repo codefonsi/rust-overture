@@ -1,4 +1,4 @@
-overture_coreoptions::{map, map_throwing, zip, zip_with};
+use overture_core::options::{map, map_throwing, zip, zip_with};
 
 fn main() {
     println!("Options Examples:");

@@ -40,7 +40,7 @@ rust-overture = "0.3.0"
 ### Basic Function Composition
 
 ```rust
-overture_corepipe::{pipe, pipe2, pipe3};
+use overture_core::pipe::{pipe, pipe2, pipe3};
 
 // Simple pipeline
 let add_one = |x: i32| x + 1;
@@ -54,8 +54,8 @@ let result = process(5); // "12"
 ### Error Handling with Results
 
 ```rust
-overture_coreresult::{zip, zip_with};
-overture_corepipe::pipe_throwing;
+use overture_core::result::{zip, zip_with};
+use overture_core::pipe::pipe_throwing;
 
 let parse_id = |s: &str| s.parse::<u32>().map_err(|_| "Invalid ID");
 let parse_age = |s: &str| s.parse::<u32>().map_err(|_| "Invalid age");
@@ -69,7 +69,7 @@ let user_result = zip_with(create_user, parse_id("123"), parse_age("25"));
 ### Option Chaining
 
 ```rust
-overture_coreoptions::{map, zip_with};
+use overture_core::options::{map, zip_with};
 
 let get_name = |user: &User| user.name.clone();
 let get_age = |user: &User| user.age;

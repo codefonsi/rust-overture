@@ -1,4 +1,4 @@
-overture_core{
+use overture_core::{
     pipe::pipe3_throwing,
 };
 

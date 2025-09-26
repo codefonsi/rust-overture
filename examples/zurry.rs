@@ -1,10 +1,10 @@
-overture_corezurry::{
+use overture_core::zurry::{
     zurry, zurry_throwing, unzurry, unzurry_throwing, unzurry_repeatable, 
     unzurry_capture, unzurry_capture_repeatable,
     lazy, lazy_throwing, memoize, memoize_throwing, thunk, thunk_from, thunk_repeatable
 };
-overture_corepipe::pipe3;
-overture_corewith::with;
+use overture_core::pipe::pipe3;
+use overture_core::with::with;
 use std::cell::RefCell;
 
 fn main() {

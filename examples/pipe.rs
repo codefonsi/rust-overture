@@ -1,4 +1,4 @@
-overture_core{pipe::*};
+use overture_core::{pipe::*};
 
 #[derive(Debug, Clone)]
 struct User {
