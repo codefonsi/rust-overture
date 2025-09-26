@@ -1,8 +1,6 @@
 use overture_core::chain::{
-    chain, chain3, chain4, chain5, chain6,
-    chain_throwing, chain3_throwing, chain4_throwing,
-    chain_vec, chain3_vec, chain4_vec,
-    chain_vec_throwing, chain3_vec_throwing
+    chain, chain3, chain4, chain5, chain3_throwing, chain4_vec,
+    chain3_vec_throwing
 };
 
 fn main() {

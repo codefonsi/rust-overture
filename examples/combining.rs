@@ -1,9 +1,7 @@
 use overture_core::combinig::{
-    combining, combining_mut, their, their_cmp, their_eq, their_gt, their_le, their_ge,
+    combining, combining_mut, their, their_cmp, their_eq,
     their_max, their_min, their_add, their_sub, their_mul, their_div
 };
-use overture_core::pipe::{pipe2, pipe3};
-use overture_core::result::{zip, zip_with};
 
 fn main() {
     println!("Combining Examples:");
