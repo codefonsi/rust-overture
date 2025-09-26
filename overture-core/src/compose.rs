@@ -1,31 +1,29 @@
-// =======================
-// Forward composition (>>> in Swift)
-// forward_compose!(f, g, h)(x) == h(g(f(x)))
-// =======================
-// Forward composition: h(g(f(x)))
-#[macro_export]
-macro_rules! forward_compose {
-    ( $f:expr, $g:expr ) => {
-        move |x| $g($f(x))
-    };
-    ( $f:expr, $g:expr, $($rest:expr),+ ) => {
-        move |x| forward_compose!($g, $($rest),+ )($f(x))
-    };
-}
+//! Backward composition of functions.
+//!
+//! This module provides functions for composing functions in a backward manner,
+//! where the output of one function becomes the input of the next.
+//! This is commonly seen in operator form as `<<<` in functional programming languages.
 
-// backword composition
-#[macro_export]
-macro_rules! compose {
-    ( $f:expr, $g:expr ) => {
-        move |x| $f($g(x))
-    };
-    ( $f:expr, $g:expr, $($rest:expr),+ ) => {
-        move |x| $f(compose!($g, $($rest),+)(x))
-    };
-}
-
-// Function composition in Rust (normal functions)
-pub fn compose2<A, B, C, F, G>(f: F, g: G) -> impl Fn(A) -> C
+/// Backward composition of two functions.
+///
+/// # Arguments
+/// * `f` - A function that takes a value in `B` and returns a value in `C`
+/// * `g` - A function that takes a value in `A` and returns a value in `B`
+///
+/// # Returns
+/// A new function that takes a value in `A` and returns a value in `C`
+///
+/// # Example
+/// ```
+/// use overture_core::compose::compose;
+/// 
+/// let add_one = |x: i32| x + 1;
+/// let multiply_by_two = |x: i32| x * 2;
+/// let composed = compose(multiply_by_two, add_one);
+/// 
+/// assert_eq!(composed(5), 12); // (5 + 1) * 2 = 12
+/// ```
+pub fn compose<A, B, C, F, G>(f: F, g: G) -> impl Fn(A) -> C
 where
     F: Fn(B) -> C,
     G: Fn(A) -> B,
@@ -33,6 +31,15 @@ where
     move |a: A| f(g(a))
 }
 
+/// Backward composition of three functions.
+///
+/// # Arguments
+/// * `f` - A function that takes a value in `C` and returns a value in `D`
+/// * `g` - A function that takes a value in `B` and returns a value in `C`
+/// * `h` - A function that takes a value in `A` and returns a value in `B`
+///
+/// # Returns
+/// A new function that takes a value in `A` and returns a value in `D`
 pub fn compose3<A, B, C, D, F, G, H>(f: F, g: G, h: H) -> impl Fn(A) -> D
 where
     F: Fn(C) -> D,
@@ -42,133 +49,260 @@ where
     move |a: A| f(g(h(a)))
 }
 
-pub fn compose4<A, B, C, D, E, F1, F2, F3, F4>(f: F1, g: F2, h: F3, i: F4) -> impl Fn(A) -> E
+/// Backward composition of four functions.
+///
+/// # Arguments
+/// * `f` - A function that takes a value in `D` and returns a value in `E`
+/// * `g` - A function that takes a value in `C` and returns a value in `D`
+/// * `h` - A function that takes a value in `B` and returns a value in `C`
+/// * `i` - A function that takes a value in `A` and returns a value in `B`
+///
+/// # Returns
+/// A new function that takes a value in `A` and returns a value in `E`
+pub fn compose4<A, B, C, D, E, F, G, H, I>(f: F, g: G, h: H, i: I) -> impl Fn(A) -> E
 where
-    F1: Fn(D) -> E,
-    F2: Fn(C) -> D,
-    F3: Fn(B) -> C,
-    F4: Fn(A) -> B,
+    F: Fn(D) -> E,
+    G: Fn(C) -> D,
+    H: Fn(B) -> C,
+    I: Fn(A) -> B,
 {
     move |a: A| f(g(h(i(a))))
 }
 
-// ---------------------------------------------------
-// Throwing versions (Swift `throws` → Rust `Result`)
-// ---------------------------------------------------
-
-pub fn compose2_res<A, B, C, E, F, G>(f: F, g: G) -> impl Fn(A) -> Result<C, E>
+/// Backward composition of five functions.
+///
+/// # Arguments
+/// * `f` - A function that takes a value in `E` and returns a value in `F`
+/// * `g` - A function that takes a value in `D` and returns a value in `E`
+/// * `h` - A function that takes a value in `C` and returns a value in `D`
+/// * `i` - A function that takes a value in `B` and returns a value in `C`
+/// * `j` - A function that takes a value in `A` and returns a value in `B`
+///
+/// # Returns
+/// A new function that takes a value in `A` and returns a value in `F`
+pub fn compose5<A, B, C, D, E, F, FuncF, FuncG, FuncH, FuncI, FuncJ>(
+    f: FuncF,
+    g: FuncG,
+    h: FuncH,
+    i: FuncI,
+    j: FuncJ,
+) -> impl Fn(A) -> F
 where
-    F: Fn(B) -> Result<C, E>,
-    G: Fn(A) -> Result<B, E>,
+    FuncF: Fn(E) -> F,
+    FuncG: Fn(D) -> E,
+    FuncH: Fn(C) -> D,
+    FuncI: Fn(B) -> C,
+    FuncJ: Fn(A) -> B,
 {
-    move |a: A| g(a).and_then(|b| f(b))
+    move |a: A| f(g(h(i(j(a)))))
 }
 
-pub fn compose3_res<A, B, C, D, E, F1, F2, F3>(f: F1, g: F2, h: F3) -> impl Fn(A) -> Result<D, E>
+/// Backward composition of six functions.
+///
+/// # Arguments
+/// * `f` - A function that takes a value in `F` and returns a value in `G`
+/// * `g` - A function that takes a value in `E` and returns a value in `F`
+/// * `h` - A function that takes a value in `D` and returns a value in `E`
+/// * `i` - A function that takes a value in `C` and returns a value in `D`
+/// * `j` - A function that takes a value in `B` and returns a value in `C`
+/// * `k` - A function that takes a value in `A` and returns a value in `B`
+///
+/// # Returns
+/// A new function that takes a value in `A` and returns a value in `G`
+pub fn compose6<A, B, C, D, E, F, G, FuncF, FuncG, FuncH, FuncI, FuncJ, FuncK>(
+    f: FuncF,
+    g: FuncG,
+    h: FuncH,
+    i: FuncI,
+    j: FuncJ,
+    k: FuncK,
+) -> impl Fn(A) -> G
 where
-    F1: Fn(C) -> Result<D, E>,
-    F2: Fn(B) -> Result<C, E>,
-    F3: Fn(A) -> Result<B, E>,
+    FuncF: Fn(F) -> G,
+    FuncG: Fn(E) -> F,
+    FuncH: Fn(D) -> E,
+    FuncI: Fn(C) -> D,
+    FuncJ: Fn(B) -> C,
+    FuncK: Fn(A) -> B,
 {
-    move |a: A| h(a).and_then(|b| g(b)).and_then(|c| f(c))
+    move |a: A| f(g(h(i(j(k(a))))))
 }
 
-// pub fn compose4_res<A, B, C, D, E, F, G, F1, F2, F3, F4>(f: F1, g: F2, h: F3, i: F4) -> impl Fn(A) -> Result<D, E>
-// where
-//     F1: Fn(E) -> Result<F, E>,
-//     F2: Fn(D) -> Result<E, E>,
-//     F3: Fn(C) -> Result<D, E>,
-//     F4: Fn(A) -> Result<C, E>,
-// {
-//     move |a: A| f(a).and_then(|b| g(b)).and_then(|c| h(c)).and_then(|d| i(d))
-// }
+/// Backward composition of two throwing functions.
+///
+/// # Arguments
+/// * `f` - A function that takes a value in `B` and returns a `Result<C, E>`
+/// * `g` - A function that takes a value in `A` and returns a `Result<B, E>`
+///
+/// # Returns
+/// A new function that takes a value in `A` and returns a `Result<C, E>`
+///
+/// # Example
+/// ```
+/// use overture_core::compose::compose_throwing;
+/// 
+/// let parse_int = |s: &str| s.parse::<i32>().map_err(|_| "Parse error");
+/// let add_one = |x: i32| Ok(x + 1);
+/// let composed = compose_throwing(add_one, parse_int);
+/// 
+/// assert_eq!(composed("5"), Ok(6));
+/// assert_eq!(composed("invalid"), Err("Parse error"));
+/// ```
+pub fn compose_throwing<A, B, C, E, F, G>(f: F, g: G) -> impl Fn(A) -> Result<C, E>
+where
+    F: Fn(B) -> Result<C, E> + Clone,
+    G: Fn(A) -> Result<B, E> + Clone,
+{
+    move |a: A| g.clone()(a).and_then(f.clone())
+}
 
-// ---------------------------------------------------
-// Tests
-// ---------------------------------------------------
+/// Backward composition of three throwing functions.
+///
+/// # Arguments
+/// * `f` - A function that takes a value in `C` and returns a `Result<D, E>`
+/// * `g` - A function that takes a value in `B` and returns a `Result<C, E>`
+/// * `h` - A function that takes a value in `A` and returns a `Result<B, E>`
+///
+/// # Returns
+/// A new function that takes a value in `A` and returns a `Result<D, E>`
+pub fn compose3_throwing<A, B, C, D, E, F, G, H>(
+    f: F,
+    g: G,
+    h: H,
+) -> impl Fn(A) -> Result<D, E>
+where
+    F: Fn(C) -> Result<D, E> + Clone,
+    G: Fn(B) -> Result<C, E> + Clone,
+    H: Fn(A) -> Result<B, E> + Clone,
+{
+    move |a: A| h.clone()(a).and_then(g.clone()).and_then(f.clone())
+}
+
+/// Backward composition of four throwing functions.
+///
+/// # Arguments
+/// * `f` - A function that takes a value in `D` and returns a `Result<E, E>`
+/// * `g` - A function that takes a value in `C` and returns a `Result<D, E>`
+/// * `h` - A function that takes a value in `B` and returns a `Result<C, E>`
+/// * `i` - A function that takes a value in `A` and returns a `Result<B, E>`
+///
+/// # Returns
+/// A new function that takes a value in `A` and returns a `Result<E, E>`
+pub fn compose4_throwing<A, B, C, D, E, F, G, H, I>(
+    f: F,
+    g: G,
+    h: H,
+    i: I,
+) -> impl Fn(A) -> Result<E, E>
+where
+    F: Fn(D) -> Result<E, E> + Clone,
+    G: Fn(C) -> Result<D, E> + Clone,
+    H: Fn(B) -> Result<C, E> + Clone,
+    I: Fn(A) -> Result<B, E> + Clone,
+{
+    move |a: A| i.clone()(a).and_then(h.clone()).and_then(g.clone()).and_then(f.clone())
+}
+
+/// Backward composition of five throwing functions.
+///
+/// # Arguments
+/// * `f` - A function that takes a value in `E` and returns a `Result<F, E>`
+/// * `g` - A function that takes a value in `D` and returns a `Result<E, E>`
+/// * `h` - A function that takes a value in `C` and returns a `Result<D, E>`
+/// * `i` - A function that takes a value in `B` and returns a `Result<C, E>`
+/// * `j` - A function that takes a value in `A` and returns a `Result<B, E>`
+///
+/// # Returns
+/// A new function that takes a value in `A` and returns a `Result<F, E>`
+pub fn compose5_throwing<A, B, C, D, E, F, FuncF, FuncG, FuncH, FuncI, FuncJ>(
+    f: FuncF,
+    g: FuncG,
+    h: FuncH,
+    i: FuncI,
+    j: FuncJ,
+) -> impl Fn(A) -> Result<F, E>
+where
+    FuncF: Fn(E) -> Result<F, E> + Clone,
+    FuncG: Fn(D) -> Result<E, E> + Clone,
+    FuncH: Fn(C) -> Result<D, E> + Clone,
+    FuncI: Fn(B) -> Result<C, E> + Clone,
+    FuncJ: Fn(A) -> Result<B, E> + Clone,
+{
+    move |a: A| j.clone()(a).and_then(i.clone()).and_then(h.clone()).and_then(g.clone()).and_then(f.clone())
+}
+
+/// Backward composition of six throwing functions.
+///
+/// # Arguments
+/// * `f` - A function that takes a value in `F` and returns a `Result<G, E>`
+/// * `g` - A function that takes a value in `E` and returns a `Result<F, E>`
+/// * `h` - A function that takes a value in `D` and returns a `Result<E, E>`
+/// * `i` - A function that takes a value in `C` and returns a `Result<D, E>`
+/// * `j` - A function that takes a value in `B` and returns a `Result<C, E>`
+/// * `k` - A function that takes a value in `A` and returns a `Result<B, E>`
+///
+/// # Returns
+/// A new function that takes a value in `A` and returns a `Result<G, E>`
+pub fn compose6_throwing<A, B, C, D, E, F, G, FuncF, FuncG, FuncH, FuncI, FuncJ, FuncK>(
+    f: FuncF,
+    g: FuncG,
+    h: FuncH,
+    i: FuncI,
+    j: FuncJ,
+    k: FuncK,
+) -> impl Fn(A) -> Result<G, E>
+where
+    FuncF: Fn(F) -> Result<G, E> + Clone,
+    FuncG: Fn(E) -> Result<F, E> + Clone,
+    FuncH: Fn(D) -> Result<E, E> + Clone,
+    FuncI: Fn(C) -> Result<D, E> + Clone,
+    FuncJ: Fn(B) -> Result<C, E> + Clone,
+    FuncK: Fn(A) -> Result<B, E> + Clone,
+{
+    move |a: A| k.clone()(a).and_then(j.clone()).and_then(i.clone()).and_then(h.clone()).and_then(g.clone()).and_then(f.clone())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn test_compose2() {
-        let f = |x: i32| x + 1;
-        let g = |x: i32| x * 2;
-        let h = compose2(f, g);
-        assert_eq!(h(3), 7); // f(g(3)) = (3*2)+1
+    fn test_compose_basic() {
+        let add_one = |x: i32| x + 1;
+        let multiply_by_two = |x: i32| x * 2;
+        let composed = compose(multiply_by_two, add_one);
+        
+        assert_eq!(composed(5), 12); // (5 + 1) * 2 = 12
     }
 
     #[test]
     fn test_compose3() {
-        let f = |x: i32| x + 1;
-        let g = |x: i32| x * 2;
-        let h = |x: i32| x - 5;
-        let c = compose3(f, g, h);
-        assert_eq!(c(10), 11); // f(g(h(10))) = (10-5)*2 + 1 = 11
+        let add_one = |x: i32| x + 1;
+        let multiply_by_two = |x: i32| x * 2;
+        let subtract_three = |x: i32| x - 3;
+        let composed = compose3(subtract_three, multiply_by_two, add_one);
+        
+        assert_eq!(composed(5), 9); // ((5 + 1) * 2) - 3 = 9
     }
 
     #[test]
-    fn test_compose_res() {
-        let f = |x: i32| if x > 0 { Ok(x + 1) } else { Err("f failed") };
-        let g = |x: i32| {
-            if x % 2 == 0 {
-                Ok(x / 2)
-            } else {
-                Err("g failed")
-            }
-        };
-
-        let h = compose2_res(f, g);
-        assert_eq!(h(4), Ok(3)); // g(4) = 2, f(2) = 3
-        assert_eq!(h(3), Err("g failed"));
+    fn test_compose_throwing() {
+        let parse_int = |s: &str| s.parse::<i32>().map_err(|_| "Parse error");
+        let add_one = |x: i32| Ok(x + 1);
+        let composed = compose_throwing(add_one, parse_int);
+        
+        assert_eq!(composed("5"), Ok(6));
+        assert_eq!(composed("invalid"), Err("Parse error"));
     }
 
     #[test]
-    fn test_macro_compose() {
-        let f = |x: i32| x + 1;
-        let g = |x: i32| x * 2;
-        let h = |x: i32| x - 3;
-
-        let comp = compose!(f, g, h);
-        assert_eq!(comp(5), 5); // h(5)=2, g(2)=4, f(4)=5
-    }
-
-    #[test]
-    #[test]
-    fn test_forward_compose_two() {
-        let f = |x: i32| x + 1;
-        let g = |x: i32| x * 2;
-
-        let comp = forward_compose!(f, g);
-        assert_eq!(comp(5), 12); // f(5)=6 → g(6)=12
-    }
-
-    #[test]
-    fn test_forward_compose_three() {
-        let f = |x: i32| x + 1;
-        let g = |x: i32| x * 2;
-        let h = |x: i32| x - 3;
-
-        let comp = forward_compose!(f, g, h);
-        let result = comp(5);
-        assert_eq!(result, 9); // f(5)=6 → g(6)=12 → h(12)=9
-    }
-
-    #[test]
-    fn test_compose_identity() {
-        let id = |x: i32| x;
-        let f = |x: i32| x + 42;
-
-        let comp = compose!(f, id);
-        assert_eq!(comp(0), 42);
-    }
-
-    #[test]
-    fn test_forward_compose_identity() {
-        let id = |x: i32| x;
-        let f = |x: i32| x + 42;
-
-        let comp = forward_compose!(id, f);
-        assert_eq!(comp(0), 42);
+    fn test_compose3_throwing() {
+        let parse_int = |s: &str| s.parse::<i32>().map_err(|_| "Parse error");
+        let add_one = |x: i32| Ok(x + 1);
+        let multiply_by_two = |x: i32| Ok(x * 2);
+        let composed = compose3_throwing(multiply_by_two, add_one, parse_int);
+        
+        assert_eq!(composed("5"), Ok(12)); // ((5 + 1) * 2) = 12
+        assert_eq!(composed("invalid"), Err("Parse error"));
     }
 }
