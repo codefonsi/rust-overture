@@ -1,6 +1,7 @@
 pub mod chain;
 pub mod combinig;
 pub mod compose;
+pub mod compose_rs;
 pub mod concat;
 pub mod curry;
 pub mod uncurry;
