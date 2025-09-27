@@ -1,1 +1,1 @@
-pub mod keypath;
+pub mod keypaths;
