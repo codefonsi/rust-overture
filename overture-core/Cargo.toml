@@ -1,28 +1,15 @@
 [package]
-name = "rust-overture"
-version = "0.6.0"
+name = "overture-core"
+version = "0.2.0"
 edition = "2024"
 authors = ["Codefonsi <info@codefonsi.com>"]
 license = "MPL-2.0"
 description = "A rust overture library."
 repository = "https://github.com/codefonsi/rust-overture"
 homepage = "https://github.com/codefonsi/rust-overture"
-documentation = "https://docs.rs/rust-overture"
+documentation = "https://docs.rs/overture-core"
 keywords = ["rustoverture", "operators", "type-safe","functional-rust"]
 readme = "./README.md"
 include = ["src/**/*", "Cargo.toml", "../../README.md", "LICENSE"]
 
-[workspace]
-resolver = "3" # or "3"
-members = ["overture-core"]
-
-[patch.crates-io]
-overture-core = { path = "overture-core" }
-
 [dependencies]
-key-paths-core = "0.9.0"
-overture-core = { path = "overture-core", version = "0.2.0" }
-
-
-[features]
-default = []
