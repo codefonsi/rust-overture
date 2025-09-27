@@ -1,5 +1,5 @@
 use key_paths_derive::Keypaths;
-use overture_core::{compose::compose, pipe::pipe};
+use overture_core::{compose::compose, pipe::pipe, with::with};
 use rust_overture::keypaths::prop;
 use std::rc::Rc;
 
@@ -11,14 +11,14 @@ struct User {
 
 #[derive(Debug, Keypaths, Clone)]
 struct Address {
-    location_name: String,
+    name: String,
 }
 
 fn main() {
     let mut user = User {
         name: String::default(),
         address: Address {
-            location_name: String::from("value"),
+            name: String::from("value"),
         },
     };
     // let f = ...;
@@ -26,8 +26,13 @@ fn main() {
     // <> = backword compose
 
     // let g = ...;
-    let g = prop(Address::location_name_w())(Box::new(|_| String::from("new value")));
+    let g = prop(Address::name_w())(Box::new(|_| String::from("new value")));
     // let g_setter_fn = g(Box::new(|address: String| String::from(value)));
-    // <> = backword compose
-    let new_fn = pipe(user, g);
+    // forward application = |> 
+    /*
+    user
+    |> (prop(\.name)) { $0.uppercased() }
+    <> (prop(\.location.name)) { _ in "Los Angeles" }
+
+    */ 
 }
