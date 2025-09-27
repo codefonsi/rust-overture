@@ -5,8 +5,7 @@
 //! when functions are used multiple times in composed pipelines.
 
 use overture_core::compose_rc::{
-    compose_rs, compose3_rs, compose4_rs, compose5_rs, compose6_rs,
-    compose3_rs_throwing,
+    compose_rs, compose3_rs, compose3_rs_throwing, compose4_rs, compose5_rs, compose6_rs,
 };
 
 use std::time::Instant;
@@ -37,14 +36,28 @@ struct ProcessedUser {
 }
 
 // --- Non-throwing functions ---
-fn add_one(x: i32) -> i32 { x + 1 }
-fn multiply_by_two(x: i32) -> i32 { x * 2 }
-fn square(x: i32) -> i32 { x * x }
-fn to_string(x: i32) -> String { format!("{}", x) }
-fn add_prefix(s: String) -> String { format!("Result: {}", s) }
+fn add_one(x: i32) -> i32 {
+    x + 1
+}
+fn multiply_by_two(x: i32) -> i32 {
+    x * 2
+}
+fn square(x: i32) -> i32 {
+    x * x
+}
+fn to_string(x: i32) -> String {
+    format!("{}", x)
+}
+fn add_prefix(s: String) -> String {
+    format!("Result: {}", s)
+}
 
-fn to_uppercase(s: String) -> String { s.to_uppercase() }
-fn prefix_user(s: String) -> String { format!("USER: {}", s) }
+fn to_uppercase(s: String) -> String {
+    s.to_uppercase()
+}
+fn prefix_user(s: String) -> String {
+    format!("USER: {}", s)
+}
 
 // --- Throwing functions for user data processing ---
 fn parse_user(raw_data: String) -> Result<User, String> {
@@ -117,17 +130,35 @@ fn categorize_age(age: u32) -> Result<String, String> {
 }
 
 // --- Mathematical functions ---
-fn add_pi(x: f64) -> f64 { x + std::f64::consts::PI }
-fn sin_func(x: f64) -> f64 { x.sin() }
-fn cos_func(x: f64) -> f64 { x.cos() }
-fn abs_func(x: f64) -> f64 { x.abs() }
-fn sqrt_func(x: f64) -> f64 { x.sqrt() }
-fn log_func(x: f64) -> f64 { x.ln() }
+fn add_pi(x: f64) -> f64 {
+    x + std::f64::consts::PI
+}
+fn sin_func(x: f64) -> f64 {
+    x.sin()
+}
+fn cos_func(x: f64) -> f64 {
+    x.cos()
+}
+fn abs_func(x: f64) -> f64 {
+    x.abs()
+}
+fn sqrt_func(x: f64) -> f64 {
+    x.sqrt()
+}
+fn log_func(x: f64) -> f64 {
+    x.ln()
+}
 
 // --- String processing functions ---
-fn trim_string(s: String) -> String { s.trim().to_string() }
-fn add_exclamation(s: String) -> String { format!("{}!", s) }
-fn wrap_quotes(s: String) -> String { format!("\"{}\"", s) }
+fn trim_string(s: String) -> String {
+    s.trim().to_string()
+}
+fn add_exclamation(s: String) -> String {
+    format!("{}!", s)
+}
+fn wrap_quotes(s: String) -> String {
+    format!("\"{}\"", s)
+}
 
 fn main() {
     println!("Function Composition with Shallow Cloning (Rc) Examples");
@@ -136,15 +167,24 @@ fn main() {
     // === Basic Function Composition with Rc ===
     println!("\n=== Basic Function Composition with Rc ===");
     let composed_math = compose3_rs(square, multiply_by_two, add_one);
-    println!("compose3_rs(square, multiply_by_two, add_one)(5) = {}", composed_math(5));
+    println!(
+        "compose3_rs(square, multiply_by_two, add_one)(5) = {}",
+        composed_math(5)
+    );
 
     let composed_string = compose_rs(prefix_user, to_uppercase);
-    println!("String processing: '{}'", composed_string("john doe".to_string()));
+    println!(
+        "String processing: '{}'",
+        composed_string("john doe".to_string())
+    );
 
     // === Advanced Mathematical Composition ===
     println!("\n=== Advanced Mathematical Composition ===");
     let composed_trig = compose3_rs(sin_func, cos_func, add_pi);
-    println!("Trigonometric composition: sin(cos(π + 0)) = {}", composed_trig(0.0));
+    println!(
+        "Trigonometric composition: sin(cos(π + 0)) = {}",
+        composed_trig(0.0)
+    );
 
     let complex_math = compose4_rs(abs_func, sin_func, cos_func, add_pi);
     println!("Complex math: |sin(cos(π + 1))| = {}", complex_math(1.0));
@@ -176,17 +216,19 @@ fn main() {
     ];
 
     // Compose the entire pipeline using compose3_rs_throwing
-    let user_processing_pipeline = compose3_rs_throwing(
-        finalize_profile,
-        calculate_risk,
-        parse_user,
-    );
+    let user_processing_pipeline =
+        compose3_rs_throwing(finalize_profile, calculate_risk, parse_user);
 
     for user_data in raw_users {
         match user_processing_pipeline(user_data) {
             Ok(processed) => {
-                println!("Processed User: ID={}, Name={}, Risk={}, Prefs={}",
-                    processed.id, processed.display_name, processed.risk_level, processed.preference_count);
+                println!(
+                    "Processed User: ID={}, Name={}, Risk={}, Prefs={}",
+                    processed.id,
+                    processed.display_name,
+                    processed.risk_level,
+                    processed.preference_count
+                );
             }
             Err(e) => println!("Error processing user: {}", e),
         }
@@ -219,7 +261,11 @@ fn main() {
 
     for x in 1..=3 {
         let val = x as f64;
-        println!("Five-function composition f({}) = {}", val, five_func_compose(val));
+        println!(
+            "Five-function composition f({}) = {}",
+            val,
+            five_func_compose(val)
+        );
     }
 
     // === Performance Comparison: Regular vs Rc-based Composition ===
@@ -252,15 +298,23 @@ fn main() {
     }
     let composed_time = start.elapsed();
 
-    println!("Regular function calls: {:?} (result: {:.6})", regular_time, result1);
-    println!("Rc-based composed function: {:?} (result: {:.6})", composed_time, result2);
-    
-    let performance_diff = ((composed_time.as_nanos() as f64 - regular_time.as_nanos() as f64) / regular_time.as_nanos() as f64) * 100.0;
+    println!(
+        "Regular function calls: {:?} (result: {:.6})",
+        regular_time, result1
+    );
+    println!(
+        "Rc-based composed function: {:?} (result: {:.6})",
+        composed_time, result2
+    );
+
+    let performance_diff = ((composed_time.as_nanos() as f64 - regular_time.as_nanos() as f64)
+        / regular_time.as_nanos() as f64)
+        * 100.0;
     println!("Performance difference: {:.2}%", performance_diff);
 
     // === Memory Efficiency Demonstration ===
     println!("\n=== Memory Efficiency Demonstration ===");
-    
+
     // Create an expensive function that we'll reuse
     let expensive_calculation = |x: i32| {
         // Simulate expensive computation
@@ -283,10 +337,16 @@ fn main() {
 
     // === Throwing Function Performance Test ===
     println!("\n=== Throwing Function Performance Test ===");
-    
+
     let parse_and_validate = compose3_rs_throwing(
         |x: u32| Ok(format!("Valid: {}", x)),
-        |x: u32| if x > 0 { Ok(x) } else { Err("Must be positive") },
+        |x: u32| {
+            if x > 0 {
+                Ok(x)
+            } else {
+                Err("Must be positive")
+            }
+        },
         |s: &str| s.parse::<u32>().map_err(|_| "Parse error"),
     );
 
@@ -313,7 +373,7 @@ fn main() {
 
     // === Advanced Use Case: Function Factory ===
     println!("\n=== Advanced Use Case: Function Factory ===");
-    
+
     // Create a factory that produces composed functions
     let create_math_pipeline = |multiplier: f64| {
         compose3_rs(

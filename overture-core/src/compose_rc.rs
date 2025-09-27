@@ -154,7 +154,14 @@ where
 ///
 /// # Returns
 /// A new function that takes a value in `A` and returns a value in `R`
-pub fn compose6_rs<A, B, C, D, E, F_IN, R, F, G, H, I, J, K>(f: F, g: G, h: H, i: I, j: J, k: K) -> impl Fn(A) -> R
+pub fn compose6_rs<A, B, C, D, E, F_IN, R, F, G, H, I, J, K>(
+    f: F,
+    g: G,
+    h: H,
+    i: I,
+    j: J,
+    k: K,
+) -> impl Fn(A) -> R
 where
     F: Fn(F_IN) -> R + 'static,
     G: Fn(E) -> F_IN + 'static,
@@ -253,7 +260,12 @@ where
 ///
 /// # Returns
 /// A new function that takes a value in `A` and returns a `Result<E, Err>`
-pub fn compose4_rs_throwing<A, B, C, D, E, Err, F, G, H, I>(f: F, g: G, h: H, i: I) -> impl Fn(A) -> Result<E, Err>
+pub fn compose4_rs_throwing<A, B, C, D, E, Err, F, G, H, I>(
+    f: F,
+    g: G,
+    h: H,
+    i: I,
+) -> impl Fn(A) -> Result<E, Err>
 where
     F: Fn(D) -> Result<E, Err> + 'static,
     G: Fn(C) -> Result<D, Err> + 'static,
@@ -269,7 +281,10 @@ where
         let g_ref = Rc::clone(&g_rc);
         let h_ref = Rc::clone(&h_rc);
         let i_ref = Rc::clone(&i_rc);
-        i_ref(a).and_then(|b| h_ref(b)).and_then(|c| g_ref(c)).and_then(|d| f_ref(d))
+        i_ref(a)
+            .and_then(|b| h_ref(b))
+            .and_then(|c| g_ref(c))
+            .and_then(|d| f_ref(d))
     }
 }
 
@@ -284,7 +299,13 @@ where
 ///
 /// # Returns
 /// A new function that takes a value in `A` and returns a `Result<F, Err>`
-pub fn compose5_rs_throwing<A, B, C, D, E, F, Err, G, H, I, J>(f: F, g: G, h: H, i: I, j: J) -> impl Fn(A) -> Result<F, Err>
+pub fn compose5_rs_throwing<A, B, C, D, E, F, Err, G, H, I, J>(
+    f: F,
+    g: G,
+    h: H,
+    i: I,
+    j: J,
+) -> impl Fn(A) -> Result<F, Err>
 where
     F: Fn(E) -> Result<F, Err> + 'static,
     G: Fn(D) -> Result<E, Err> + 'static,
@@ -303,7 +324,11 @@ where
         let h_ref = Rc::clone(&h_rc);
         let i_ref = Rc::clone(&i_rc);
         let j_ref = Rc::clone(&j_rc);
-        j_ref(a).and_then(|b| i_ref(b)).and_then(|c| h_ref(c)).and_then(|d| g_ref(d)).and_then(|e| f_ref(e))
+        j_ref(a)
+            .and_then(|b| i_ref(b))
+            .and_then(|c| h_ref(c))
+            .and_then(|d| g_ref(d))
+            .and_then(|e| f_ref(e))
     }
 }
 
@@ -319,7 +344,14 @@ where
 ///
 /// # Returns
 /// A new function that takes a value in `A` and returns a `Result<R, Err>`
-pub fn compose6_rs_throwing<A, B, C, D, E, F_IN, R, Err, F, G, H, I, J, K>(f: F, g: G, h: H, i: I, j: J, k: K) -> impl Fn(A) -> Result<R, Err>
+pub fn compose6_rs_throwing<A, B, C, D, E, F_IN, R, Err, F, G, H, I, J, K>(
+    f: F,
+    g: G,
+    h: H,
+    i: I,
+    j: J,
+    k: K,
+) -> impl Fn(A) -> Result<R, Err>
 where
     F: Fn(F_IN) -> Result<R, Err> + 'static,
     G: Fn(E) -> Result<F_IN, Err> + 'static,
@@ -341,7 +373,12 @@ where
         let i_ref = Rc::clone(&i_rc);
         let j_ref = Rc::clone(&j_rc);
         let k_ref = Rc::clone(&k_rc);
-        k_ref(a).and_then(|b| j_ref(b)).and_then(|c| i_ref(c)).and_then(|d| h_ref(d)).and_then(|e| g_ref(e)).and_then(|f_val| f_ref(f_val))
+        k_ref(a)
+            .and_then(|b| j_ref(b))
+            .and_then(|c| i_ref(c))
+            .and_then(|d| h_ref(d))
+            .and_then(|e| g_ref(e))
+            .and_then(|f_val| f_ref(f_val))
     }
 }
 
@@ -381,7 +418,7 @@ mod tests {
         let parse_int = |s: &str| s.parse::<i32>().map_err(|_| "Parse error");
         let add_one = |x: i32| Ok(x + 1);
         let composed = compose_rs_throwing(add_one, parse_int);
-        
+
         assert_eq!(composed("5"), Ok(6));
         assert_eq!(composed("invalid"), Err("Parse error"));
     }
@@ -392,7 +429,7 @@ mod tests {
         let add_one = |x: i32| Ok(x + 1);
         let multiply_by_two = |x: i32| Ok(x * 2);
         let composed = compose3_rs_throwing(multiply_by_two, add_one, parse_int);
-        
+
         assert_eq!(composed("5"), Ok(12));
         assert_eq!(composed("invalid"), Err("Parse error"));
     }
@@ -403,11 +440,11 @@ mod tests {
             // Simulate expensive computation
             x * x * x
         };
-        
+
         let add_one = |x: i32| x + 1;
         let composed1 = compose_rs(expensive_function, add_one);
         let composed2 = compose_rs(expensive_function, add_one);
-        
+
         // Both should work independently
         assert_eq!(composed1(2), 27); // (2 + 1)^3 = 27
         assert_eq!(composed2(3), 64); // (3 + 1)^3 = 64
@@ -422,11 +459,11 @@ mod tests {
                 Err("Must be positive")
             }
         };
-        
+
         let parse_int = |s: &str| s.parse::<i32>().map_err(|_| "Parse error");
         let composed1 = compose_rs_throwing(validate_positive, parse_int);
         let composed2 = compose_rs_throwing(validate_positive, parse_int);
-        
+
         // Both should work independently
         assert_eq!(composed1("5"), Ok(5));
         assert_eq!(composed2("-3"), Err("Must be positive"));

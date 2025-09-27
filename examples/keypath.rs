@@ -1,7 +1,6 @@
 use overture_core::keypath::{
-    KeyPath, WritableKeyPath, ReferenceWritableKeyPath,
-    get, prop, over, set, mprop, mver, mprop_ref, mver_object, mprop_ref_mut, mver_ref,
-    mut_set, mut_set_ref, mset, mset_ref
+    KeyPath, ReferenceWritableKeyPath, WritableKeyPath, get, mprop, mprop_ref, mprop_ref_mut, mset,
+    mset_ref, mut_set, mut_set_ref, mver, mver_object, mver_ref, over, prop, set,
 };
 
 #[derive(Debug, Clone, PartialEq)]
@@ -51,7 +50,10 @@ fn main() {
     let update_age = prop(age_keypath);
     let double_age = update_age(Box::new(|age| age * 2));
     let updated_person = double_age(person.clone());
-    println!("prop(age_keypath)(|age| age * 2)(person) = {:?}", updated_person);
+    println!(
+        "prop(age_keypath)(|age| age * 2)(person) = {:?}",
+        updated_person
+    );
     assert_eq!(updated_person.age, 60);
     println!();
 
@@ -63,7 +65,10 @@ fn main() {
     );
     let increment_age = over(age_keypath, |age| age + 1);
     let updated_person = increment_age(person.clone());
-    println!("over(age_keypath, |age| age + 1)(person) = {:?}", updated_person);
+    println!(
+        "over(age_keypath, |age| age + 1)(person) = {:?}",
+        updated_person
+    );
     assert_eq!(updated_person.age, 31);
     println!();
 
@@ -89,7 +94,10 @@ fn main() {
     let mut double_age = mut_update_age(Box::new(|age| *age *= 2));
     let mut person_mut = person.clone();
     double_age(&mut person_mut);
-    println!("mprop(age_keypath)(|age| *age *= 2)(&mut person) = {:?}", person_mut);
+    println!(
+        "mprop(age_keypath)(|age| *age *= 2)(&mut person) = {:?}",
+        person_mut
+    );
     assert_eq!(person_mut.age, 60);
     println!();
 
@@ -102,7 +110,10 @@ fn main() {
     let mut increment_age = mver(age_keypath, |age| *age += 1);
     let mut person_mut = person.clone();
     increment_age(&mut person_mut);
-    println!("mver(age_keypath, |age| *age += 1)(&mut person) = {:?}", person_mut);
+    println!(
+        "mver(age_keypath, |age| *age += 1)(&mut person) = {:?}",
+        person_mut
+    );
     assert_eq!(person_mut.age, 31);
     println!();
 
@@ -127,7 +138,10 @@ fn main() {
     );
     let uppercase_name = over(name_keypath, |name| name.to_uppercase());
     let updated_person = uppercase_name(person.clone());
-    println!("over(name_keypath, |name| name.to_uppercase())(person) = {:?}", updated_person);
+    println!(
+        "over(name_keypath, |name| name.to_uppercase())(person) = {:?}",
+        updated_person
+    );
     assert_eq!(updated_person.name, "ALICE");
     println!();
 
@@ -149,7 +163,10 @@ fn main() {
     );
     let set_city_ny = set(city_keypath, "New York".to_string());
     let updated_company = set_city_ny(company.clone());
-    println!("set(city_keypath, \"New York\")(company) = {:?}", updated_company);
+    println!(
+        "set(city_keypath, \"New York\")(company) = {:?}",
+        updated_company
+    );
     assert_eq!(updated_company.address.city, "New York");
     println!();
 
@@ -280,7 +297,7 @@ impl TitleCase for String {
     fn to_title_case(&self) -> String {
         let mut result = String::new();
         let mut capitalize_next = true;
-        
+
         for c in self.chars() {
             if c.is_whitespace() {
                 capitalize_next = true;
@@ -292,7 +309,7 @@ impl TitleCase for String {
                 result.push(c.to_lowercase().next().unwrap());
             }
         }
-        
+
         result
     }
 }

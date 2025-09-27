@@ -57,10 +57,7 @@ where
 
 /// Basic zip operation for two sequences.
 pub fn zip<T, U>(sequence1: Vec<T>, sequence2: Vec<U>) -> Vec<(T, U)> {
-    sequence1
-        .into_iter()
-        .zip(sequence2.into_iter())
-        .collect()
+    sequence1.into_iter().zip(sequence2.into_iter()).collect()
 }
 
 /// Filter operation for sequences.
@@ -105,12 +102,7 @@ pub fn flat_map<T, U, F>(transform: F) -> impl Fn(Vec<T>) -> Vec<U>
 where
     F: Fn(T) -> Vec<U> + 'static,
 {
-    move |sequence: Vec<T>| {
-        sequence
-            .into_iter()
-            .flat_map(&transform)
-            .collect()
-    }
+    move |sequence: Vec<T>| sequence.into_iter().flat_map(&transform).collect()
 }
 
 /// Flat map operation for sequences with error handling.
@@ -141,7 +133,9 @@ where
 }
 
 /// Compact map operation with error handling.
-pub fn compact_map_throwing<T, U, E, F>(transform: F) -> impl Fn(Vec<Option<T>>) -> Result<Vec<U>, E>
+pub fn compact_map_throwing<T, U, E, F>(
+    transform: F,
+) -> impl Fn(Vec<Option<T>>) -> Result<Vec<U>, E>
 where
     F: Fn(T) -> Result<U, E> + 'static,
 {
@@ -164,7 +158,7 @@ where
     move |sequence: Vec<T>| {
         let mut true_vec = Vec::new();
         let mut false_vec = Vec::new();
-        
+
         for item in sequence {
             if predicate(&item) {
                 true_vec.push(item);
@@ -172,7 +166,7 @@ where
                 false_vec.push(item);
             }
         }
-        
+
         (true_vec, false_vec)
     }
 }
@@ -199,12 +193,7 @@ pub fn chunk<T>(size: usize) -> impl Fn(Vec<T>) -> Vec<Vec<T>>
 where
     T: Clone + 'static,
 {
-    move |sequence: Vec<T>| {
-        sequence
-            .chunks(size)
-            .map(|chunk| chunk.to_vec())
-            .collect()
-    }
+    move |sequence: Vec<T>| sequence.chunks(size).map(|chunk| chunk.to_vec()).collect()
 }
 
 /// Window operation for sequences.
@@ -216,7 +205,7 @@ where
         if sequence.len() < size {
             return Vec::new();
         }
-        
+
         let mut windows = Vec::new();
         for i in 0..=sequence.len() - size {
             windows.push(sequence[i..i + size].to_vec());
@@ -230,12 +219,7 @@ pub fn take<T>(count: usize) -> impl Fn(Vec<T>) -> Vec<T>
 where
     T: Clone + 'static,
 {
-    move |sequence: Vec<T>| {
-        sequence
-            .into_iter()
-            .take(count)
-            .collect()
-    }
+    move |sequence: Vec<T>| sequence.into_iter().take(count).collect()
 }
 
 /// Skip operation for sequences.
@@ -243,12 +227,7 @@ pub fn skip<T>(count: usize) -> impl Fn(Vec<T>) -> Vec<T>
 where
     T: Clone + 'static,
 {
-    move |sequence: Vec<T>| {
-        sequence
-            .into_iter()
-            .skip(count)
-            .collect()
-    }
+    move |sequence: Vec<T>| sequence.into_iter().skip(count).collect()
 }
 
 /// Take while operation for sequences.
@@ -256,12 +235,7 @@ pub fn take_while<T, F>(predicate: F) -> impl Fn(Vec<T>) -> Vec<T>
 where
     F: Fn(&T) -> bool + 'static,
 {
-    move |sequence: Vec<T>| {
-        sequence
-            .into_iter()
-            .take_while(&predicate)
-            .collect()
-    }
+    move |sequence: Vec<T>| sequence.into_iter().take_while(&predicate).collect()
 }
 
 /// Skip while operation for sequences.
@@ -269,12 +243,7 @@ pub fn skip_while<T, F>(predicate: F) -> impl Fn(Vec<T>) -> Vec<T>
 where
     F: Fn(&T) -> bool + 'static,
 {
-    move |sequence: Vec<T>| {
-        sequence
-            .into_iter()
-            .skip_while(&predicate)
-            .collect()
-    }
+    move |sequence: Vec<T>| sequence.into_iter().skip_while(&predicate).collect()
 }
 
 /// Distinct operation for sequences.

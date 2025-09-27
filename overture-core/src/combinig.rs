@@ -7,7 +7,7 @@
 /// # Examples
 /// ```
 /// use overture_core::combinig::combining;
-/// 
+///
 /// struct User { age: u32 }
 /// let user = User { age: 30 };
 /// let f = combining(|u: &User| u.age, |a, b| a + b);
@@ -32,7 +32,7 @@ where
 /// # Examples
 /// ```
 /// use overture_core::combinig::combining_mut;
-/// 
+///
 /// struct User { age: u32 }
 /// let user = User { age: 5 };
 /// let mut value = 10;
@@ -59,7 +59,7 @@ where
 /// # Examples
 /// ```
 /// use overture_core::combinig::their;
-/// 
+///
 /// struct User { age: u32 }
 /// let alice = User { age: 20 };
 /// let bob = User { age: 25 };
@@ -86,7 +86,7 @@ where
 /// # Examples
 /// ```
 /// use overture_core::combinig::their_cmp;
-/// 
+///
 /// struct User { age: u32 }
 /// let alice = User { age: 20 };
 /// let bob = User { age: 25 };
@@ -108,7 +108,7 @@ where
 /// # Examples
 /// ```
 /// use overture_core::combinig::their_eq;
-/// 
+///
 /// struct User { name: String }
 /// let alice = User { name: "Alice".to_string() };
 /// let bob = User { name: "Bob".to_string() };
@@ -129,7 +129,7 @@ where
 /// # Examples
 /// ```
 /// use overture_core::combinig::their_gt;
-/// 
+///
 /// struct User { age: u32 }
 /// let alice = User { age: 20 };
 /// let bob = User { age: 25 };
@@ -150,7 +150,7 @@ where
 /// # Examples
 /// ```
 /// use overture_core::combinig::their_le;
-/// 
+///
 /// struct User { age: u32 }
 /// let alice = User { age: 20 };
 /// let bob = User { age: 25 };
@@ -171,7 +171,7 @@ where
 /// # Examples
 /// ```
 /// use overture_core::combinig::their_ge;
-/// 
+///
 /// struct User { age: u32 }
 /// let alice = User { age: 20 };
 /// let bob = User { age: 25 };
@@ -192,7 +192,7 @@ where
 /// # Examples
 /// ```
 /// use overture_core::combinig::their_max;
-/// 
+///
 /// struct User { age: u32 }
 /// let alice = User { age: 20 };
 /// let bob = User { age: 25 };
@@ -213,7 +213,7 @@ where
 /// # Examples
 /// ```
 /// use overture_core::combinig::their_min;
-/// 
+///
 /// struct User { age: u32 }
 /// let alice = User { age: 20 };
 /// let bob = User { age: 25 };
@@ -234,7 +234,7 @@ where
 /// # Examples
 /// ```
 /// use overture_core::combinig::their_add;
-/// 
+///
 /// struct User { score: u32 }
 /// let alice = User { score: 100 };
 /// let bob = User { score: 200 };
@@ -255,7 +255,7 @@ where
 /// # Examples
 /// ```
 /// use overture_core::combinig::their_sub;
-/// 
+///
 /// struct User { score: u32 }
 /// let alice = User { score: 200 };
 /// let bob = User { score: 100 };
@@ -276,7 +276,7 @@ where
 /// # Examples
 /// ```
 /// use overture_core::combinig::their_mul;
-/// 
+///
 /// struct User { multiplier: u32 }
 /// let alice = User { multiplier: 3 };
 /// let bob = User { multiplier: 4 };
@@ -297,7 +297,7 @@ where
 /// # Examples
 /// ```
 /// use overture_core::combinig::their_div;
-/// 
+///
 /// struct User { value: f64 }
 /// let alice = User { value: 12.0 };
 /// let bob = User { value: 3.0 };

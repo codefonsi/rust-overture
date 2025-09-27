@@ -7,11 +7,11 @@
 /// # Examples
 /// ```
 /// use overture_core::chain::chain;
-/// 
+///
 /// let parse_int = |s: &str| s.parse::<i32>().ok();
 /// let double = |n: i32| Some(n * 2);
 /// let to_string = |n: i32| Some(n.to_string());
-/// 
+///
 /// let chained = chain(parse_int, double);
 /// assert_eq!(chained("21"), Some(42));
 /// ```
@@ -38,7 +38,11 @@ pub fn chain4<A, B, C, D, E>(
     h: impl Fn(C) -> Option<D>,
     i: impl Fn(D) -> Option<E>,
 ) -> impl Fn(A) -> Option<E> {
-    move |a| f(a).and_then(|b| g(b)).and_then(|c| h(c)).and_then(|d| i(d))
+    move |a| {
+        f(a).and_then(|b| g(b))
+            .and_then(|c| h(c))
+            .and_then(|d| i(d))
+    }
 }
 
 /// Forward composition of 5 functions that return optionals.
@@ -49,7 +53,12 @@ pub fn chain5<A, B, C, D, E, F>(
     i: impl Fn(D) -> Option<E>,
     j: impl Fn(E) -> Option<F>,
 ) -> impl Fn(A) -> Option<F> {
-    move |a| f(a).and_then(|b| g(b)).and_then(|c| h(c)).and_then(|d| i(d)).and_then(|e| j(e))
+    move |a| {
+        f(a).and_then(|b| g(b))
+            .and_then(|c| h(c))
+            .and_then(|d| i(d))
+            .and_then(|e| j(e))
+    }
 }
 
 /// Forward composition of 6 functions that return optionals.
@@ -61,7 +70,13 @@ pub fn chain6<A, B, C, D, E, F, G>(
     j: impl Fn(E) -> Option<F>,
     k: impl Fn(F) -> Option<G>,
 ) -> impl Fn(A) -> Option<G> {
-    move |a| f(a).and_then(|b| g(b)).and_then(|c| h(c)).and_then(|d| i(d)).and_then(|e| j(e)).and_then(|f| k(f))
+    move |a| {
+        f(a).and_then(|b| g(b))
+            .and_then(|c| h(c))
+            .and_then(|d| i(d))
+            .and_then(|e| j(e))
+            .and_then(|f| k(f))
+    }
 }
 
 /// Forward composition of functions that return optionals with error handling.
@@ -70,10 +85,12 @@ pub fn chain_throwing<A, B, C, E>(
     f: impl Fn(A) -> Result<Option<B>, E>,
     g: impl Fn(B) -> Result<Option<C>, E>,
 ) -> impl Fn(A) -> Result<Option<C>, E> {
-    move |a| f(a).and_then(|opt_b| match opt_b {
-        Some(b) => g(b),
-        None => Ok(None),
-    })
+    move |a| {
+        f(a).and_then(|opt_b| match opt_b {
+            Some(b) => g(b),
+            None => Ok(None),
+        })
+    }
 }
 
 /// Forward composition of 3 functions that return optionals with error handling.
@@ -82,13 +99,15 @@ pub fn chain3_throwing<A, B, C, D, E>(
     g: impl Fn(B) -> Result<Option<C>, E>,
     h: impl Fn(C) -> Result<Option<D>, E>,
 ) -> impl Fn(A) -> Result<Option<D>, E> {
-    move |a| f(a).and_then(|opt_b| match opt_b {
-        Some(b) => g(b).and_then(|opt_c| match opt_c {
-            Some(c) => h(c),
+    move |a| {
+        f(a).and_then(|opt_b| match opt_b {
+            Some(b) => g(b).and_then(|opt_c| match opt_c {
+                Some(c) => h(c),
+                None => Ok(None),
+            }),
             None => Ok(None),
-        }),
-        None => Ok(None),
-    })
+        })
+    }
 }
 
 /// Forward composition of 4 functions that return optionals with error handling.
@@ -98,16 +117,18 @@ pub fn chain4_throwing<A, B, C, D, E, F>(
     h: impl Fn(C) -> Result<Option<D>, F>,
     i: impl Fn(D) -> Result<Option<E>, F>,
 ) -> impl Fn(A) -> Result<Option<E>, F> {
-    move |a| f(a).and_then(|opt_b| match opt_b {
-        Some(b) => g(b).and_then(|opt_c| match opt_c {
-            Some(c) => h(c).and_then(|opt_d| match opt_d {
-                Some(d) => i(d),
+    move |a| {
+        f(a).and_then(|opt_b| match opt_b {
+            Some(b) => g(b).and_then(|opt_c| match opt_c {
+                Some(c) => h(c).and_then(|opt_d| match opt_d {
+                    Some(d) => i(d),
+                    None => Ok(None),
+                }),
                 None => Ok(None),
             }),
             None => Ok(None),
-        }),
-        None => Ok(None),
-    })
+        })
+    }
 }
 
 /// Forward composition of 5 functions that return optionals with error handling.
@@ -118,19 +139,21 @@ pub fn chain5_throwing<A, B, C, D, E, F, G>(
     i: impl Fn(D) -> Result<Option<E>, G>,
     j: impl Fn(E) -> Result<Option<F>, G>,
 ) -> impl Fn(A) -> Result<Option<F>, G> {
-    move |a| f(a).and_then(|opt_b| match opt_b {
-        Some(b) => g(b).and_then(|opt_c| match opt_c {
-            Some(c) => h(c).and_then(|opt_d| match opt_d {
-                Some(d) => i(d).and_then(|opt_e| match opt_e {
-                    Some(e) => j(e),
+    move |a| {
+        f(a).and_then(|opt_b| match opt_b {
+            Some(b) => g(b).and_then(|opt_c| match opt_c {
+                Some(c) => h(c).and_then(|opt_d| match opt_d {
+                    Some(d) => i(d).and_then(|opt_e| match opt_e {
+                        Some(e) => j(e),
+                        None => Ok(None),
+                    }),
                     None => Ok(None),
                 }),
                 None => Ok(None),
             }),
             None => Ok(None),
-        }),
-        None => Ok(None),
-    })
+        })
+    }
 }
 
 /// Forward composition of 6 functions that return optionals with error handling.
@@ -142,12 +165,15 @@ pub fn chain6_throwing<A, B, C, D, E, F, G, H>(
     j: impl Fn(E) -> Result<Option<F>, H>,
     k: impl Fn(F) -> Result<Option<G>, H>,
 ) -> impl Fn(A) -> Result<Option<G>, H> {
-    move |a| f(a).and_then(|opt_b| match opt_b {
-        Some(b) => g(b).and_then(|opt_c| match opt_c {
-            Some(c) => h(c).and_then(|opt_d| match opt_d {
-                Some(d) => i(d).and_then(|opt_e| match opt_e {
-                    Some(e) => j(e).and_then(|opt_f| match opt_f {
-                        Some(f) => k(f),
+    move |a| {
+        f(a).and_then(|opt_b| match opt_b {
+            Some(b) => g(b).and_then(|opt_c| match opt_c {
+                Some(c) => h(c).and_then(|opt_d| match opt_d {
+                    Some(d) => i(d).and_then(|opt_e| match opt_e {
+                        Some(e) => j(e).and_then(|opt_f| match opt_f {
+                            Some(f) => k(f),
+                            None => Ok(None),
+                        }),
                         None => Ok(None),
                     }),
                     None => Ok(None),
@@ -155,9 +181,8 @@ pub fn chain6_throwing<A, B, C, D, E, F, G, H>(
                 None => Ok(None),
             }),
             None => Ok(None),
-        }),
-        None => Ok(None),
-    })
+        })
+    }
 }
 
 /// Forward composition of functions that return arrays.
@@ -175,7 +200,12 @@ pub fn chain3_vec<A, B, C, D>(
     g: impl Fn(B) -> Vec<C>,
     h: impl Fn(C) -> Vec<D>,
 ) -> impl Fn(A) -> Vec<D> {
-    move |a| f(a).into_iter().flat_map(|b| g(b)).flat_map(|c| h(c)).collect()
+    move |a| {
+        f(a).into_iter()
+            .flat_map(|b| g(b))
+            .flat_map(|c| h(c))
+            .collect()
+    }
 }
 
 /// Forward composition of 4 functions that return arrays.
@@ -185,7 +215,13 @@ pub fn chain4_vec<A, B, C, D, E>(
     h: impl Fn(C) -> Vec<D>,
     i: impl Fn(D) -> Vec<E>,
 ) -> impl Fn(A) -> Vec<E> {
-    move |a| f(a).into_iter().flat_map(|b| g(b)).flat_map(|c| h(c)).flat_map(|d| i(d)).collect()
+    move |a| {
+        f(a).into_iter()
+            .flat_map(|b| g(b))
+            .flat_map(|c| h(c))
+            .flat_map(|d| i(d))
+            .collect()
+    }
 }
 
 /// Forward composition of 5 functions that return arrays.
@@ -196,7 +232,14 @@ pub fn chain5_vec<A, B, C, D, E, F>(
     i: impl Fn(D) -> Vec<E>,
     j: impl Fn(E) -> Vec<F>,
 ) -> impl Fn(A) -> Vec<F> {
-    move |a| f(a).into_iter().flat_map(|b| g(b)).flat_map(|c| h(c)).flat_map(|d| i(d)).flat_map(|e| j(e)).collect()
+    move |a| {
+        f(a).into_iter()
+            .flat_map(|b| g(b))
+            .flat_map(|c| h(c))
+            .flat_map(|d| i(d))
+            .flat_map(|e| j(e))
+            .collect()
+    }
 }
 
 /// Forward composition of 6 functions that return arrays.
@@ -208,7 +251,15 @@ pub fn chain6_vec<A, B, C, D, E, F, G>(
     j: impl Fn(E) -> Vec<F>,
     k: impl Fn(F) -> Vec<G>,
 ) -> impl Fn(A) -> Vec<G> {
-    move |a| f(a).into_iter().flat_map(|b| g(b)).flat_map(|c| h(c)).flat_map(|d| i(d)).flat_map(|e| j(e)).flat_map(|f| k(f)).collect()
+    move |a| {
+        f(a).into_iter()
+            .flat_map(|b| g(b))
+            .flat_map(|c| h(c))
+            .flat_map(|d| i(d))
+            .flat_map(|e| j(e))
+            .flat_map(|f| k(f))
+            .collect()
+    }
 }
 
 /// Forward composition of functions that return arrays with error handling.
@@ -217,13 +268,15 @@ pub fn chain_vec_throwing<A, B, C, E>(
     f: impl Fn(A) -> Result<Vec<B>, E>,
     g: impl Fn(B) -> Result<Vec<C>, E>,
 ) -> impl Fn(A) -> Result<Vec<C>, E> {
-    move |a| f(a).and_then(|vec_b| {
-        let mut result = Vec::new();
-        for b in vec_b {
-            result.extend(g(b)?);
-        }
-        Ok(result)
-    })
+    move |a| {
+        f(a).and_then(|vec_b| {
+            let mut result = Vec::new();
+            for b in vec_b {
+                result.extend(g(b)?);
+            }
+            Ok(result)
+        })
+    }
 }
 
 /// Forward composition of 3 functions that return arrays with error handling.
@@ -232,16 +285,18 @@ pub fn chain3_vec_throwing<A, B, C, D, E>(
     g: impl Fn(B) -> Result<Vec<C>, E>,
     h: impl Fn(C) -> Result<Vec<D>, E>,
 ) -> impl Fn(A) -> Result<Vec<D>, E> {
-    move |a| f(a).and_then(|vec_b| {
-        let mut result = Vec::new();
-        for b in vec_b {
-            let vec_c = g(b)?;
-            for c in vec_c {
-                result.extend(h(c)?);
+    move |a| {
+        f(a).and_then(|vec_b| {
+            let mut result = Vec::new();
+            for b in vec_b {
+                let vec_c = g(b)?;
+                for c in vec_c {
+                    result.extend(h(c)?);
+                }
             }
-        }
-        Ok(result)
-    })
+            Ok(result)
+        })
+    }
 }
 
 /// Forward composition of 4 functions that return arrays with error handling.
@@ -251,19 +306,21 @@ pub fn chain4_vec_throwing<A, B, C, D, E, F>(
     h: impl Fn(C) -> Result<Vec<D>, F>,
     i: impl Fn(D) -> Result<Vec<E>, F>,
 ) -> impl Fn(A) -> Result<Vec<E>, F> {
-    move |a| f(a).and_then(|vec_b| {
-        let mut result = Vec::new();
-        for b in vec_b {
-            let vec_c = g(b)?;
-            for c in vec_c {
-                let vec_d = h(c)?;
-                for d in vec_d {
-                    result.extend(i(d)?);
+    move |a| {
+        f(a).and_then(|vec_b| {
+            let mut result = Vec::new();
+            for b in vec_b {
+                let vec_c = g(b)?;
+                for c in vec_c {
+                    let vec_d = h(c)?;
+                    for d in vec_d {
+                        result.extend(i(d)?);
+                    }
                 }
             }
-        }
-        Ok(result)
-    })
+            Ok(result)
+        })
+    }
 }
 
 /// Forward composition of 5 functions that return arrays with error handling.
@@ -274,22 +331,24 @@ pub fn chain5_vec_throwing<A, B, C, D, E, F, G>(
     i: impl Fn(D) -> Result<Vec<E>, G>,
     j: impl Fn(E) -> Result<Vec<F>, G>,
 ) -> impl Fn(A) -> Result<Vec<F>, G> {
-    move |a| f(a).and_then(|vec_b| {
-        let mut result = Vec::new();
-        for b in vec_b {
-            let vec_c = g(b)?;
-            for c in vec_c {
-                let vec_d = h(c)?;
-                for d in vec_d {
-                    let vec_e = i(d)?;
-                    for e in vec_e {
-                        result.extend(j(e)?);
+    move |a| {
+        f(a).and_then(|vec_b| {
+            let mut result = Vec::new();
+            for b in vec_b {
+                let vec_c = g(b)?;
+                for c in vec_c {
+                    let vec_d = h(c)?;
+                    for d in vec_d {
+                        let vec_e = i(d)?;
+                        for e in vec_e {
+                            result.extend(j(e)?);
+                        }
                     }
                 }
             }
-        }
-        Ok(result)
-    })
+            Ok(result)
+        })
+    }
 }
 
 /// Forward composition of 6 functions that return arrays with error handling.
@@ -301,25 +360,27 @@ pub fn chain6_vec_throwing<A, B, C, D, E, F, G, H>(
     j: impl Fn(E) -> Result<Vec<F>, H>,
     k: impl Fn(F) -> Result<Vec<G>, H>,
 ) -> impl Fn(A) -> Result<Vec<G>, H> {
-    move |a| f(a).and_then(|vec_b| {
-        let mut result = Vec::new();
-        for b in vec_b {
-            let vec_c = g(b)?;
-            for c in vec_c {
-                let vec_d = h(c)?;
-                for d in vec_d {
-                    let vec_e = i(d)?;
-                    for e in vec_e {
-                        let vec_f = j(e)?;
-                        for f in vec_f {
-                            result.extend(k(f)?);
+    move |a| {
+        f(a).and_then(|vec_b| {
+            let mut result = Vec::new();
+            for b in vec_b {
+                let vec_c = g(b)?;
+                for c in vec_c {
+                    let vec_d = h(c)?;
+                    for d in vec_d {
+                        let vec_e = i(d)?;
+                        for e in vec_e {
+                            let vec_f = j(e)?;
+                            for f in vec_f {
+                                result.extend(k(f)?);
+                            }
                         }
                     }
                 }
             }
-        }
-        Ok(result)
-    })
+            Ok(result)
+        })
+    }
 }
 
 // Legacy function names for backward compatibility
@@ -430,18 +491,29 @@ mod tests {
     #[test]
     fn test_chain_throwing_failure() {
         let f = chain_throwing(str_to_int_throwing, double_throwing);
-        assert_eq!(f("not-a-number"), Err("Invalid number: not-a-number".to_string()));
+        assert_eq!(
+            f("not-a-number"),
+            Err("Invalid number: not-a-number".to_string())
+        );
     }
 
     #[test]
     fn test_chain3_throwing_success() {
-        let f = chain3_throwing(str_to_int_throwing, validate_positive_throwing, double_throwing);
+        let f = chain3_throwing(
+            str_to_int_throwing,
+            validate_positive_throwing,
+            double_throwing,
+        );
         assert_eq!(f("5"), Ok(Some(10)));
     }
 
     #[test]
     fn test_chain3_throwing_failure() {
-        let f = chain3_throwing(str_to_int_throwing, validate_positive_throwing, double_throwing);
+        let f = chain3_throwing(
+            str_to_int_throwing,
+            validate_positive_throwing,
+            double_throwing,
+        );
         assert_eq!(f("-5"), Err("Number must be positive".to_string()));
     }
 

@@ -1,8 +1,8 @@
 // Keypath utilities for functional programming
 // Equivalent to Swift's keypath functions for property access and modification
 
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 /// A keypath represents a path to a property in a data structure.
 /// This is a functional equivalent to Swift's KeyPath.

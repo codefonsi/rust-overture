@@ -3,10 +3,7 @@
 
 /// Transforms a pair of results into a result of a pair.
 /// Equivalent to Swift's zip<A, B, Error>(_ result1: Result<A, Error>, _ result2: Result<B, Error>) -> Result<(A, B), Error>
-pub fn zip<A, B, E>(
-    result1: Result<A, E>,
-    result2: Result<B, E>,
-) -> Result<(A, B), E> {
+pub fn zip<A, B, E>(result1: Result<A, E>, result2: Result<B, E>) -> Result<(A, B), E> {
     result1.and_then(|a| result2.map(|b| (a, b)))
 }
 
@@ -29,11 +26,7 @@ pub fn zip3<A, B, C, E>(
     result2: Result<B, E>,
     result3: Result<C, E>,
 ) -> Result<(A, B, C), E> {
-    result1.and_then(|a| {
-        result2.and_then(|b| {
-            result3.map(|c| (a, b, c))
-        })
-    })
+    result1.and_then(|a| result2.and_then(|b| result3.map(|c| (a, b, c))))
 }
 
 /// Transforms three results into a new result.
@@ -56,13 +49,7 @@ pub fn zip4<A, B, C, D, E>(
     result3: Result<C, E>,
     result4: Result<D, E>,
 ) -> Result<(A, B, C, D), E> {
-    result1.and_then(|a| {
-        result2.and_then(|b| {
-            result3.and_then(|c| {
-                result4.map(|d| (a, b, c, d))
-            })
-        })
-    })
+    result1.and_then(|a| result2.and_then(|b| result3.and_then(|c| result4.map(|d| (a, b, c, d)))))
 }
 
 /// Transforms four results into a new result.
@@ -170,10 +157,10 @@ mod tests {
     fn test_zip() {
         let result1: Result<i32, &str> = Ok(5);
         let result2: Result<String, &str> = Ok("hello".to_string());
-        
+
         let zipped = zip(result1, result2);
         assert_eq!(zipped, Ok((5, "hello".to_string())));
-        
+
         let error_result: Result<i32, &str> = Err("error");
         let zipped_error = zip(error_result, result2);
         assert_eq!(zipped_error, Err("error"));
@@ -183,7 +170,7 @@ mod tests {
     fn test_zip_with() {
         let result1: Result<i32, &str> = Ok(5);
         let result2: Result<i32, &str> = Ok(3);
-        
+
         let zipped = zip_with(result1, result2, |a, b| a + b);
         assert_eq!(zipped, Ok(8));
     }
@@ -193,7 +180,7 @@ mod tests {
         let result1: Result<i32, &str> = Ok(1);
         let result2: Result<i32, &str> = Ok(2);
         let result3: Result<i32, &str> = Ok(3);
-        
+
         let zipped = zip3(result1, result2, result3);
         assert_eq!(zipped, Ok((1, 2, 3)));
     }
@@ -203,7 +190,7 @@ mod tests {
         let result1: Result<i32, &str> = Ok(1);
         let result2: Result<i32, &str> = Ok(2);
         let result3: Result<i32, &str> = Ok(3);
-        
+
         let zipped = zip3_with(result1, result2, result3, |a, b, c| a + b + c);
         assert_eq!(zipped, Ok(6));
     }
@@ -213,7 +200,7 @@ mod tests {
         let results = vec![Ok(1), Ok(2), Ok(3)];
         let sequenced = sequence(results);
         assert_eq!(sequenced, Ok(vec![1, 2, 3]));
-        
+
         let error_results = vec![Ok(1), Err("error"), Ok(3)];
         let sequenced_error = sequence(error_results);
         assert_eq!(sequenced_error, Err("error"));
@@ -224,7 +211,7 @@ mod tests {
         let result: Result<i32, &str> = Ok(5);
         let mapped = flat_map(result, |x| Ok(x * 2));
         assert_eq!(mapped, Ok(10));
-        
+
         let error_result: Result<i32, &str> = Err("error");
         let mapped_error = flat_map(error_result, |x| Ok(x * 2));
         assert_eq!(mapped_error, Err("error"));
@@ -249,7 +236,7 @@ mod tests {
         let result: Result<i32, &str> = Ok(5);
         let value = get_or_else(result, || 0);
         assert_eq!(value, 5);
-        
+
         let error_result: Result<i32, &str> = Err("error");
         let value_error = get_or_else(error_result, || 0);
         assert_eq!(value_error, 0);
@@ -260,7 +247,7 @@ mod tests {
         let some_option = Some(5);
         let result = from_option(some_option, "error");
         assert_eq!(result, Ok(5));
-        
+
         let none_option: Option<i32> = None;
         let result_none = from_option(none_option, "error");
         assert_eq!(result_none, Err("error"));
@@ -271,7 +258,7 @@ mod tests {
         let result: Result<i32, &str> = Ok(5);
         let option = to_option(result);
         assert_eq!(option, Some(5));
-        
+
         let error_result: Result<i32, &str> = Err("error");
         let option_error = to_option(error_result);
         assert_eq!(option_error, None);
@@ -283,7 +270,7 @@ mod tests {
         let result2: Result<i32, &str> = Ok(10);
         let combined = or(result1, result2);
         assert_eq!(combined, Ok(5));
-        
+
         let error_result1: Result<i32, &str> = Err("error1");
         let result2: Result<i32, &str> = Ok(10);
         let combined_error = or(error_result1, result2);
@@ -295,7 +282,7 @@ mod tests {
         let result: Result<i32, &str> = Ok(5);
         let fallback = or_else(result, || Ok(10));
         assert_eq!(fallback, Ok(5));
-        
+
         let error_result: Result<i32, &str> = Err("error");
         let fallback_error = or_else(error_result, || Ok(10));
         assert_eq!(fallback_error, Ok(10));

@@ -1,6 +1,4 @@
-use overture_core::{
-    pipe::pipe3_throwing,
-};
+use overture_core::pipe::pipe3_throwing;
 
 use std::rc::Rc;
 
@@ -243,15 +241,23 @@ pub enum ValidationError {
 impl std::fmt::Display for ValidationError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ValidationError::RequiredFieldMissing(field) => write!(f, "Required field missing: {}", field),
+            ValidationError::RequiredFieldMissing(field) => {
+                write!(f, "Required field missing: {}", field)
+            }
             ValidationError::InvalidFormat(field) => write!(f, "Invalid format: {}", field),
             ValidationError::InvalidValue(field) => write!(f, "Invalid value: {}", field),
-            ValidationError::BusinessRuleViolation(rule) => write!(f, "Business rule violation: {}", rule),
+            ValidationError::BusinessRuleViolation(rule) => {
+                write!(f, "Business rule violation: {}", rule)
+            }
             ValidationError::DuplicateValue(field) => write!(f, "Duplicate value: {}", field),
-            ValidationError::InvalidCurrency(currency) => write!(f, "Invalid currency: {}", currency),
+            ValidationError::InvalidCurrency(currency) => {
+                write!(f, "Invalid currency: {}", currency)
+            }
             ValidationError::InvalidAmount(amount) => write!(f, "Invalid amount: {}", amount),
             ValidationError::InvalidDate(date) => write!(f, "Invalid date: {}", date),
-            ValidationError::InvalidReference(reference) => write!(f, "Invalid reference: {}", reference),
+            ValidationError::InvalidReference(reference) => {
+                write!(f, "Invalid reference: {}", reference)
+            }
         }
     }
 }
@@ -264,7 +270,9 @@ pub type ValidationResult<T> = Result<T, ValidationError>;
 // Basic field validation functions
 fn validate_required_string(value: &str, field_name: &str) -> ValidationResult<String> {
     if value.trim().is_empty() {
-        Err(ValidationError::RequiredFieldMissing(field_name.to_string()))
+        Err(ValidationError::RequiredFieldMissing(
+            field_name.to_string(),
+        ))
     } else {
         Ok(value.to_string())
     }
@@ -299,38 +307,52 @@ fn validate_message_id(message_id: &str) -> ValidationResult<String> {
     if message_id.len() >= 1 && message_id.len() <= 35 && !message_id.contains(' ') {
         Ok(message_id.to_string())
     } else {
-        Err(ValidationError::InvalidFormat(format!("Message ID: {}", message_id)))
+        Err(ValidationError::InvalidFormat(format!(
+            "Message ID: {}",
+            message_id
+        )))
     }
 }
 
 // Functional validation using pipe operations
-fn validate_payment_identification(pi: &PaymentIdentification) -> ValidationResult<Rc<PaymentIdentification>> {
-    let validate_end_to_end_id = |pi: Rc<PaymentIdentification>| -> ValidationResult<Rc<PaymentIdentification>> {
-        if let Some(ref e2e_id) = pi.end_to_end_id {
-            if e2e_id.len() > 35 {
-                return Err(ValidationError::InvalidFormat("EndToEndId too long".to_string()));
+fn validate_payment_identification(
+    pi: &PaymentIdentification,
+) -> ValidationResult<Rc<PaymentIdentification>> {
+    let validate_end_to_end_id =
+        |pi: Rc<PaymentIdentification>| -> ValidationResult<Rc<PaymentIdentification>> {
+            if let Some(ref e2e_id) = pi.end_to_end_id {
+                if e2e_id.len() > 35 {
+                    return Err(ValidationError::InvalidFormat(
+                        "EndToEndId too long".to_string(),
+                    ));
+                }
             }
-        }
-        Ok(pi)
-    };
+            Ok(pi)
+        };
 
-    let validate_instruction_id = |pi: Rc<PaymentIdentification>| -> ValidationResult<Rc<PaymentIdentification>> {
-        if let Some(ref inst_id) = pi.instruction_id {
-            if inst_id.len() > 35 {
-                return Err(ValidationError::InvalidFormat("InstructionId too long".to_string()));
+    let validate_instruction_id =
+        |pi: Rc<PaymentIdentification>| -> ValidationResult<Rc<PaymentIdentification>> {
+            if let Some(ref inst_id) = pi.instruction_id {
+                if inst_id.len() > 35 {
+                    return Err(ValidationError::InvalidFormat(
+                        "InstructionId too long".to_string(),
+                    ));
+                }
             }
-        }
-        Ok(pi)
-    };
+            Ok(pi)
+        };
 
-    let validate_transaction_id = |pi: Rc<PaymentIdentification>| -> ValidationResult<Rc<PaymentIdentification>> {
-        if let Some(ref tx_id) = pi.transaction_id {
-            if tx_id.len() > 35 {
-                return Err(ValidationError::InvalidFormat("TransactionId too long".to_string()));
+    let validate_transaction_id =
+        |pi: Rc<PaymentIdentification>| -> ValidationResult<Rc<PaymentIdentification>> {
+            if let Some(ref tx_id) = pi.transaction_id {
+                if tx_id.len() > 35 {
+                    return Err(ValidationError::InvalidFormat(
+                        "TransactionId too long".to_string(),
+                    ));
+                }
             }
-        }
-        Ok(pi)
-    };
+            Ok(pi)
+        };
 
     // Use pipe for sequential validation
     let validation_pipe = pipe3_throwing(
@@ -342,7 +364,9 @@ fn validate_payment_identification(pi: &PaymentIdentification) -> ValidationResu
     validation_pipe(Rc::new(pi.clone()))
 }
 
-fn validate_active_currency_and_amount(amount: &ActiveOrHistoricCurrencyAndAmount) -> ValidationResult<Rc<ActiveOrHistoricCurrencyAndAmount>> {
+fn validate_active_currency_and_amount(
+    amount: &ActiveOrHistoricCurrencyAndAmount,
+) -> ValidationResult<Rc<ActiveOrHistoricCurrencyAndAmount>> {
     let validate_currency = |amount: Rc<ActiveOrHistoricCurrencyAndAmount>| -> ValidationResult<Rc<ActiveOrHistoricCurrencyAndAmount>> {
         validate_currency_code(&amount.currency)?;
         Ok(amount)
@@ -363,24 +387,32 @@ fn validate_active_currency_and_amount(amount: &ActiveOrHistoricCurrencyAndAmoun
     validation_pipe(Rc::new(amount.clone()))
 }
 
-fn validate_party_identification(party: &PartyIdentification) -> ValidationResult<Rc<PartyIdentification>> {
-    let validate_name = |party: Rc<PartyIdentification>| -> ValidationResult<Rc<PartyIdentification>> {
-        if let Some(ref name) = party.name {
-            if name.len() > 140 {
-                return Err(ValidationError::InvalidFormat("Party name too long".to_string()));
+fn validate_party_identification(
+    party: &PartyIdentification,
+) -> ValidationResult<Rc<PartyIdentification>> {
+    let validate_name =
+        |party: Rc<PartyIdentification>| -> ValidationResult<Rc<PartyIdentification>> {
+            if let Some(ref name) = party.name {
+                if name.len() > 140 {
+                    return Err(ValidationError::InvalidFormat(
+                        "Party name too long".to_string(),
+                    ));
+                }
             }
-        }
-        Ok(party)
-    };
+            Ok(party)
+        };
 
-    let validate_country = |party: Rc<PartyIdentification>| -> ValidationResult<Rc<PartyIdentification>> {
-        if let Some(ref country) = party.country_of_residence {
-            if country.len() != 2 {
-                return Err(ValidationError::InvalidFormat("Country code must be 2 characters".to_string()));
+    let validate_country =
+        |party: Rc<PartyIdentification>| -> ValidationResult<Rc<PartyIdentification>> {
+            if let Some(ref country) = party.country_of_residence {
+                if country.len() != 2 {
+                    return Err(ValidationError::InvalidFormat(
+                        "Country code must be 2 characters".to_string(),
+                    ));
+                }
             }
-        }
-        Ok(party)
-    };
+            Ok(party)
+        };
 
     // Use pipe for sequential validation
     let validation_pipe = pipe3_throwing(
@@ -395,7 +427,9 @@ fn validate_party_identification(party: &PartyIdentification) -> ValidationResul
 fn validate_cash_account(account: &CashAccount) -> ValidationResult<Rc<CashAccount>> {
     let validate_identification = |account: Rc<CashAccount>| -> ValidationResult<Rc<CashAccount>> {
         if account.identification.trim().is_empty() {
-            return Err(ValidationError::RequiredFieldMissing("Account identification".to_string()));
+            return Err(ValidationError::RequiredFieldMissing(
+                "Account identification".to_string(),
+            ));
         }
         Ok(account)
     };
@@ -418,40 +452,42 @@ fn validate_cash_account(account: &CashAccount) -> ValidationResult<Rc<CashAccou
 }
 
 // Complex validation using functional composition
-fn validate_credit_transfer_transaction(ctti: &CreditTransferTransactionInformation) -> ValidationResult<Rc<CreditTransferTransactionInformation>> {
+fn validate_credit_transfer_transaction(
+    ctti: &CreditTransferTransactionInformation,
+) -> ValidationResult<Rc<CreditTransferTransactionInformation>> {
     // Validate payment identification
     let payment_id = validate_payment_identification(&ctti.payment_id)?;
-    
+
     // Validate instructed amount
     let instructed_amount = validate_active_currency_and_amount(&ctti.instructed_amount)?;
-    
+
     // Validate debtor if present
     let debtor = if let Some(ref debtor) = ctti.debtor {
         Some(validate_party_identification(debtor)?)
     } else {
         None
     };
-    
+
     // Validate debtor account if present
     let debtor_account = if let Some(ref account) = ctti.debtor_account {
         Some(validate_cash_account(account)?)
     } else {
         None
     };
-    
+
     // Validate creditor
     let creditor = validate_party_identification(&ctti.creditor)?;
-    
+
     // Validate creditor account
     let creditor_account = validate_cash_account(&ctti.creditor_account)?;
-    
+
     // Validate requested execution date if present
     let requested_execution_date = if let Some(ref date) = ctti.requested_execution_date {
         Some(validate_date_format(date)?)
     } else {
         None
     };
-    
+
     // Create validated transaction
     Ok(Rc::new(CreditTransferTransactionInformation {
         payment_id: (*payment_id).clone(),
@@ -470,35 +506,40 @@ fn validate_credit_transfer_transaction(ctti: &CreditTransferTransactionInformat
     }))
 }
 
-fn validate_payment_information(pi: &PaymentInformation) -> ValidationResult<Rc<PaymentInformation>> {
+fn validate_payment_information(
+    pi: &PaymentInformation,
+) -> ValidationResult<Rc<PaymentInformation>> {
     // Validate payment information ID
     let payment_info_id = validate_message_id(&pi.payment_information_id)?;
-    
+
     // Validate requested execution date
     let execution_date = validate_date_format(&pi.requested_execution_date)?;
-    
+
     // Validate debtor
     let debtor = validate_party_identification(&pi.debtor)?;
-    
+
     // Validate debtor account
     let debtor_account = validate_cash_account(&pi.debtor_account)?;
-    
+
     // Validate all credit transfer transactions
-    let validated_transactions = pi.credit_transfer_transaction_information
+    let validated_transactions = pi
+        .credit_transfer_transaction_information
         .iter()
         .map(|ctti| validate_credit_transfer_transaction(ctti))
         .collect::<Result<Vec<_>, _>>()?;
-    
+
     // Validate total amount matches sum of individual transactions
     let total_amount: f64 = validated_transactions
         .iter()
         .map(|ctti| ctti.instructed_amount.amount)
         .sum();
-    
+
     if total_amount <= 0.0 {
-        return Err(ValidationError::BusinessRuleViolation("Total amount must be positive".to_string()));
+        return Err(ValidationError::BusinessRuleViolation(
+            "Total amount must be positive".to_string(),
+        ));
     }
-    
+
     Ok(Rc::new(PaymentInformation {
         payment_information_id: payment_info_id,
         payment_method: pi.payment_method.clone(),
@@ -506,7 +547,10 @@ fn validate_payment_information(pi: &PaymentInformation) -> ValidationResult<Rc<
         debtor: (*debtor).clone(),
         debtor_account: (*debtor_account).clone(),
         debtor_agent: pi.debtor_agent.clone(),
-        credit_transfer_transaction_information: validated_transactions.iter().map(|ctti| (**ctti).clone()).collect(),
+        credit_transfer_transaction_information: validated_transactions
+            .iter()
+            .map(|ctti| (**ctti).clone())
+            .collect(),
         supplementary_data: pi.supplementary_data.clone(),
     }))
 }
@@ -514,25 +558,27 @@ fn validate_payment_information(pi: &PaymentInformation) -> ValidationResult<Rc<
 fn validate_group_header(gh: &GroupHeader) -> ValidationResult<Rc<GroupHeader>> {
     // Validate message ID
     let message_id = validate_message_id(&gh.message_id)?;
-    
+
     // Validate creation date time
     let creation_date_time = validate_date_format(&gh.creation_date_time)?;
-    
+
     // Validate number of transactions
     if gh.number_of_transactions == 0 {
-        return Err(ValidationError::BusinessRuleViolation("Number of transactions must be greater than 0".to_string()));
+        return Err(ValidationError::BusinessRuleViolation(
+            "Number of transactions must be greater than 0".to_string(),
+        ));
     }
-    
+
     // Validate control sum if present
     if let Some(control_sum) = gh.control_sum {
         if control_sum < 0.0 {
             return Err(ValidationError::InvalidAmount(control_sum.to_string()));
         }
     }
-    
+
     // Validate initiating party
     let initiating_party = validate_party_identification(&gh.initiating_party)?;
-    
+
     Ok(Rc::new(GroupHeader {
         message_id,
         creation_date_time,
@@ -547,26 +593,27 @@ fn validate_group_header(gh: &GroupHeader) -> ValidationResult<Rc<GroupHeader>> 
 fn validate_payment_initiation(pi: &PaymentInitiation) -> ValidationResult<Rc<PaymentInitiation>> {
     // Validate group header
     let group_header = validate_group_header(&pi.group_header)?;
-    
+
     // Validate all payment information
-    let validated_payment_infos = pi.payment_information
+    let validated_payment_infos = pi
+        .payment_information
         .iter()
         .map(|pi| validate_payment_information(pi))
         .collect::<Result<Vec<_>, _>>()?;
-    
+
     // Validate total number of transactions matches
     let total_transactions: u32 = validated_payment_infos
         .iter()
         .map(|pi| pi.credit_transfer_transaction_information.len() as u32)
         .sum();
-    
+
     if total_transactions != group_header.number_of_transactions {
-        return Err(ValidationError::BusinessRuleViolation(
-            format!("Total transactions ({}) doesn't match header count ({})", 
-                   total_transactions, group_header.number_of_transactions)
-        ));
+        return Err(ValidationError::BusinessRuleViolation(format!(
+            "Total transactions ({}) doesn't match header count ({})",
+            total_transactions, group_header.number_of_transactions
+        )));
     }
-    
+
     // Validate control sum if present
     if let Some(control_sum) = group_header.control_sum {
         let calculated_sum: f64 = validated_payment_infos
@@ -574,17 +621,21 @@ fn validate_payment_initiation(pi: &PaymentInitiation) -> ValidationResult<Rc<Pa
             .flat_map(|pi| &pi.credit_transfer_transaction_information)
             .map(|ctti| ctti.instructed_amount.amount)
             .sum();
-        
+
         if (calculated_sum - control_sum).abs() > 0.01 {
-            return Err(ValidationError::BusinessRuleViolation(
-                format!("Control sum mismatch: calculated {}, provided {}", calculated_sum, control_sum)
-            ));
+            return Err(ValidationError::BusinessRuleViolation(format!(
+                "Control sum mismatch: calculated {}, provided {}",
+                calculated_sum, control_sum
+            )));
         }
     }
-    
+
     Ok(Rc::new(PaymentInitiation {
         group_header: (*group_header).clone(),
-        payment_information: validated_payment_infos.iter().map(|pi| (**pi).clone()).collect(),
+        payment_information: validated_payment_infos
+            .iter()
+            .map(|pi| (**pi).clone())
+            .collect(),
         supplementary_data: pi.supplementary_data.clone(),
     }))
 }
@@ -595,21 +646,26 @@ fn create_amount_validator(min: f64, max: f64) -> impl Fn(f64) -> ValidationResu
         if amount >= min && amount <= max {
             Ok(amount)
         } else {
-            Err(ValidationError::InvalidAmount(
-                format!("Amount {} must be between {} and {}", amount, min, max)
-            ))
+            Err(ValidationError::InvalidAmount(format!(
+                "Amount {} must be between {} and {}",
+                amount, min, max
+            )))
         }
     }
 }
 
-fn create_string_length_validator(min: usize, max: usize) -> impl Fn(&str) -> ValidationResult<String> {
+fn create_string_length_validator(
+    min: usize,
+    max: usize,
+) -> impl Fn(&str) -> ValidationResult<String> {
     move |value: &str| {
         if value.len() >= min && value.len() <= max {
             Ok(value.to_string())
         } else {
-            Err(ValidationError::InvalidFormat(
-                format!("String length must be between {} and {}", min, max)
-            ))
+            Err(ValidationError::InvalidFormat(format!(
+                "String length must be between {} and {}",
+                min, max
+            )))
         }
     }
 }
@@ -618,18 +674,24 @@ fn create_string_length_validator(min: usize, max: usize) -> impl Fn(&str) -> Va
 fn main() {
     println!("ISO 20022 MDR Part 2 Payments Initiation Validation Example");
     println!("===========================================================");
-    
+
     // Create sample payment initiation data
     let sample_payment = create_sample_payment_initiation();
-    
+
     // Validate using functional approach
     match validate_payment_initiation(&sample_payment) {
         Ok(validated_payment) => {
             println!("✅ Payment initiation validation successful!");
             println!("Message ID: {}", validated_payment.group_header.message_id);
-            println!("Number of transactions: {}", validated_payment.group_header.number_of_transactions);
-            println!("Number of payment information blocks: {}", validated_payment.payment_information.len());
-            
+            println!(
+                "Number of transactions: {}",
+                validated_payment.group_header.number_of_transactions
+            );
+            println!(
+                "Number of payment information blocks: {}",
+                validated_payment.payment_information.len()
+            );
+
             // Demonstrate functional composition
             demonstrate_functional_validation();
         }
@@ -637,10 +699,10 @@ fn main() {
             println!("❌ Validation failed: {}", error);
         }
     }
-    
+
     // Demonstrate error handling
     demonstrate_error_handling();
-    
+
     // Demonstrate functional composition benefits
     demonstrate_composition_benefits();
 }
@@ -661,111 +723,109 @@ fn create_sample_payment_initiation() -> PaymentInitiation {
             },
             forwarding_agent: None,
         },
-        payment_information: vec![
-            PaymentInformation {
-                payment_information_id: "PAY-INFO-001".to_string(),
-                payment_method: "TRF".to_string(),
-                requested_execution_date: "2024-01-16".to_string(),
-                debtor: PartyIdentification {
-                    name: Some("ACME Corporation".to_string()),
-                    postal_address: None,
-                    identification: None,
-                    country_of_residence: Some("US".to_string()),
-                    contact_details: None,
-                },
-                debtor_account: CashAccount {
-                    identification: "US12345678901234567890".to_string(),
-                    type_code: Some("CACC".to_string()),
-                    currency: Some("USD".to_string()),
-                    name: Some("ACME Operating Account".to_string()),
-                    proxy: None,
-                },
-                debtor_agent: BranchAndFinancialInstitutionIdentification {
-                    financial_institution_identification: "CHASUS33".to_string(),
-                    branch_identification: None,
-                    name: Some("JPMorgan Chase Bank".to_string()),
-                },
-                credit_transfer_transaction_information: vec![
-                    CreditTransferTransactionInformation {
-                        payment_id: PaymentIdentification {
-                            instruction_id: Some("INST-001".to_string()),
-                            end_to_end_id: Some("E2E-001".to_string()),
-                            transaction_id: Some("TXN-001".to_string()),
-                            clearing_system_reference: None,
-                        },
-                        instructed_amount: ActiveOrHistoricCurrencyAndAmount {
-                            currency: "USD".to_string(),
-                            amount: 1000.00,
-                        },
-                        charge_bearer: Some("DEBT".to_string()),
-                        payment_type_information: None,
-                        requested_execution_date: None,
-                        debtor: None,
-                        debtor_account: None,
-                        debtor_agent: None,
-                        creditor_agent: None,
-                        creditor: PartyIdentification {
-                            name: Some("Supplier ABC".to_string()),
-                            postal_address: None,
-                            identification: None,
-                            country_of_residence: Some("US".to_string()),
-                            contact_details: None,
-                        },
-                        creditor_account: CashAccount {
-                            identification: "US98765432109876543210".to_string(),
-                            type_code: Some("CACC".to_string()),
-                            currency: Some("USD".to_string()),
-                            name: Some("Supplier ABC Account".to_string()),
-                            proxy: None,
-                        },
-                        remittance_information: Some(RemittanceInformation {
-                            unstructured: Some("Payment for services rendered".to_string()),
-                            structured: None,
-                        }),
-                        supplementary_data: None,
-                    },
-                    CreditTransferTransactionInformation {
-                        payment_id: PaymentIdentification {
-                            instruction_id: Some("INST-002".to_string()),
-                            end_to_end_id: Some("E2E-002".to_string()),
-                            transaction_id: Some("TXN-002".to_string()),
-                            clearing_system_reference: None,
-                        },
-                        instructed_amount: ActiveOrHistoricCurrencyAndAmount {
-                            currency: "USD".to_string(),
-                            amount: 500.00,
-                        },
-                        charge_bearer: Some("DEBT".to_string()),
-                        payment_type_information: None,
-                        requested_execution_date: None,
-                        debtor: None,
-                        debtor_account: None,
-                        debtor_agent: None,
-                        creditor_agent: None,
-                        creditor: PartyIdentification {
-                            name: Some("Vendor XYZ".to_string()),
-                            postal_address: None,
-                            identification: None,
-                            country_of_residence: Some("US".to_string()),
-                            contact_details: None,
-                        },
-                        creditor_account: CashAccount {
-                            identification: "US11111111111111111111".to_string(),
-                            type_code: Some("CACC".to_string()),
-                            currency: Some("USD".to_string()),
-                            name: Some("Vendor XYZ Account".to_string()),
-                            proxy: None,
-                        },
-                        remittance_information: Some(RemittanceInformation {
-                            unstructured: Some("Payment for goods delivered".to_string()),
-                            structured: None,
-                        }),
-                        supplementary_data: None,
-                    },
-                ],
-                supplementary_data: None,
+        payment_information: vec![PaymentInformation {
+            payment_information_id: "PAY-INFO-001".to_string(),
+            payment_method: "TRF".to_string(),
+            requested_execution_date: "2024-01-16".to_string(),
+            debtor: PartyIdentification {
+                name: Some("ACME Corporation".to_string()),
+                postal_address: None,
+                identification: None,
+                country_of_residence: Some("US".to_string()),
+                contact_details: None,
             },
-        ],
+            debtor_account: CashAccount {
+                identification: "US12345678901234567890".to_string(),
+                type_code: Some("CACC".to_string()),
+                currency: Some("USD".to_string()),
+                name: Some("ACME Operating Account".to_string()),
+                proxy: None,
+            },
+            debtor_agent: BranchAndFinancialInstitutionIdentification {
+                financial_institution_identification: "CHASUS33".to_string(),
+                branch_identification: None,
+                name: Some("JPMorgan Chase Bank".to_string()),
+            },
+            credit_transfer_transaction_information: vec![
+                CreditTransferTransactionInformation {
+                    payment_id: PaymentIdentification {
+                        instruction_id: Some("INST-001".to_string()),
+                        end_to_end_id: Some("E2E-001".to_string()),
+                        transaction_id: Some("TXN-001".to_string()),
+                        clearing_system_reference: None,
+                    },
+                    instructed_amount: ActiveOrHistoricCurrencyAndAmount {
+                        currency: "USD".to_string(),
+                        amount: 1000.00,
+                    },
+                    charge_bearer: Some("DEBT".to_string()),
+                    payment_type_information: None,
+                    requested_execution_date: None,
+                    debtor: None,
+                    debtor_account: None,
+                    debtor_agent: None,
+                    creditor_agent: None,
+                    creditor: PartyIdentification {
+                        name: Some("Supplier ABC".to_string()),
+                        postal_address: None,
+                        identification: None,
+                        country_of_residence: Some("US".to_string()),
+                        contact_details: None,
+                    },
+                    creditor_account: CashAccount {
+                        identification: "US98765432109876543210".to_string(),
+                        type_code: Some("CACC".to_string()),
+                        currency: Some("USD".to_string()),
+                        name: Some("Supplier ABC Account".to_string()),
+                        proxy: None,
+                    },
+                    remittance_information: Some(RemittanceInformation {
+                        unstructured: Some("Payment for services rendered".to_string()),
+                        structured: None,
+                    }),
+                    supplementary_data: None,
+                },
+                CreditTransferTransactionInformation {
+                    payment_id: PaymentIdentification {
+                        instruction_id: Some("INST-002".to_string()),
+                        end_to_end_id: Some("E2E-002".to_string()),
+                        transaction_id: Some("TXN-002".to_string()),
+                        clearing_system_reference: None,
+                    },
+                    instructed_amount: ActiveOrHistoricCurrencyAndAmount {
+                        currency: "USD".to_string(),
+                        amount: 500.00,
+                    },
+                    charge_bearer: Some("DEBT".to_string()),
+                    payment_type_information: None,
+                    requested_execution_date: None,
+                    debtor: None,
+                    debtor_account: None,
+                    debtor_agent: None,
+                    creditor_agent: None,
+                    creditor: PartyIdentification {
+                        name: Some("Vendor XYZ".to_string()),
+                        postal_address: None,
+                        identification: None,
+                        country_of_residence: Some("US".to_string()),
+                        contact_details: None,
+                    },
+                    creditor_account: CashAccount {
+                        identification: "US11111111111111111111".to_string(),
+                        type_code: Some("CACC".to_string()),
+                        currency: Some("USD".to_string()),
+                        name: Some("Vendor XYZ Account".to_string()),
+                        proxy: None,
+                    },
+                    remittance_information: Some(RemittanceInformation {
+                        unstructured: Some("Payment for goods delivered".to_string()),
+                        structured: None,
+                    }),
+                    supplementary_data: None,
+                },
+            ],
+            supplementary_data: None,
+        }],
         supplementary_data: None,
     }
 }
@@ -773,29 +833,29 @@ fn create_sample_payment_initiation() -> PaymentInitiation {
 fn demonstrate_functional_validation() {
     println!("\n🔧 Functional Validation Demonstrations:");
     println!("========================================");
-    
+
     // Demonstrate curried validators
     let amount_validator = create_amount_validator(1.0, 10000.0);
     let string_validator = create_string_length_validator(1, 50);
-    
+
     // Test valid amounts
     match amount_validator(5000.0) {
         Ok(amount) => println!("✅ Valid amount: {}", amount),
         Err(e) => println!("❌ Invalid amount: {}", e),
     }
-    
+
     // Test invalid amounts
     match amount_validator(15000.0) {
         Ok(amount) => println!("✅ Valid amount: {}", amount),
         Err(e) => println!("❌ Invalid amount: {}", e),
     }
-    
+
     // Test valid strings
     match string_validator("Valid string") {
         Ok(s) => println!("✅ Valid string: {}", s),
         Err(e) => println!("❌ Invalid string: {}", e),
     }
-    
+
     // Test invalid strings
     match string_validator("") {
         Ok(s) => println!("✅ Valid string: {}", s),
@@ -806,14 +866,14 @@ fn demonstrate_functional_validation() {
 fn demonstrate_error_handling() {
     println!("\n🚨 Error Handling Demonstrations:");
     println!("=================================");
-    
+
     // Create invalid payment initiation
     let invalid_payment = PaymentInitiation {
         group_header: GroupHeader {
             message_id: "".to_string(), // Invalid: empty message ID
             creation_date_time: "invalid-date".to_string(), // Invalid: wrong format
-            number_of_transactions: 0, // Invalid: zero transactions
-            control_sum: Some(-100.0), // Invalid: negative control sum
+            number_of_transactions: 0,  // Invalid: zero transactions
+            control_sum: Some(-100.0),  // Invalid: negative control sum
             initiating_party: PartyIdentification {
                 name: Some("ACME Corporation".to_string()),
                 postal_address: None,
@@ -826,7 +886,7 @@ fn demonstrate_error_handling() {
         payment_information: vec![],
         supplementary_data: None,
     };
-    
+
     match validate_payment_initiation(&invalid_payment) {
         Ok(_) => println!("✅ Validation unexpectedly passed"),
         Err(error) => println!("❌ Validation failed as expected: {}", error),
@@ -836,29 +896,30 @@ fn demonstrate_error_handling() {
 fn demonstrate_composition_benefits() {
     println!("\n✨ Functional Composition Benefits:");
     println!("===================================");
-    
+
     // Demonstrate how functional composition makes validation reusable
     let currency_validator = |currency: &str| validate_currency_code(currency);
     let amount_validator = |amount: f64| validate_amount(amount);
-    
+
     // Create a composed validator for currency and amount
-    let currency_amount_validator = |currency: &str, amount: f64| -> ValidationResult<(String, f64)> {
-        let valid_currency = currency_validator(currency)?;
-        let valid_amount = amount_validator(amount)?;
-        Ok((valid_currency, valid_amount))
-    };
-    
+    let currency_amount_validator =
+        |currency: &str, amount: f64| -> ValidationResult<(String, f64)> {
+            let valid_currency = currency_validator(currency)?;
+            let valid_amount = amount_validator(amount)?;
+            Ok((valid_currency, valid_amount))
+        };
+
     // Test the composed validator
     match currency_amount_validator("USD", 1000.0) {
         Ok((currency, amount)) => println!("✅ Valid currency and amount: {} {}", currency, amount),
         Err(e) => println!("❌ Invalid currency or amount: {}", e),
     }
-    
+
     match currency_amount_validator("INVALID", -100.0) {
         Ok((currency, amount)) => println!("✅ Valid currency and amount: {} {}", currency, amount),
         Err(e) => println!("❌ Invalid currency or amount: {}", e),
     }
-    
+
     println!("\nFunctional approach provides:");
     println!("- Composable validation functions");
     println!("- Reusable validation logic");

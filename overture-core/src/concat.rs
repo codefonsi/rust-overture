@@ -7,7 +7,7 @@
 /// # Examples
 /// ```
 /// use overture_core::concat::concat;
-/// 
+///
 /// let functions = vec![
 ///     Box::new(|x: i32| x + 1) as Box<dyn Fn(i32) -> i32>,
 ///     Box::new(|x: i32| x * 2) as Box<dyn Fn(i32) -> i32>,
@@ -31,7 +31,7 @@ pub fn concat<A>(fs: Vec<Box<dyn Fn(A) -> A>>) -> impl Fn(A) -> A {
 /// # Examples
 /// ```
 /// use overture_core::concat::concat_with;
-/// 
+///
 /// let composed = concat_with(
 ///     |x: i32| x + 1,
 ///     |x: i32| x * 2,
@@ -57,7 +57,7 @@ where
 /// # Examples
 /// ```
 /// use overture_core::concat::concat_throwing;
-/// 
+///
 /// let functions = vec![
 ///     Box::new(|x: i32| if x > 0 { Ok(x + 1) } else { Err("negative") }) as Box<dyn Fn(i32) -> Result<i32, &'static str>>,
 ///     Box::new(|x: i32| Ok(x * 2)) as Box<dyn Fn(i32) -> Result<i32, &'static str>>,
@@ -66,7 +66,9 @@ where
 /// assert_eq!(composed(1), Ok(4));
 /// assert_eq!(composed(-1), Err("negative"));
 /// ```
-pub fn concat_throwing<A, E>(fs: Vec<Box<dyn Fn(A) -> Result<A, E>>>) -> impl Fn(A) -> Result<A, E> {
+pub fn concat_throwing<A, E>(
+    fs: Vec<Box<dyn Fn(A) -> Result<A, E>>>,
+) -> impl Fn(A) -> Result<A, E> {
     move |mut a: A| {
         for f in &fs {
             a = f(a)?;
@@ -95,7 +97,7 @@ where
 /// # Examples
 /// ```
 /// use overture_core::concat::concat_mut;
-/// 
+///
 /// let functions = vec![
 ///     Box::new(|x: &mut i32| *x += 2) as Box<dyn FnMut(&mut i32)>,
 ///     Box::new(|x: &mut i32| *x *= 3) as Box<dyn FnMut(&mut i32)>,
@@ -132,7 +134,7 @@ where
 /// # Examples
 /// ```
 /// use overture_core::concat::concat_mut_throwing;
-/// 
+///
 /// let functions = vec![
 ///     Box::new(|x: &mut i32| if *x > 0 { *x += 1; Ok(()) } else { Err("negative") }) as Box<dyn FnMut(&mut i32) -> Result<(), &'static str>>,
 ///     Box::new(|x: &mut i32| { *x *= 2; Ok(()) }) as Box<dyn FnMut(&mut i32) -> Result<(), &'static str>>,
@@ -142,7 +144,9 @@ where
 /// assert_eq!(composed(&mut val), Ok(()));
 /// assert_eq!(val, 6);
 /// ```
-pub fn concat_mut_throwing<A, E>(mut fs: Vec<Box<dyn FnMut(&mut A) -> Result<(), E>>>) -> impl FnMut(&mut A) -> Result<(), E> {
+pub fn concat_mut_throwing<A, E>(
+    mut fs: Vec<Box<dyn FnMut(&mut A) -> Result<(), E>>>,
+) -> impl FnMut(&mut A) -> Result<(), E> {
     move |a: &mut A| {
         for f in &mut fs {
             f(a)?;
@@ -173,7 +177,7 @@ where
 /// use overture_core::concat::concat_ref_mut;
 /// use std::rc::Rc;
 /// use std::cell::RefCell;
-/// 
+///
 /// let functions = vec![
 ///     Box::new(|x: Rc<RefCell<i32>>| *x.borrow_mut() += 2) as Box<dyn Fn(Rc<RefCell<i32>>)>,
 ///     Box::new(|x: Rc<RefCell<i32>>| *x.borrow_mut() *= 3) as Box<dyn Fn(Rc<RefCell<i32>>)>,
@@ -216,7 +220,7 @@ where
 /// use overture_core::concat::concat_ref_mut_throwing;
 /// use std::rc::Rc;
 /// use std::cell::RefCell;
-/// 
+///
 /// let functions = vec![
 ///     Box::new(|x: Rc<RefCell<i32>>| {
 ///         let mut val = x.borrow_mut();
@@ -229,7 +233,9 @@ where
 /// assert_eq!(composed(val.clone()), Ok(()));
 /// assert_eq!(*val.borrow(), 6);
 /// ```
-pub fn concat_ref_mut_throwing<A, E>(fs: Vec<Box<dyn Fn(A) -> Result<(), E>>>) -> impl Fn(A) -> Result<(), E>
+pub fn concat_ref_mut_throwing<A, E>(
+    fs: Vec<Box<dyn Fn(A) -> Result<(), E>>>,
+) -> impl Fn(A) -> Result<(), E>
 where
     A: Clone + 'static,
 {
@@ -258,15 +264,15 @@ where
 
 // Legacy function names for backward compatibility
 pub use concat as concat_fn;
-pub use concat_throwing as concat_fn_result;
 pub use concat_mut as concat_mut_legacy;
 pub use concat_mut_throwing as concat_mut_result;
+pub use concat_throwing as concat_fn_result;
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::rc::Rc;
     use std::cell::RefCell;
+    use std::rc::Rc;
 
     #[test]
     fn test_concat() {
@@ -281,18 +287,15 @@ mod tests {
 
     #[test]
     fn test_concat_with() {
-        let composed = concat_with(vec![
-            |x: i32| x + 1,
-            |x: i32| x * 2,
-            |x: i32| x - 3,
-        ]);
+        let composed = concat_with(vec![|x: i32| x + 1, |x: i32| x * 2, |x: i32| x - 3]);
         assert_eq!(composed(2), 3);
     }
 
     #[test]
     fn test_concat_throwing() {
         let functions = vec![
-            Box::new(|x: i32| if x > 0 { Ok(x + 1) } else { Err("negative") }) as Box<dyn Fn(i32) -> Result<i32, &'static str>>,
+            Box::new(|x: i32| if x > 0 { Ok(x + 1) } else { Err("negative") })
+                as Box<dyn Fn(i32) -> Result<i32, &'static str>>,
             Box::new(|x: i32| Ok(x * 2)) as Box<dyn Fn(i32) -> Result<i32, &'static str>>,
         ];
         let composed = concat_throwing(functions);
@@ -324,10 +327,7 @@ mod tests {
 
     #[test]
     fn test_concat_with_mut() {
-        let mut composed = concat_with_mut(vec![
-            |x: &mut i32| *x += 2,
-            |x: &mut i32| *x *= 3,
-        ]);
+        let mut composed = concat_with_mut(vec![|x: &mut i32| *x += 2, |x: &mut i32| *x *= 3]);
         let mut val = 1;
         composed(&mut val);
         assert_eq!(val, 9);
@@ -336,8 +336,18 @@ mod tests {
     #[test]
     fn test_concat_mut_throwing() {
         let functions = vec![
-            Box::new(|x: &mut i32| if *x > 0 { *x += 1; Ok(()) } else { Err("negative") }) as Box<dyn FnMut(&mut i32) -> Result<(), &'static str>>,
-            Box::new(|x: &mut i32| { *x *= 2; Ok(()) }) as Box<dyn FnMut(&mut i32) -> Result<(), &'static str>>,
+            Box::new(|x: &mut i32| {
+                if *x > 0 {
+                    *x += 1;
+                    Ok(())
+                } else {
+                    Err("negative")
+                }
+            }) as Box<dyn FnMut(&mut i32) -> Result<(), &'static str>>,
+            Box::new(|x: &mut i32| {
+                *x *= 2;
+                Ok(())
+            }) as Box<dyn FnMut(&mut i32) -> Result<(), &'static str>>,
         ];
         let mut composed = concat_mut_throwing(functions);
         let mut val = 2;
@@ -348,8 +358,18 @@ mod tests {
     #[test]
     fn test_concat_with_mut_throwing() {
         let mut composed = concat_with_mut_throwing(vec![
-            |x: &mut i32| if *x > 0 { *x += 1; Ok(()) } else { Err("negative") },
-            |x: &mut i32| { *x *= 2; Ok(()) },
+            |x: &mut i32| {
+                if *x > 0 {
+                    *x += 1;
+                    Ok(())
+                } else {
+                    Err("negative")
+                }
+            },
+            |x: &mut i32| {
+                *x *= 2;
+                Ok(())
+            },
         ]);
         let mut val = 2;
         assert_eq!(composed(&mut val), Ok(()));
@@ -384,9 +404,17 @@ mod tests {
         let functions = vec![
             Box::new(|x: Rc<RefCell<i32>>| {
                 let mut val = x.borrow_mut();
-                if *val > 0 { *val += 1; Ok(()) } else { Err("negative") }
+                if *val > 0 {
+                    *val += 1;
+                    Ok(())
+                } else {
+                    Err("negative")
+                }
             }) as Box<dyn Fn(Rc<RefCell<i32>>) -> Result<(), &'static str>>,
-            Box::new(|x: Rc<RefCell<i32>>| { *x.borrow_mut() *= 2; Ok(()) }) as Box<dyn Fn(Rc<RefCell<i32>>) -> Result<(), &'static str>>,
+            Box::new(|x: Rc<RefCell<i32>>| {
+                *x.borrow_mut() *= 2;
+                Ok(())
+            }) as Box<dyn Fn(Rc<RefCell<i32>>) -> Result<(), &'static str>>,
         ];
         let composed = concat_ref_mut_throwing(functions);
         let val = Rc::new(RefCell::new(2));
@@ -399,9 +427,17 @@ mod tests {
         let composed = concat_with_ref_mut_throwing(vec![
             |x: Rc<RefCell<i32>>| {
                 let mut val = x.borrow_mut();
-                if *val > 0 { *val += 1; Ok(()) } else { Err("negative") }
+                if *val > 0 {
+                    *val += 1;
+                    Ok(())
+                } else {
+                    Err("negative")
+                }
             },
-            |x: Rc<RefCell<i32>>| { *x.borrow_mut() *= 2; Ok(()) },
+            |x: Rc<RefCell<i32>>| {
+                *x.borrow_mut() *= 2;
+                Ok(())
+            },
         ]);
         let val = Rc::new(RefCell::new(2));
         assert_eq!(composed(val.clone()), Ok(()));

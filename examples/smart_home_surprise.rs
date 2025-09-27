@@ -67,10 +67,10 @@ pub enum DeviceType {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct DeviceSettings {
-    pub brightness: Option<f64>, // 0.0 to 1.0
+    pub brightness: Option<f64>,  // 0.0 to 1.0
     pub temperature: Option<f64>, // Celsius
-    pub fan_speed: Option<f64>, // 0.0 to 1.0
-    pub volume: Option<f64>, // 0.0 to 1.0
+    pub fan_speed: Option<f64>,   // 0.0 to 1.0
+    pub volume: Option<f64>,      // 0.0 to 1.0
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -90,9 +90,9 @@ pub enum Condition {
     HumidityAbove(f64),
     LightLevelBelow(f64),
     MotionDetected,
-    NoMotionFor(u64), // seconds
+    NoMotionFor(u64),  // seconds
     TimeOfDay(String), // "HH:MM" format
-    DeviceOn(String), // device_id
+    DeviceOn(String),  // device_id
     DeviceOff(String),
     RoomOccupied(String), // room_id
     RoomEmpty(String),
@@ -102,11 +102,11 @@ pub enum Condition {
 pub enum Action {
     TurnOnDevice(String),
     TurnOffDevice(String),
-    SetBrightness(String, f64), // device_id, brightness
+    SetBrightness(String, f64),  // device_id, brightness
     SetTemperature(String, f64), // device_id, temperature
-    SetFanSpeed(String, f64), // device_id, speed
-    SendNotification(String), // message
-    LogEvent(String), // message
+    SetFanSpeed(String, f64),    // device_id, speed
+    SendNotification(String),    // message
+    LogEvent(String),            // message
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -129,14 +129,25 @@ fn normalize_sensor_value(sensor: &Sensor) -> f64 {
         SensorType::Temperature => (sensor.value - 20.0) / 30.0, // Normalize to 0-1 range
         SensorType::Humidity => sensor.value / 100.0,
         SensorType::Light => sensor.value / 1000.0,
-        SensorType::Motion => if sensor.value > 0.5 { 1.0 } else { 0.0 },
+        SensorType::Motion => {
+            if sensor.value > 0.5 {
+                1.0
+            } else {
+                0.0
+            }
+        }
         _ => sensor.value,
     }
 }
 
 fn is_sensor_healthy(sensor: &Sensor) -> bool {
-    sensor.battery_level > 0.1 && 
-    (SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() - sensor.timestamp) < 300
+    sensor.battery_level > 0.1
+        && (SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs()
+            - sensor.timestamp)
+            < 300
 }
 
 fn calculate_room_comfort(room: &Room) -> f64 {
@@ -144,55 +155,51 @@ fn calculate_room_comfort(room: &Room) -> f64 {
     let temp_score = 1.0 - ((room.temperature - 22.0).abs() / 10.0).min(1.0);
     let humidity_score = 1.0 - ((room.humidity - 50.0).abs() / 50.0).min(1.0);
     let light_score = (room.light_level / 500.0).min(1.0);
-    
+
     (temp_score + humidity_score + light_score) / 3.0
 }
 
 // Step 2: Functional condition evaluation
 fn evaluate_condition(condition: &Condition, home: &SmartHome) -> bool {
     match condition {
-        Condition::TemperatureAbove(temp) => {
-            home.rooms.iter()
-                .any(|room| room.temperature > *temp)
-        }
-        Condition::TemperatureBelow(temp) => {
-            home.rooms.iter()
-                .any(|room| room.temperature < *temp)
-        }
+        Condition::TemperatureAbove(temp) => home.rooms.iter().any(|room| room.temperature > *temp),
+        Condition::TemperatureBelow(temp) => home.rooms.iter().any(|room| room.temperature < *temp),
         Condition::HumidityAbove(humidity) => {
-            home.rooms.iter()
-                .any(|room| room.humidity > *humidity)
+            home.rooms.iter().any(|room| room.humidity > *humidity)
         }
         Condition::LightLevelBelow(light) => {
-            home.rooms.iter()
-                .any(|room| room.light_level < *light)
+            home.rooms.iter().any(|room| room.light_level < *light)
         }
-        Condition::MotionDetected => {
-            home.sensors.iter()
-                .any(|sensor| matches!(sensor.sensor_type, SensorType::Motion) && sensor.value > 0.5)
-        }
+        Condition::MotionDetected => home
+            .sensors
+            .iter()
+            .any(|sensor| matches!(sensor.sensor_type, SensorType::Motion) && sensor.value > 0.5),
         Condition::NoMotionFor(seconds) => {
-            let current_time = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
-            home.sensors.iter()
+            let current_time = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_secs();
+            home.sensors
+                .iter()
                 .filter(|sensor| matches!(sensor.sensor_type, SensorType::Motion))
                 .all(|sensor| current_time - sensor.timestamp > *seconds)
         }
-        Condition::DeviceOn(device_id) => {
-            home.devices.iter()
-                .any(|device| device.id == *device_id && device.is_on)
-        }
-        Condition::DeviceOff(device_id) => {
-            home.devices.iter()
-                .any(|device| device.id == *device_id && !device.is_on)
-        }
-        Condition::RoomOccupied(room_id) => {
-            home.rooms.iter()
-                .any(|room| room.id == *room_id && room.occupancy)
-        }
-        Condition::RoomEmpty(room_id) => {
-            home.rooms.iter()
-                .any(|room| room.id == *room_id && !room.occupancy)
-        }
+        Condition::DeviceOn(device_id) => home
+            .devices
+            .iter()
+            .any(|device| device.id == *device_id && device.is_on),
+        Condition::DeviceOff(device_id) => home
+            .devices
+            .iter()
+            .any(|device| device.id == *device_id && !device.is_on),
+        Condition::RoomOccupied(room_id) => home
+            .rooms
+            .iter()
+            .any(|room| room.id == *room_id && room.occupancy),
+        Condition::RoomEmpty(room_id) => home
+            .rooms
+            .iter()
+            .any(|room| room.id == *room_id && !room.occupancy),
         Condition::TimeOfDay(_) => {
             // Simplified - in real implementation, parse time
             true
@@ -253,35 +260,38 @@ fn execute_action(action: &Action, home: &mut SmartHome) -> f64 {
 fn process_automation_functional(home: &mut SmartHome) -> Vec<AutomationResult> {
     // 🎯 This is where functional programming SHINES!
     // We can compose complex automation logic from simple, pure functions
-    
+
     let rules = home.rules.clone(); // Clone to avoid borrowing issues
     let rooms = home.rooms.clone();
-    
+
     rules
         .iter()
         .filter(|rule| rule.is_active)
         .map(|rule| {
             // Evaluate all conditions using functional composition
-            let conditions_met = rule.conditions
+            let conditions_met = rule
+                .conditions
                 .iter()
                 .all(|condition| evaluate_condition(condition, home));
-            
+
             if conditions_met {
                 // Execute actions and calculate benefits
-                let (actions_executed, energy_saved) = rule.actions
-                    .iter()
-                    .fold((Vec::new(), 0.0), |(mut actions, energy), action| {
-                        let energy_impact = execute_action(action, home);
-                        actions.push(action.clone());
-                        (actions, energy + energy_impact)
-                    });
-                
+                let (actions_executed, energy_saved) =
+                    rule.actions
+                        .iter()
+                        .fold((Vec::new(), 0.0), |(mut actions, energy), action| {
+                            let energy_impact = execute_action(action, home);
+                            actions.push(action.clone());
+                            (actions, energy + energy_impact)
+                        });
+
                 // Calculate comfort improvement
                 let comfort_improved = rooms
                     .iter()
                     .map(|room| calculate_room_comfort(room))
-                    .sum::<f64>() / rooms.len() as f64;
-                
+                    .sum::<f64>()
+                    / rooms.len() as f64;
+
                 AutomationResult {
                     rule_id: rule.id.clone(),
                     triggered: true,
@@ -305,7 +315,7 @@ fn process_automation_functional(home: &mut SmartHome) -> Vec<AutomationResult> 
 // 🚨 IMPERATIVE APPROACH: Hard to maintain, test, and extend
 fn process_automation_imperative(home: &mut SmartHome) -> Vec<AutomationResult> {
     let mut results = Vec::new();
-    
+
     for rule in &home.rules {
         if !rule.is_active {
             results.push(AutomationResult {
@@ -317,7 +327,7 @@ fn process_automation_imperative(home: &mut SmartHome) -> Vec<AutomationResult> 
             });
             continue;
         }
-        
+
         // Check conditions imperatively
         let mut conditions_met = true;
         for condition in &rule.conditions {
@@ -373,7 +383,10 @@ fn process_automation_imperative(home: &mut SmartHome) -> Vec<AutomationResult> 
                     found
                 }
                 Condition::NoMotionFor(seconds) => {
-                    let current_time = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
+                    let current_time = SystemTime::now()
+                        .duration_since(UNIX_EPOCH)
+                        .unwrap()
+                        .as_secs();
                     let mut all_clear = true;
                     for sensor in &home.sensors {
                         if matches!(sensor.sensor_type, SensorType::Motion) {
@@ -427,18 +440,18 @@ fn process_automation_imperative(home: &mut SmartHome) -> Vec<AutomationResult> 
                 }
                 Condition::TimeOfDay(_) => true,
             };
-            
+
             if !condition_result {
                 conditions_met = false;
                 break;
             }
         }
-        
+
         if conditions_met {
             // Execute actions imperatively
             let mut actions_executed = Vec::new();
             let mut energy_saved = 0.0;
-            
+
             for action in &rule.actions {
                 let energy_impact = match action {
                     Action::TurnOnDevice(device_id) => {
@@ -497,11 +510,11 @@ fn process_automation_imperative(home: &mut SmartHome) -> Vec<AutomationResult> 
                     Action::SendNotification(_) => 0.0,
                     Action::LogEvent(_) => 0.0,
                 };
-                
+
                 actions_executed.push(action.clone());
                 energy_saved += energy_impact;
             }
-            
+
             // Calculate comfort improvement imperatively
             let mut total_comfort = 0.0;
             for room in &home.rooms {
@@ -511,7 +524,7 @@ fn process_automation_imperative(home: &mut SmartHome) -> Vec<AutomationResult> 
                 total_comfort += (temp_score + humidity_score + light_score) / 3.0;
             }
             let comfort_improved = total_comfort / home.rooms.len() as f64;
-            
+
             results.push(AutomationResult {
                 rule_id: rule.id.clone(),
                 triggered: true,
@@ -529,7 +542,7 @@ fn process_automation_imperative(home: &mut SmartHome) -> Vec<AutomationResult> 
             });
         }
     }
-    
+
     results
 }
 
@@ -548,7 +561,11 @@ fn create_sensor_pipeline() -> impl Fn(&[Sensor]) -> Vec<f64> {
 }
 
 // 2. Simple rule builder function
-fn create_automation_rule(name: String, conditions: Vec<Condition>, actions: Vec<Action>) -> AutomationRule {
+fn create_automation_rule(
+    name: String,
+    conditions: Vec<Condition>,
+    actions: Vec<Action>,
+) -> AutomationRule {
     AutomationRule {
         id: format!("rule_{}", name.to_lowercase().replace(" ", "_")),
         name,
@@ -564,24 +581,22 @@ fn optimize_energy_consumption(home: &SmartHome) -> Vec<Action> {
     home.devices
         .iter()
         .filter(|device| device.is_on && device.power_consumption > 50.0)
-        .filter_map(|device| {
-            match device.device_type {
-                DeviceType::Light => {
-                    if device.settings.brightness.unwrap_or(1.0) > 0.8 {
-                        Some(Action::SetBrightness(device.id.clone(), 0.7))
-                    } else {
-                        None
-                    }
+        .filter_map(|device| match device.device_type {
+            DeviceType::Light => {
+                if device.settings.brightness.unwrap_or(1.0) > 0.8 {
+                    Some(Action::SetBrightness(device.id.clone(), 0.7))
+                } else {
+                    None
                 }
-                DeviceType::Fan => {
-                    if device.settings.fan_speed.unwrap_or(1.0) > 0.8 {
-                        Some(Action::SetFanSpeed(device.id.clone(), 0.6))
-                    } else {
-                        None
-                    }
-                }
-                _ => None,
             }
+            DeviceType::Fan => {
+                if device.settings.fan_speed.unwrap_or(1.0) > 0.8 {
+                    Some(Action::SetFanSpeed(device.id.clone(), 0.6))
+                } else {
+                    None
+                }
+            }
+            _ => None,
         })
         .collect()
 }
@@ -592,24 +607,20 @@ fn optimize_comfort(home: &SmartHome) -> Vec<Action> {
         .iter()
         .filter(|room| !room.occupancy)
         .flat_map(|room| {
-            room.devices
-                .iter()
-                .filter_map(|device_id| {
-                    home.devices
-                        .iter()
-                        .find(|device| device.id == *device_id)
-                        .and_then(|device| {
-                            match device.device_type {
-                                DeviceType::Light if device.is_on => {
-                                    Some(Action::TurnOffDevice(device.id.clone()))
-                                }
-                                DeviceType::Fan if device.is_on => {
-                                    Some(Action::TurnOffDevice(device.id.clone()))
-                                }
-                                _ => None,
-                            }
-                        })
-                })
+            room.devices.iter().filter_map(|device_id| {
+                home.devices
+                    .iter()
+                    .find(|device| device.id == *device_id)
+                    .and_then(|device| match device.device_type {
+                        DeviceType::Light if device.is_on => {
+                            Some(Action::TurnOffDevice(device.id.clone()))
+                        }
+                        DeviceType::Fan if device.is_on => {
+                            Some(Action::TurnOffDevice(device.id.clone()))
+                        }
+                        _ => None,
+                    })
+            })
         })
         .collect()
 }
@@ -619,26 +630,32 @@ fn create_smart_home_ai() -> impl Fn(&mut SmartHome) -> (f64, f64, Vec<String>) 
     move |home: &mut SmartHome| {
         // Process automation rules
         let automation_results = process_automation_functional(home);
-        
+
         // Calculate total energy saved
         let total_energy_saved: f64 = automation_results
             .iter()
             .map(|result| result.energy_saved)
             .sum();
-        
+
         // Calculate average comfort improvement
         let avg_comfort_improvement: f64 = automation_results
             .iter()
             .map(|result| result.comfort_improved)
-            .sum::<f64>() / automation_results.len() as f64;
-        
+            .sum::<f64>()
+            / automation_results.len() as f64;
+
         // Generate insights
         let insights = automation_results
             .iter()
             .filter(|result| result.triggered)
-            .map(|result| format!("Rule '{}' triggered, saved {:.2}W", result.rule_id, result.energy_saved))
+            .map(|result| {
+                format!(
+                    "Rule '{}' triggered, saved {:.2}W",
+                    result.rule_id, result.energy_saved
+                )
+            })
             .collect();
-        
+
         (total_energy_saved, avg_comfort_improvement, insights)
     }
 }
@@ -646,18 +663,18 @@ fn create_smart_home_ai() -> impl Fn(&mut SmartHome) -> (f64, f64, Vec<String>) 
 fn main() {
     println!("🏠 Smart Home Automation: Functional vs Imperative");
     println!("==================================================");
-    
+
     // Create a sample smart home
     let mut smart_home = create_sample_smart_home();
-    
+
     println!("\n🎯 FUNCTIONAL APPROACH DEMONSTRATION:");
     println!("=====================================");
-    
+
     // Show the power of functional composition
     let sensor_pipeline = create_sensor_pipeline();
     let normalized_values = sensor_pipeline(&smart_home.sensors);
     println!("📊 Normalized sensor values: {:?}", normalized_values);
-    
+
     // Show functional rule creation
     let energy_rule = create_automation_rule(
         "Energy Saver".to_string(),
@@ -668,23 +685,29 @@ fn main() {
         vec![
             Action::TurnOffDevice("living_room_light".to_string()),
             Action::SetBrightness("bedroom_light".to_string(), 0.3),
-        ]
+        ],
     );
-    
+
     smart_home.rules.push(energy_rule);
-    
+
     // Show energy optimization
     let energy_optimizations = optimize_energy_consumption(&smart_home);
-    println!("⚡ Energy optimizations suggested: {} actions", energy_optimizations.len());
-    
+    println!(
+        "⚡ Energy optimizations suggested: {} actions",
+        energy_optimizations.len()
+    );
+
     // Show comfort optimization
     let comfort_optimizations = optimize_comfort(&smart_home);
-    println!("😌 Comfort optimizations suggested: {} actions", comfort_optimizations.len());
-    
+    println!(
+        "😌 Comfort optimizations suggested: {} actions",
+        comfort_optimizations.len()
+    );
+
     // The ULTIMATE test: Smart Home AI
     let smart_ai = create_smart_home_ai();
     let (energy_saved, comfort_improved, insights) = smart_ai(&mut smart_home);
-    
+
     println!("\n🤖 Smart Home AI Results:");
     println!("Energy saved: {:.2}W", energy_saved);
     println!("Comfort improved: {:.2}%", comfort_improved * 100.0);
@@ -692,13 +715,13 @@ fn main() {
     for insight in insights {
         println!("  • {}", insight);
     }
-    
+
     // Performance comparison
     println!("\n⚡ PERFORMANCE COMPARISON:");
     println!("=========================");
-    
+
     let iterations = 1000;
-    
+
     // Test functional approach
     let start = std::time::Instant::now();
     for _ in 0..iterations {
@@ -706,7 +729,7 @@ fn main() {
         let _ = process_automation_functional(&mut home);
     }
     let functional_duration = start.elapsed();
-    
+
     // Test imperative approach
     let start = std::time::Instant::now();
     for _ in 0..iterations {
@@ -714,13 +737,13 @@ fn main() {
         let _ = process_automation_imperative(&mut home);
     }
     let imperative_duration = start.elapsed();
-    
+
     println!("Functional approach: {:?}", functional_duration);
     println!("Imperative approach: {:?}", imperative_duration);
-    
+
     let functional_avg = functional_duration.as_nanos() as f64 / iterations as f64;
     let imperative_avg = imperative_duration.as_nanos() as f64 / iterations as f64;
-    
+
     if functional_avg < imperative_avg {
         let improvement = ((imperative_avg - functional_avg) / imperative_avg) * 100.0;
         println!("🎉 Functional approach is {:.1}% faster!", improvement);
@@ -728,7 +751,7 @@ fn main() {
         let overhead = ((functional_avg - imperative_avg) / imperative_avg) * 100.0;
         println!("Functional approach has {:.1}% overhead", overhead);
     }
-    
+
     // Show the REAL benefits
     println!("\n✨ WHY FUNCTIONAL PROGRAMMING IS FUTURE-PROOF:");
     println!("==============================================");
@@ -742,7 +765,7 @@ fn main() {
     println!("8. 👥 TEAM WORK: Multiple developers can work on different functions");
     println!("9. 🔮 FUTURE-PROOF: Easy to adapt to new requirements");
     println!("10. 🎯 MAINTAINABILITY: Code is self-documenting and easy to understand");
-    
+
     println!("\n🎯 REAL-WORLD IMPACT:");
     println!("====================");
     println!("• Reduced development time by 40%");
@@ -750,7 +773,7 @@ fn main() {
     println!("• 60% faster feature delivery");
     println!("• 80% easier code maintenance");
     println!("• 100% more confident deployments");
-    
+
     println!("\n🚀 The functional approach transforms complex automation");
     println!("   into simple, composable, and maintainable code!");
 }
@@ -765,7 +788,10 @@ fn create_sample_smart_home() -> SmartHome {
                 humidity: 45.0,
                 light_level: 300.0,
                 occupancy: true,
-                devices: vec!["living_room_light".to_string(), "living_room_fan".to_string()],
+                devices: vec![
+                    "living_room_light".to_string(),
+                    "living_room_fan".to_string(),
+                ],
             },
             Room {
                 id: "bedroom".to_string(),
@@ -774,7 +800,10 @@ fn create_sample_smart_home() -> SmartHome {
                 humidity: 50.0,
                 light_level: 100.0,
                 occupancy: false,
-                devices: vec!["bedroom_light".to_string(), "bedroom_thermostat".to_string()],
+                devices: vec![
+                    "bedroom_light".to_string(),
+                    "bedroom_thermostat".to_string(),
+                ],
             },
             Room {
                 id: "kitchen".to_string(),
@@ -792,7 +821,10 @@ fn create_sample_smart_home() -> SmartHome {
                 room_id: "living_room".to_string(),
                 sensor_type: SensorType::Temperature,
                 value: 24.5,
-                timestamp: SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs(),
+                timestamp: SystemTime::now()
+                    .duration_since(UNIX_EPOCH)
+                    .unwrap()
+                    .as_secs(),
                 battery_level: 0.8,
             },
             Sensor {
@@ -800,7 +832,11 @@ fn create_sample_smart_home() -> SmartHome {
                 room_id: "living_room".to_string(),
                 sensor_type: SensorType::Motion,
                 value: 1.0,
-                timestamp: SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() - 10,
+                timestamp: SystemTime::now()
+                    .duration_since(UNIX_EPOCH)
+                    .unwrap()
+                    .as_secs()
+                    - 10,
                 battery_level: 0.9,
             },
             Sensor {
@@ -808,7 +844,10 @@ fn create_sample_smart_home() -> SmartHome {
                 room_id: "bedroom".to_string(),
                 sensor_type: SensorType::Light,
                 value: 100.0,
-                timestamp: SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs(),
+                timestamp: SystemTime::now()
+                    .duration_since(UNIX_EPOCH)
+                    .unwrap()
+                    .as_secs(),
                 battery_level: 0.7,
             },
         ],
@@ -903,7 +942,6 @@ fn create_sample_smart_home() -> SmartHome {
     }
 }
 
-
 /*
 🏠 Smart Home Automation: Functional vs Imperative
 ==================================================
@@ -949,5 +987,5 @@ Functional approach has 109.1% overhead
 
 🚀 The functional approach transforms complex automation
    into simple, composable, and maintainable code!
- *  Terminal will be reused by tasks, press any key to close it. 
+ *  Terminal will be reused by tasks, press any key to close it.
 */

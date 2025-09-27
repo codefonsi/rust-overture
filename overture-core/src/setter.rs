@@ -7,16 +7,13 @@
 /// # Examples
 /// ```
 /// use overture_core::setter::over;
-/// 
+///
 /// let setter = |f: Box<dyn Fn(i32) -> i32>| Box::new(move |x: i32| f(x));
 /// let transform = over(setter, |x| x * 2);
 /// let result = transform(5);
 /// assert_eq!(result, 10);
 /// ```
-pub fn over<S, T, A, B, F, Setter>(
-    setter: Setter,
-    f: F,
-) -> Box<dyn Fn(S) -> T>
+pub fn over<S, T, A, B, F, Setter>(setter: Setter, f: F) -> Box<dyn Fn(S) -> T>
 where
     S: 'static,
     T: 'static,
@@ -34,16 +31,13 @@ where
 /// # Examples
 /// ```
 /// use overture_core::setter::set;
-/// 
+///
 /// let setter = |f: Box<dyn Fn(i32) -> i32>| Box::new(move |x: i32| f(x));
 /// let set_value = set(setter, 42);
 /// let result = set_value(5);
 /// assert_eq!(result, 42);
 /// ```
-pub fn set<S, T, A, B, Setter>(
-    setter: Setter,
-    value: B,
-) -> Box<dyn Fn(S) -> T>
+pub fn set<S, T, A, B, Setter>(setter: Setter, value: B) -> Box<dyn Fn(S) -> T>
 where
     S: 'static,
     T: 'static,
@@ -62,17 +56,14 @@ where
 /// # Examples
 /// ```
 /// use overture_core::setter::mver;
-/// 
+///
 /// let setter = |f: Box<dyn FnMut(&mut i32)>| Box::new(move |x: &mut i32| f(x));
 /// let mut_transform = mver(setter, |x| *x *= 2);
 /// let mut value = 5;
 /// mut_transform(&mut value);
 /// assert_eq!(value, 10);
 /// ```
-pub fn mver<S, A, F, Setter>(
-    setter: Setter,
-    f: F,
-) -> Box<dyn FnMut(&mut S)>
+pub fn mver<S, A, F, Setter>(setter: Setter, f: F) -> Box<dyn FnMut(&mut S)>
 where
     S: 'static,
     A: 'static,
@@ -90,17 +81,14 @@ where
 /// use overture_core::setter::mver_ref;
 /// use std::rc::Rc;
 /// use std::cell::RefCell;
-/// 
+///
 /// let setter = |f: Box<dyn FnMut(&mut i32)>| Box::new(move |x: Rc<RefCell<i32>>| f(&mut x.borrow_mut()));
 /// let mut_transform = mver_ref(setter, |x| *x *= 2);
 /// let value = Rc::new(RefCell::new(5));
 /// mut_transform(value.clone());
 /// assert_eq!(*value.borrow(), 10);
 /// ```
-pub fn mver_ref<S, A, F, Setter>(
-    setter: Setter,
-    f: F,
-) -> Box<dyn FnMut(S)>
+pub fn mver_ref<S, A, F, Setter>(setter: Setter, f: F) -> Box<dyn FnMut(S)>
 where
     S: 'static,
     A: 'static,
@@ -118,17 +106,14 @@ where
 /// use overture_core::setter::mver_ref_mut;
 /// use std::rc::Rc;
 /// use std::cell::RefCell;
-/// 
+///
 /// let setter = |f: Box<dyn Fn(Rc<RefCell<i32>>)>| Box::new(move |x: Rc<RefCell<i32>>| f(x));
 /// let mut_transform = mver_ref_mut(setter, |x| *x.borrow_mut() *= 2);
 /// let value = Rc::new(RefCell::new(5));
 /// mut_transform(value.clone());
 /// assert_eq!(*value.borrow(), 10);
 /// ```
-pub fn mver_ref_mut<S, A, F, Setter>(
-    setter: Setter,
-    f: F,
-) -> Box<dyn Fn(S)>
+pub fn mver_ref_mut<S, A, F, Setter>(setter: Setter, f: F) -> Box<dyn Fn(S)>
 where
     S: 'static,
     A: 'static,
@@ -144,17 +129,14 @@ where
 /// # Examples
 /// ```
 /// use overture_core::setter::mut_set;
-/// 
+///
 /// let setter = |f: Box<dyn FnMut(&mut i32)>| Box::new(move |x: &mut i32| f(x));
 /// let set_value = mut_set(setter, 42);
 /// let mut value = 5;
 /// set_value(&mut value);
 /// assert_eq!(value, 42);
 /// ```
-pub fn mut_set<S, A, Setter>(
-    setter: Setter,
-    value: A,
-) -> Box<dyn FnMut(&mut S)>
+pub fn mut_set<S, A, Setter>(setter: Setter, value: A) -> Box<dyn FnMut(&mut S)>
 where
     S: 'static,
     A: Clone + 'static,
@@ -171,17 +153,14 @@ where
 /// use overture_core::setter::mut_set_ref;
 /// use std::rc::Rc;
 /// use std::cell::RefCell;
-/// 
+///
 /// let setter = |f: Box<dyn FnMut(&mut i32)>| Box::new(move |x: Rc<RefCell<i32>>| f(&mut x.borrow_mut()));
 /// let set_value = mut_set_ref(setter, 42);
 /// let value = Rc::new(RefCell::new(5));
 /// set_value(value.clone());
 /// assert_eq!(*value.borrow(), 42);
 /// ```
-pub fn mut_set_ref<S, A, Setter>(
-    setter: Setter,
-    value: A,
-) -> Box<dyn FnMut(S)>
+pub fn mut_set_ref<S, A, Setter>(setter: Setter, value: A) -> Box<dyn FnMut(S)>
 where
     S: 'static,
     A: Clone + 'static,
@@ -197,8 +176,8 @@ pub use mut_set_ref as mset_ref;
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::rc::Rc;
     use std::cell::RefCell;
+    use std::rc::Rc;
 
     #[test]
     fn test_over() {
@@ -227,7 +206,9 @@ mod tests {
 
     #[test]
     fn test_mver_ref() {
-        let setter = |f: Box<dyn FnMut(&mut i32)>| Box::new(move |x: Rc<RefCell<i32>>| f(&mut x.borrow_mut()));
+        let setter = |f: Box<dyn FnMut(&mut i32)>| {
+            Box::new(move |x: Rc<RefCell<i32>>| f(&mut x.borrow_mut()))
+        };
         let mut_transform = mver_ref(setter, |x| *x *= 2);
         let value = Rc::new(RefCell::new(5));
         mut_transform(value.clone());
@@ -254,7 +235,9 @@ mod tests {
 
     #[test]
     fn test_mut_set_ref() {
-        let setter = |f: Box<dyn FnMut(&mut i32)>| Box::new(move |x: Rc<RefCell<i32>>| f(&mut x.borrow_mut()));
+        let setter = |f: Box<dyn FnMut(&mut i32)>| {
+            Box::new(move |x: Rc<RefCell<i32>>| f(&mut x.borrow_mut()))
+        };
         let set_value = mut_set_ref(setter, 42);
         let value = Rc::new(RefCell::new(5));
         set_value(value.clone());
@@ -272,7 +255,9 @@ mod tests {
 
     #[test]
     fn test_legacy_mset_ref() {
-        let setter = |f: Box<dyn FnMut(&mut i32)>| Box::new(move |x: Rc<RefCell<i32>>| f(&mut x.borrow_mut()));
+        let setter = |f: Box<dyn FnMut(&mut i32)>| {
+            Box::new(move |x: Rc<RefCell<i32>>| f(&mut x.borrow_mut()))
+        };
         let set_value = mset_ref(setter, 42);
         let value = Rc::new(RefCell::new(5));
         set_value(value.clone());

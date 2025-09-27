@@ -3,11 +3,11 @@
 //! This example shows how to use ALL the keypaths functions that provide type-safe
 //! property access and modification using the key-paths-core library.
 
-use rust_overture::keypaths::{
-    get, prop, over, set, mprop, mver, mprop_ref, mver_object, mprop_ref_mut, mver_ref,
-    mut_set, mut_set_ref, mset, mset_ref
-};
 use key_paths_core::KeyPaths;
+use rust_overture::keypaths::{
+    get, mprop, mprop_ref, mprop_ref_mut, mset, mset_ref, mut_set, mut_set_ref, mver, mver_object,
+    mver_ref, over, prop, set,
+};
 
 #[derive(Debug, Clone, PartialEq)]
 struct Person {
@@ -59,7 +59,10 @@ fn main() {
     let update_age = prop(age_keypath);
     let double_age = update_age(Box::new(|age| age * 2));
     let updated_person = double_age(person.clone());
-    println!("prop(age_keypath)(|age| age * 2)(person) = {:?}", updated_person);
+    println!(
+        "prop(age_keypath)(|age| age * 2)(person) = {:?}",
+        updated_person
+    );
     println!();
 
     // Example 3: over() function
@@ -67,7 +70,10 @@ fn main() {
     let age_keypath = KeyPaths::writable(|person: &mut Person| &mut person.age);
     let increment_age = over(age_keypath, |age| age + 1);
     let updated_person = increment_age(person.clone());
-    println!("over(age_keypath, |age| age + 1)(person) = {:?}", updated_person);
+    println!(
+        "over(age_keypath, |age| age + 1)(person) = {:?}",
+        updated_person
+    );
     println!();
 
     // Example 4: set() function
@@ -85,7 +91,10 @@ fn main() {
     let mut double_age = mut_update_age(Box::new(|age| *age *= 2));
     let mut person_mut = person.clone();
     double_age(&mut person_mut);
-    println!("mprop(age_keypath)(|age| *age *= 2)(&mut person) = {:?}", person_mut);
+    println!(
+        "mprop(age_keypath)(|age| *age *= 2)(&mut person) = {:?}",
+        person_mut
+    );
     println!();
 
     // Example 6: mver() function
@@ -94,7 +103,10 @@ fn main() {
     let mut increment_age = mver(age_keypath, |age| *age += 1);
     let mut person_mut = person.clone();
     increment_age(&mut person_mut);
-    println!("mver(age_keypath, |age| *age += 1)(&mut person) = {:?}", person_mut);
+    println!(
+        "mver(age_keypath, |age| *age += 1)(&mut person) = {:?}",
+        person_mut
+    );
     println!();
 
     // Example 7: mprop_ref() function
@@ -176,7 +188,10 @@ fn main() {
     let name_keypath = KeyPaths::writable(|person: &mut Person| &mut person.name);
     let uppercase_name = over(name_keypath, |name| name.to_uppercase());
     let updated_person = uppercase_name(person.clone());
-    println!("over(name_keypath, |name| name.to_uppercase())(person) = {:?}", updated_person);
+    println!(
+        "over(name_keypath, |name| name.to_uppercase())(person) = {:?}",
+        updated_person
+    );
     println!();
 
     // Example 16: Boolean operations
@@ -184,7 +199,10 @@ fn main() {
     let active_keypath = KeyPaths::writable(|person: &mut Person| &mut person.is_active);
     let toggle_active = over(active_keypath, |is_active| !is_active);
     let updated_person = toggle_active(person.clone());
-    println!("over(active_keypath, |active| !active)(person) = {:?}", updated_person);
+    println!(
+        "over(active_keypath, |active| !active)(person) = {:?}",
+        updated_person
+    );
     println!();
 
     // Example 17: Nested keypaths with complex structures
@@ -204,7 +222,10 @@ fn main() {
     let city_keypath = KeyPaths::writable(|company: &mut Company| &mut company.address.city);
     let set_city_ny = set(city_keypath, "New York".to_string());
     let updated_company = set_city_ny(company.clone());
-    println!("set(city_keypath, \"New York\")(company) = {:?}", updated_company);
+    println!(
+        "set(city_keypath, \"New York\")(company) = {:?}",
+        updated_company
+    );
     println!();
 
     // Example 18: Multiple keypath operations
@@ -280,7 +301,9 @@ fn main() {
     let mut mut_title_case = mut_name_updater(Box::new(|mut name| *name = name.to_title_case()));
 
     // Use mver() for mutable value updates
-    let mut mut_email_updater = mver(email_keypath.clone(), |mut email| email.make_ascii_lowercase());
+    let mut mut_email_updater = mver(email_keypath.clone(), |mut email| {
+        email.make_ascii_lowercase()
+    });
 
     // Use mut_set() for mutable constant setting
     let mut mut_active_setter = mut_set(active_keypath.clone(), true);
@@ -297,7 +320,7 @@ fn main() {
     // Example 21: Performance comparison using different approaches
     println!("21. Performance comparison using different approaches:");
     let age_keypath = KeyPaths::writable(|person: &mut Person| &mut person.age);
-    
+
     // Immutable approach using over()
     let immutable_update = over(age_keypath.clone(), |age| age + 1);
     let start = std::time::Instant::now();
@@ -306,7 +329,7 @@ fn main() {
         result = immutable_update(result);
     }
     let immutable_duration = start.elapsed();
-    
+
     // Mutable approach using mver()
     let mut mutable_update = mver(age_keypath.clone(), |age| *age += 1);
     let start = std::time::Instant::now();
@@ -315,14 +338,14 @@ fn main() {
         mutable_update(&mut result_mut);
     }
     let mutable_duration = start.elapsed();
-    
+
     // Direct approach using mut_set()
     let mut direct_setter = mut_set(age_keypath, 130);
     let start = std::time::Instant::now();
     let mut result_direct = person.clone();
     direct_setter(&mut result_direct);
     let direct_duration = start.elapsed();
-    
+
     println!("Immutable approach (over): {:?}", immutable_duration);
     println!("Mutable approach (mver): {:?}", mutable_duration);
     println!("Direct approach (mut_set): {:?}", direct_duration);
@@ -359,7 +382,7 @@ impl TitleCase for String {
     fn to_title_case(&self) -> String {
         let mut result = String::new();
         let mut capitalize_next = true;
-        
+
         for c in self.chars() {
             if c.is_whitespace() {
                 capitalize_next = true;
@@ -371,7 +394,7 @@ impl TitleCase for String {
                 result.push(c.to_lowercase().next().unwrap());
             }
         }
-        
+
         result
     }
 }

@@ -143,7 +143,9 @@ where
 /// let result = flipped(2, 3, 4, 5, 6)(1);
 /// assert_eq!(result, 21);
 /// ```
-pub fn flip6<A, B, C, D, E, F, G, Func>(function: Func) -> impl Fn(B, C, D, E, F) -> Box<dyn Fn(A) -> G>
+pub fn flip6<A, B, C, D, E, F, G, Func>(
+    function: Func,
+) -> impl Fn(B, C, D, E, F) -> Box<dyn Fn(A) -> G>
 where
     Func: Fn(A) -> Box<dyn Fn(B, C, D, E, F) -> G> + Clone + 'static,
     A: Clone + 'static,
@@ -156,7 +158,9 @@ where
 {
     move |b: B, c: C, d: D, e: E, f: F| {
         let function = function.clone();
-        Box::new(move |a: A| function(a.clone())(b.clone(), c.clone(), d.clone(), e.clone(), f.clone()))
+        Box::new(move |a: A| {
+            function(a.clone())(b.clone(), c.clone(), d.clone(), e.clone(), f.clone())
+        })
     }
 }
 
@@ -203,7 +207,9 @@ where
 /// let result = flipped(2)(10);
 /// assert_eq!(result, Ok(5));
 /// ```
-pub fn flip2_throwing<A, B, C, E, Func>(function: Func) -> impl Fn(B) -> Box<dyn Fn(A) -> Result<C, E>>
+pub fn flip2_throwing<A, B, C, E, Func>(
+    function: Func,
+) -> impl Fn(B) -> Box<dyn Fn(A) -> Result<C, E>>
 where
     Func: Fn(A) -> Box<dyn Fn(B) -> Result<C, E>> + Clone + 'static,
     A: Clone + 'static,
@@ -231,7 +237,9 @@ where
 /// let result = flipped(2, 3)(10);
 /// assert_eq!(result, Ok(4));
 /// ```
-pub fn flip3_throwing<A, B, C, D, E, Func>(function: Func) -> impl Fn(B, C) -> Box<dyn Fn(A) -> Result<D, E>>
+pub fn flip3_throwing<A, B, C, D, E, Func>(
+    function: Func,
+) -> impl Fn(B, C) -> Box<dyn Fn(A) -> Result<D, E>>
 where
     Func: Fn(A) -> Box<dyn Fn(B, C) -> Result<D, E>> + Clone + 'static,
     A: Clone + 'static,
@@ -260,7 +268,9 @@ where
 /// let result = flipped(2, 3, 4)(10);
 /// assert_eq!(result, Ok(2));
 /// ```
-pub fn flip4_throwing<A, B, C, D, E, E2, Func>(function: Func) -> impl Fn(B, C, D) -> Box<dyn Fn(A) -> Result<E, E2>>
+pub fn flip4_throwing<A, B, C, D, E, E2, Func>(
+    function: Func,
+) -> impl Fn(B, C, D) -> Box<dyn Fn(A) -> Result<E, E2>>
 where
     Func: Fn(A) -> Box<dyn Fn(B, C, D) -> Result<E, E2>> + Clone + 'static,
     A: Clone + 'static,
@@ -290,7 +300,9 @@ where
 /// let result = flipped(2, 3, 4, 5)(10);
 /// assert_eq!(result, Ok(2));
 /// ```
-pub fn flip5_throwing<A, B, C, D, E, R, E2, Func>(function: Func) -> impl Fn(B, C, D, E) -> Box<dyn Fn(A) -> Result<R, E2>>
+pub fn flip5_throwing<A, B, C, D, E, R, E2, Func>(
+    function: Func,
+) -> impl Fn(B, C, D, E) -> Box<dyn Fn(A) -> Result<R, E2>>
 where
     Func: Fn(A) -> Box<dyn Fn(B, C, D, E) -> Result<R, E2>> + Clone + 'static,
     A: Clone + 'static,
@@ -321,7 +333,9 @@ where
 /// let result = flipped(2, 3, 4, 5, 6)(10);
 /// assert_eq!(result, Ok(1));
 /// ```
-pub fn flip6_throwing<A, B, C, D, E, F, G, E2, Func>(function: Func) -> impl Fn(B, C, D, E, F) -> Box<dyn Fn(A) -> Result<G, E2>>
+pub fn flip6_throwing<A, B, C, D, E, F, G, E2, Func>(
+    function: Func,
+) -> impl Fn(B, C, D, E, F) -> Box<dyn Fn(A) -> Result<G, E2>>
 where
     Func: Fn(A) -> Box<dyn Fn(B, C, D, E, F) -> Result<G, E2>> + Clone + 'static,
     A: Clone + 'static,
@@ -335,7 +349,9 @@ where
 {
     move |b: B, c: C, d: D, e: E, f: F| {
         let function = function.clone();
-        Box::new(move |a: A| function(a.clone())(b.clone(), c.clone(), d.clone(), e.clone(), f.clone()))
+        Box::new(move |a: A| {
+            function(a.clone())(b.clone(), c.clone(), d.clone(), e.clone(), f.clone())
+        })
     }
 }
 

@@ -28,9 +28,7 @@ where
     move |a: A, b: B, c: C| (function)(a)(b)(c)
 }
 
-pub fn uncurry3_throwing<A, B, C, R, E, F, G, H>(
-    function: F,
-) -> impl Fn(A, B, C) -> Result<R, E>
+pub fn uncurry3_throwing<A, B, C, R, E, F, G, H>(function: F) -> impl Fn(A, B, C) -> Result<R, E>
 where
     F: Fn(A) -> G,
     G: Fn(B) -> H,
@@ -61,9 +59,7 @@ where
     move |a: A, b: B, c: C, d: D| (function)(a)(b)(c)(d)
 }
 
-pub fn uncurry5<A, B, C, D, E1, R, F, G, H, I, J>(
-    function: F,
-) -> impl Fn(A, B, C, D, E1) -> R
+pub fn uncurry5<A, B, C, D, E1, R, F, G, H, I, J>(function: F) -> impl Fn(A, B, C, D, E1) -> R
 where
     F: Fn(A) -> G,
     G: Fn(B) -> H,
@@ -158,29 +154,14 @@ where
     L: Fn(G1) -> M,
     M: Fn(H1) -> R,
 {
-    move |a: A, b: B, c: C, d: D, e1: E1, f1: F1, g1: G1, h1: H1| (function)(a)(b)(c)(d)(e1)(f1)(g1)(h1)
+    move |a: A, b: B, c: C, d: D, e1: E1, f1: F1, g1: G1, h1: H1| {
+        (function)(a)(b)(c)(d)(e1)(f1)(g1)(h1)
+    }
 }
 
-pub fn uncurry8_throwing<
-    A,
-    B,
-    C,
-    D,
-    E1,
-    F1,
-    G1,
-    H1,
-    R,
-    E,
-    F,
-    G,
-    H,
-    I,
-    J,
-    K,
-    L,
-    M,
->(function: F) -> impl Fn(A, B, C, D, E1, F1, G1, H1) -> Result<R, E>
+pub fn uncurry8_throwing<A, B, C, D, E1, F1, G1, H1, R, E, F, G, H, I, J, K, L, M>(
+    function: F,
+) -> impl Fn(A, B, C, D, E1, F1, G1, H1) -> Result<R, E>
 where
     F: Fn(A) -> G,
     G: Fn(B) -> H,
@@ -191,13 +172,14 @@ where
     L: Fn(G1) -> M,
     M: Fn(H1) -> Result<R, E>,
 {
-    move |a: A, b: B, c: C, d: D, e1: E1, f1: F1, g1: G1, h1: H1| (function)(a)(b)(c)(d)(e1)(f1)(g1)(h1)
+    move |a: A, b: B, c: C, d: D, e1: E1, f1: F1, g1: G1, h1: H1| {
+        (function)(a)(b)(c)(d)(e1)(f1)(g1)(h1)
+    }
 }
 
 // For brevity and typical practical needs, we stop at arity 8. Extend similarly if needed.
 
-
-// test mod 
+// test mod
 
 #[cfg(test)]
 mod tests {

@@ -7,7 +7,7 @@
 /// # Examples
 /// ```
 /// use overture_core::curry::curry;
-/// 
+///
 /// let add = |a: i32, b: i32| a + b;
 /// let curried = curry(add);
 /// let add2 = curried(2);
@@ -20,9 +20,7 @@ where
     A2: 'static,
     R: 'static,
 {
-    move |a1: A1| {
-        Box::new(move |a2: A2| function(a1.clone(), a2))
-    }
+    move |a1: A1| Box::new(move |a2: A2| function(a1.clone(), a2))
 }
 
 /// Curries a throwing function of two arguments.
@@ -31,7 +29,7 @@ where
 /// # Examples
 /// ```
 /// use overture_core::curry::curry_throwing;
-/// 
+///
 /// let safe_divide = |a: f64, b: f64| {
 ///     if b == 0.0 {
 ///         Err("Division by zero".to_string())
@@ -43,7 +41,9 @@ where
 /// let divide_by_2 = curried(10.0);
 /// assert_eq!(divide_by_2(2.0), Ok(5.0));
 /// ```
-pub fn curry_throwing<A1, A2, R, E, F>(function: F) -> impl Fn(A1) -> Box<dyn Fn(A2) -> Result<R, E>>
+pub fn curry_throwing<A1, A2, R, E, F>(
+    function: F,
+) -> impl Fn(A1) -> Box<dyn Fn(A2) -> Result<R, E>>
 where
     F: Fn(A1, A2) -> Result<R, E> + Copy + 'static,
     A1: Clone + 'static,
@@ -51,14 +51,14 @@ where
     R: 'static,
     E: 'static,
 {
-    move |a1: A1| {
-        Box::new(move |a2: A2| function(a1.clone(), a2))
-    }
+    move |a1: A1| Box::new(move |a2: A2| function(a1.clone(), a2))
 }
 
 /// Curries a function of three arguments.
 /// Equivalent to Swift's curry<A1, A2, A3, R>(_ function: @escaping (A1, A2, A3) -> R) -> (A1) -> (A2) -> (A3) -> R
-pub fn curry3<A1, A2, A3, R, F>(function: F) -> impl Fn(A1) -> Box<dyn Fn(A2) -> Box<dyn Fn(A3) -> R>>
+pub fn curry3<A1, A2, A3, R, F>(
+    function: F,
+) -> impl Fn(A1) -> Box<dyn Fn(A2) -> Box<dyn Fn(A3) -> R>>
 where
     F: Fn(A1, A2, A3) -> R + Copy + 'static,
     A1: Clone + 'static,
@@ -79,7 +79,9 @@ where
 
 /// Curries a throwing function of three arguments.
 /// Equivalent to Swift's curry<A1, A2, A3, R>(_ function: @escaping (A1, A2, A3) throws -> R) -> (A1) -> (A2) -> (A3) throws -> R
-pub fn curry3_throwing<A1, A2, A3, R, E, F>(function: F) -> impl Fn(A1) -> Box<dyn Fn(A2) -> Box<dyn Fn(A3) -> Result<R, E>>>
+pub fn curry3_throwing<A1, A2, A3, R, E, F>(
+    function: F,
+) -> impl Fn(A1) -> Box<dyn Fn(A2) -> Box<dyn Fn(A3) -> Result<R, E>>>
 where
     F: Fn(A1, A2, A3) -> Result<R, E> + Copy + 'static,
     A1: Clone + 'static,
@@ -101,7 +103,9 @@ where
 
 /// Curries a function of four arguments.
 /// Equivalent to Swift's curry<A1, A2, A3, A4, R>(_ function: @escaping (A1, A2, A3, A4) -> R) -> (A1) -> (A2) -> (A3) -> (A4) -> R
-pub fn curry4<A1, A2, A3, A4, R, F>(function: F) -> impl Fn(A1) -> Box<dyn Fn(A2) -> Box<dyn Fn(A3) -> Box<dyn Fn(A4) -> R>>>
+pub fn curry4<A1, A2, A3, A4, R, F>(
+    function: F,
+) -> impl Fn(A1) -> Box<dyn Fn(A2) -> Box<dyn Fn(A3) -> Box<dyn Fn(A4) -> R>>>
 where
     F: Fn(A1, A2, A3, A4) -> R + Copy + 'static,
     A1: Clone + 'static,
@@ -128,7 +132,9 @@ where
 
 /// Curries a throwing function of four arguments.
 /// Equivalent to Swift's curry<A1, A2, A3, A4, R>(_ function: @escaping (A1, A2, A3, A4) throws -> R) -> (A1) -> (A2) -> (A3) -> (A4) throws -> R
-pub fn curry4_throwing<A1, A2, A3, A4, R, E, F>(function: F) -> impl Fn(A1) -> Box<dyn Fn(A2) -> Box<dyn Fn(A3) -> Box<dyn Fn(A4) -> Result<R, E>>>>
+pub fn curry4_throwing<A1, A2, A3, A4, R, E, F>(
+    function: F,
+) -> impl Fn(A1) -> Box<dyn Fn(A2) -> Box<dyn Fn(A3) -> Box<dyn Fn(A4) -> Result<R, E>>>>
 where
     F: Fn(A1, A2, A3, A4) -> Result<R, E> + Copy + 'static,
     A1: Clone + 'static,
@@ -156,7 +162,9 @@ where
 
 /// Curries a function of five arguments.
 /// Equivalent to Swift's curry<A1, A2, A3, A4, A5, R>(_ function: @escaping (A1, A2, A3, A4, A5) -> R) -> (A1) -> (A2) -> (A3) -> (A4) -> (A5) -> R
-pub fn curry5<A1, A2, A3, A4, A5, R, F>(function: F) -> impl Fn(A1) -> Box<dyn Fn(A2) -> Box<dyn Fn(A3) -> Box<dyn Fn(A4) -> Box<dyn Fn(A5) -> R>>>>
+pub fn curry5<A1, A2, A3, A4, A5, R, F>(
+    function: F,
+) -> impl Fn(A1) -> Box<dyn Fn(A2) -> Box<dyn Fn(A3) -> Box<dyn Fn(A4) -> Box<dyn Fn(A5) -> R>>>>
 where
     F: Fn(A1, A2, A3, A4, A5) -> R + Copy + 'static,
     A1: Clone + 'static,
@@ -190,7 +198,11 @@ where
 
 /// Curries a throwing function of five arguments.
 /// Equivalent to Swift's curry<A1, A2, A3, A4, A5, R>(_ function: @escaping (A1, A2, A3, A4, A5) throws -> R) -> (A1) -> (A2) -> (A3) -> (A4) -> (A5) throws -> R
-pub fn curry5_throwing<A1, A2, A3, A4, A5, R, E, F>(function: F) -> impl Fn(A1) -> Box<dyn Fn(A2) -> Box<dyn Fn(A3) -> Box<dyn Fn(A4) -> Box<dyn Fn(A5) -> Result<R, E>>>>>
+pub fn curry5_throwing<A1, A2, A3, A4, A5, R, E, F>(
+    function: F,
+) -> impl Fn(
+    A1,
+) -> Box<dyn Fn(A2) -> Box<dyn Fn(A3) -> Box<dyn Fn(A4) -> Box<dyn Fn(A5) -> Result<R, E>>>>>
 where
     F: Fn(A1, A2, A3, A4, A5) -> Result<R, E> + Copy + 'static,
     A1: Clone + 'static,
@@ -225,7 +237,13 @@ where
 
 /// Curries a function of six arguments.
 /// Equivalent to Swift's curry<A1, A2, A3, A4, A5, A6, R>(_ function: @escaping (A1, A2, A3, A4, A5, A6) -> R) -> (A1) -> (A2) -> (A3) -> (A4) -> (A5) -> (A6) -> R
-pub fn curry6<A1, A2, A3, A4, A5, A6, R, F>(function: F) -> impl Fn(A1) -> Box<dyn Fn(A2) -> Box<dyn Fn(A3) -> Box<dyn Fn(A4) -> Box<dyn Fn(A5) -> Box<dyn Fn(A6) -> R>>>>>
+pub fn curry6<A1, A2, A3, A4, A5, A6, R, F>(
+    function: F,
+) -> impl Fn(
+    A1,
+) -> Box<
+    dyn Fn(A2) -> Box<dyn Fn(A3) -> Box<dyn Fn(A4) -> Box<dyn Fn(A5) -> Box<dyn Fn(A6) -> R>>>>,
+>
 where
     F: Fn(A1, A2, A3, A4, A5, A6) -> R + Copy + 'static,
     A1: Clone + 'static,
@@ -267,7 +285,17 @@ where
 
 /// Curries a throwing function of six arguments.
 /// Equivalent to Swift's curry<A1, A2, A3, A4, A5, A6, R>(_ function: @escaping (A1, A2, A3, A4, A5, A6) throws -> R) -> (A1) -> (A2) -> (A3) -> (A4) -> (A5) -> (A6) throws -> R
-pub fn curry6_throwing<A1, A2, A3, A4, A5, A6, R, E, F>(function: F) -> impl Fn(A1) -> Box<dyn Fn(A2) -> Box<dyn Fn(A3) -> Box<dyn Fn(A4) -> Box<dyn Fn(A5) -> Box<dyn Fn(A6) -> Result<R, E>>>>>>
+pub fn curry6_throwing<A1, A2, A3, A4, A5, A6, R, E, F>(
+    function: F,
+) -> impl Fn(
+    A1,
+) -> Box<
+    dyn Fn(
+        A2,
+    ) -> Box<
+        dyn Fn(A3) -> Box<dyn Fn(A4) -> Box<dyn Fn(A5) -> Box<dyn Fn(A6) -> Result<R, E>>>>,
+    >,
+>
 where
     F: Fn(A1, A2, A3, A4, A5, A6) -> Result<R, E> + Copy + 'static,
     A1: Clone + 'static,

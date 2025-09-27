@@ -201,7 +201,10 @@ fn main() {
     };
     let curried_throwing = curry2_throwing(safe_divide);
     let divide_by_2 = curried_throwing(10.0);
-    println!("curry2_throwing(safe_divide) (legacy name): {:?}", divide_by_2(2.0)); // Expected: Ok(5.0)
+    println!(
+        "curry2_throwing(safe_divide) (legacy name): {:?}",
+        divide_by_2(2.0)
+    ); // Expected: Ok(5.0)
     println!();
 
     println!("All curry examples completed successfully!");

@@ -94,7 +94,11 @@ pub fn pipe4_throwing<A, B, C, D, E, F>(
     h: impl Fn(C) -> Result<D, F> + 'static,
     i: impl Fn(D) -> Result<E, F> + 'static,
 ) -> impl Fn(A) -> Result<E, F> {
-    move |a| f(a).and_then(|b| g(b)).and_then(|c| h(c)).and_then(|d| i(d))
+    move |a| {
+        f(a).and_then(|b| g(b))
+            .and_then(|c| h(c))
+            .and_then(|d| i(d))
+    }
 }
 
 /// Forward composition of five throwing functions.
@@ -106,7 +110,12 @@ pub fn pipe5_throwing<A, B, C, D, E, F, G>(
     i: impl Fn(D) -> Result<E, G> + 'static,
     j: impl Fn(E) -> Result<F, G> + 'static,
 ) -> impl Fn(A) -> Result<F, G> {
-    move |a| f(a).and_then(|b| g(b)).and_then(|c| h(c)).and_then(|d| i(d)).and_then(|e| j(e))
+    move |a| {
+        f(a).and_then(|b| g(b))
+            .and_then(|c| h(c))
+            .and_then(|d| i(d))
+            .and_then(|e| j(e))
+    }
 }
 
 /// Forward composition of six throwing functions.
@@ -119,7 +128,13 @@ pub fn pipe6_throwing<A, B, C, D, E, F, G, H>(
     j: impl Fn(E) -> Result<F, H> + 'static,
     k: impl Fn(F) -> Result<G, H> + 'static,
 ) -> impl Fn(A) -> Result<G, H> {
-    move |a| f(a).and_then(|b| g(b)).and_then(|c| h(c)).and_then(|d| i(d)).and_then(|e| j(e)).and_then(|f| k(f))
+    move |a| {
+        f(a).and_then(|b| g(b))
+            .and_then(|c| h(c))
+            .and_then(|d| i(d))
+            .and_then(|e| j(e))
+            .and_then(|f| k(f))
+    }
 }
 
 // Legacy aliases for backward compatibility

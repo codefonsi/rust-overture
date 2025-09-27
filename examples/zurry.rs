@@ -1,10 +1,10 @@
-use overture_core::zurry::{
-    zurry, zurry_throwing, unzurry, unzurry_throwing, unzurry_repeatable, 
-    unzurry_capture, unzurry_capture_repeatable,
-    lazy, lazy_throwing, memoize, memoize_throwing, thunk, thunk_from, thunk_repeatable
-};
 use overture_core::pipe::pipe3;
 use overture_core::with::with;
+use overture_core::zurry::{
+    lazy, lazy_throwing, memoize, memoize_throwing, thunk, thunk_from, thunk_repeatable, unzurry,
+    unzurry_capture, unzurry_capture_repeatable, unzurry_repeatable, unzurry_throwing, zurry,
+    zurry_throwing,
+};
 use std::cell::RefCell;
 
 fn main() {
@@ -14,7 +14,7 @@ fn main() {
     println!("1. Basic zurry function:");
     let result = zurry(|| 42);
     println!("zurry(|| 42) = {}", result);
-    
+
     let result = zurry(|| {
         println!("  Computing expensive value...");
         100 * 2
@@ -24,14 +24,10 @@ fn main() {
 
     // Example 2: zurry_throwing for error handling
     println!("2. zurry_throwing for error handling:");
-    let result = zurry_throwing(|| {
-        if true { Ok(42) } else { Err("Error occurred") }
-    });
+    let result = zurry_throwing(|| if true { Ok(42) } else { Err("Error occurred") });
     println!("zurry_throwing(|| Ok(42)) = {:?}", result);
 
-    let error_result = zurry_throwing(|| {
-        if false { Ok(42) } else { Err("Error occurred") }
-    });
+    let error_result = zurry_throwing(|| if false { Ok(42) } else { Err("Error occurred") });
     println!("zurry_throwing(|| Err(\"Error\")) = {:?}", error_result);
     println!();
 
@@ -69,7 +65,7 @@ fn main() {
             *count * 10
         }
     });
-    
+
     println!("Created repeatable lazy value");
     let result1 = lazy_value();
     let result2 = lazy_value();
@@ -84,7 +80,7 @@ fn main() {
         println!("  Computing with captured multiplier: {}", multiplier);
         42 * multiplier
     });
-    
+
     let result = lazy_value();
     println!("lazy_value() = {}", result);
     println!();
@@ -102,7 +98,7 @@ fn main() {
             base_value + *count
         }
     });
-    
+
     let result1 = lazy_value();
     let result2 = lazy_value();
     println!("Results: {}, {}", result1, result2);
@@ -120,11 +116,14 @@ fn main() {
             42
         }
     });
-    
+
     println!("Created lazy value");
     let result1 = lazy_value();
     let result2 = lazy_value();
-    println!("Results: {}, {} (computation should only happen once)", result1, result2);
+    println!(
+        "Results: {}, {} (computation should only happen once)",
+        result1, result2
+    );
     println!();
 
     // Example 9: lazy_throwing
@@ -143,7 +142,7 @@ fn main() {
             }
         }
     });
-    
+
     let result1 = lazy_value();
     let result2 = lazy_value();
     println!("Results: {:?}, {:?}", result1, result2);
@@ -161,7 +160,7 @@ fn main() {
             x * x
         }
     });
-    
+
     println!("Created memoized function");
     let result1 = memoized_square(5);
     let result2 = memoized_square(5); // Should be cached
@@ -185,7 +184,7 @@ fn main() {
             }
         }
     });
-    
+
     let result1 = memoized_divide(5);
     let result2 = memoized_divide(5); // Should be cached
     let result3 = memoized_divide(0);
@@ -222,7 +221,7 @@ fn main() {
             *count
         }
     });
-    
+
     let result1 = thunk();
     let result2 = thunk();
     println!("Results: {}, {}", result1, result2);
@@ -230,12 +229,8 @@ fn main() {
 
     // Example 15: Combining with pipe operations
     println!("15. Combining with pipe operations:");
-    let process_pipeline = pipe3(
-        |x: i32| x * 2,
-        |x: i32| x + 1,
-        |x: i32| x * 3,
-    );
-    
+    let process_pipeline = pipe3(|x: i32| x * 2, |x: i32| x + 1, |x: i32| x * 3);
+
     let lazy_computation = unzurry(|| process_pipeline(5));
     let result = lazy_computation();
     println!("unzurry(|| pipe3(5)) = {}", result);
@@ -244,10 +239,8 @@ fn main() {
     // Example 16: Combining with with operations
     println!("16. Combining with with operations:");
     let value = 10;
-    let lazy_with = unzurry_capture(move || {
-        with(value, |x| x * 2)
-    });
-    
+    let lazy_with = unzurry_capture(move || with(value, |x| x * 2));
+
     let result = lazy_with();
     println!("unzurry_capture(|| with(10, |x| x * 2)) = {}", result);
     println!();
@@ -276,7 +269,7 @@ fn main() {
     // Lazy configuration loading
     let config_loader = lazy(|| Config::load());
     println!("Created config loader (not loaded yet)");
-    
+
     let config1 = config_loader();
     let config2 = config_loader();
     println!("Config loaded: {:?}", config1);
@@ -303,9 +296,10 @@ fn main() {
     }
 
     // Lazy database connection with error handling
-    let db_loader = lazy_throwing(|| DatabaseConnection::connect("postgresql://localhost:5432/mydb"));
+    let db_loader =
+        lazy_throwing(|| DatabaseConnection::connect("postgresql://localhost:5432/mydb"));
     println!("Created database loader (not connected yet)");
-    
+
     let db1 = db_loader();
     let db2 = db_loader();
     println!("Database connection: {:?}", db1);
@@ -333,7 +327,7 @@ fn main() {
     let fib_10 = memoized_fib(10);
     let fib_10_again = memoized_fib(10); // Should be cached
     let fib_15 = memoized_fib(15);
-    
+
     println!("fibonacci(10) = {}", fib_10);
     println!("fibonacci(10) again = {} (cached)", fib_10_again);
     println!("fibonacci(15) = {}", fib_15);
@@ -371,7 +365,7 @@ fn main() {
     let result1 = api_call_with_retry("https://api.example.com/users".to_string());
     let result2 = api_call_with_retry("https://api.example.com/users".to_string()); // Cached
     let result3 = api_call_with_retry("https://api.example.com/error".to_string());
-    
+
     println!("API call results:");
     println!("  Success: {:?}", result1);
     println!("  Cached: {:?}", result2);

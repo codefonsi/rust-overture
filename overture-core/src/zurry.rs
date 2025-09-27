@@ -7,7 +7,7 @@
 /// # Examples
 /// ```
 /// use overture_core::zurry::zurry;
-/// 
+///
 /// let result = zurry(|| 42);
 /// assert_eq!(result, 42);
 /// ```
@@ -21,7 +21,7 @@ pub fn zurry<A>(function: impl FnOnce() -> A) -> A {
 /// # Examples
 /// ```
 /// use overture_core::zurry::zurry_throwing;
-/// 
+///
 /// let result = zurry_throwing(|| {
 ///     if true { Ok(42) } else { Err("Error") }
 /// });
@@ -37,7 +37,7 @@ pub fn zurry_throwing<A, E>(function: impl FnOnce() -> Result<A, E>) -> Result<A
 /// # Examples
 /// ```
 /// use overture_core::zurry::unzurry;
-/// 
+///
 /// let lazy_value = unzurry(|| 42);
 /// let result = lazy_value();
 /// assert_eq!(result, 42);
@@ -52,14 +52,16 @@ pub fn unzurry<A>(value: impl FnOnce() -> A) -> impl FnOnce() -> A {
 /// # Examples
 /// ```
 /// use overture_core::zurry::unzurry_throwing;
-/// 
+///
 /// let lazy_value = unzurry_throwing(|| {
 ///     if true { Ok(42) } else { Err("Error") }
 /// });
 /// let result = lazy_value();
 /// assert_eq!(result, Ok(42));
 /// ```
-pub fn unzurry_throwing<A, E>(value: impl FnOnce() -> Result<A, E>) -> impl FnOnce() -> Result<A, E> {
+pub fn unzurry_throwing<A, E>(
+    value: impl FnOnce() -> Result<A, E>,
+) -> impl FnOnce() -> Result<A, E> {
     value
 }
 
@@ -69,13 +71,13 @@ pub fn unzurry_throwing<A, E>(value: impl FnOnce() -> Result<A, E>) -> impl FnOn
 /// # Examples
 /// ```
 /// use overture_core::zurry::unzurry_repeatable;
-/// 
+///
 /// let mut counter = 0;
 /// let lazy_value = unzurry_repeatable(|| {
 ///     counter += 1;
 ///     counter
 /// });
-/// 
+///
 /// assert_eq!(lazy_value(), 1);
 /// assert_eq!(lazy_value(), 2);
 /// assert_eq!(lazy_value(), 3);
@@ -85,7 +87,9 @@ pub fn unzurry_repeatable<A>(value: impl Fn() -> A + 'static) -> impl Fn() -> A 
 }
 
 /// Wraps a value in a function that can be called multiple times with error handling.
-pub fn unzurry_repeatable_throwing<A, E>(value: impl Fn() -> Result<A, E> + 'static) -> impl Fn() -> Result<A, E> {
+pub fn unzurry_repeatable_throwing<A, E>(
+    value: impl Fn() -> Result<A, E> + 'static,
+) -> impl Fn() -> Result<A, E> {
     value
 }
 
@@ -95,7 +99,7 @@ pub fn unzurry_repeatable_throwing<A, E>(value: impl Fn() -> Result<A, E> + 'sta
 /// # Examples
 /// ```
 /// use overture_core::zurry::unzurry_capture;
-/// 
+///
 /// let multiplier = 2;
 /// let lazy_value = unzurry_capture(move || 42 * multiplier);
 /// let result = lazy_value();
@@ -123,12 +127,12 @@ where
 /// ```
 /// use overture_core::zurry::lazy;
 /// use std::sync::{Arc, Mutex};
-/// 
+///
 /// let lazy_value = lazy(|| {
 ///     println!("Computing expensive value");
 ///     42
 /// });
-/// 
+///
 /// // The computation happens only on first access
 /// let result1 = lazy_value();
 /// let result2 = lazy_value();
@@ -140,13 +144,13 @@ where
     F: Fn() -> A + 'static,
     A: Clone + 'static,
 {
-    use std::sync::{Arc, Mutex};
     use std::sync::Once;
-    
+    use std::sync::{Arc, Mutex};
+
     let once = Arc::new(Once::new());
     let result = Arc::new(Mutex::new(None));
     let f = Arc::new(f);
-    
+
     move || {
         once.call_once(|| {
             let value = f();
@@ -163,13 +167,13 @@ where
     A: Clone + 'static,
     E: Clone + 'static,
 {
-    use std::sync::{Arc, Mutex};
     use std::sync::Once;
-    
+    use std::sync::{Arc, Mutex};
+
     let once = Arc::new(Once::new());
     let result = Arc::new(Mutex::new(None));
     let f = Arc::new(f);
-    
+
     move || {
         once.call_once(|| {
             let value = f();
@@ -187,12 +191,12 @@ where
 /// use overture_core::zurry::memoize;
 /// use std::collections::HashMap;
 /// use std::sync::{Arc, Mutex};
-/// 
+///
 /// let expensive_function = memoize(|x: i32| {
 ///     println!("Computing for {}", x);
 ///     x * x
 /// });
-/// 
+///
 /// assert_eq!(expensive_function(5), 25);
 /// assert_eq!(expensive_function(5), 25); // Cached, no print
 /// assert_eq!(expensive_function(3), 9);
@@ -205,10 +209,10 @@ where
 {
     use std::collections::HashMap;
     use std::sync::{Arc, Mutex};
-    
+
     let cache: Arc<Mutex<HashMap<A, B>>> = Arc::new(Mutex::new(HashMap::new()));
     let f = Arc::new(f);
-    
+
     move |arg: A| {
         let mut cache = cache.lock().unwrap();
         if let Some(result) = cache.get(&arg) {
@@ -231,10 +235,10 @@ where
 {
     use std::collections::HashMap;
     use std::sync::{Arc, Mutex};
-    
+
     let cache: Arc<Mutex<HashMap<A, Result<B, E>>>> = Arc::new(Mutex::new(HashMap::new()));
     let f = Arc::new(f);
-    
+
     move |arg: A| {
         let mut cache = cache.lock().unwrap();
         if let Some(result) = cache.get(&arg) {
@@ -253,7 +257,7 @@ where
 /// # Examples
 /// ```
 /// use overture_core::zurry::thunk;
-/// 
+///
 /// let value = 42;
 /// let thunk = thunk(value);
 /// let result = thunk();
@@ -319,7 +323,7 @@ mod tests {
             counter += 1;
             counter
         });
-        
+
         assert_eq!(lazy_value(), 1);
         assert_eq!(lazy_value(), 2);
     }
@@ -339,10 +343,10 @@ mod tests {
             call_count += 1;
             42
         });
-        
+
         let result1 = lazy_value();
         let result2 = lazy_value();
-        
+
         assert_eq!(result1, 42);
         assert_eq!(result2, 42);
         // Note: call_count is not shared between calls in this test
@@ -356,7 +360,7 @@ mod tests {
             call_count += 1;
             x * x
         });
-        
+
         assert_eq!(memoized(5), 25);
         assert_eq!(memoized(5), 25); // Should be cached
         assert_eq!(memoized(3), 9);

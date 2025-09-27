@@ -134,10 +134,7 @@ where
 /// let updated = set_age_25(person);
 /// assert_eq!(updated.age, 25);
 /// ```
-pub fn set<Root, Value>(
-    keypath: KeyPaths<Root, Value>,
-    value: Value,
-) -> impl Fn(Root) -> Root
+pub fn set<Root, Value>(keypath: KeyPaths<Root, Value>, value: Value) -> impl Fn(Root) -> Root
 where
     Root: Clone + 'static,
     Value: Clone + 'static,
@@ -400,10 +397,7 @@ where
 /// set_age_25(&mut person);
 /// assert_eq!(person.age, 25);
 /// ```
-pub fn mut_set<Root, Value>(
-    keypath: KeyPaths<Root, Value>,
-    value: Value,
-) -> impl FnMut(&mut Root)
+pub fn mut_set<Root, Value>(keypath: KeyPaths<Root, Value>, value: Value) -> impl FnMut(&mut Root)
 where
     Root: Clone + 'static,
     Value: Clone + 'static,
@@ -433,10 +427,7 @@ where
 /// let person = Person { name: "Alice".to_string(), age: 30 };
 /// set_name_bob(person);
 /// ```
-pub fn mut_set_ref<Root, Value>(
-    keypath: KeyPaths<Root, Value>,
-    value: Value,
-) -> impl Fn(Root)
+pub fn mut_set_ref<Root, Value>(keypath: KeyPaths<Root, Value>, value: Value) -> impl Fn(Root)
 where
     Root: Clone + 'static,
     Value: Clone + 'static,
@@ -446,10 +437,7 @@ where
 
 // Legacy aliases for backward compatibility
 #[doc(hidden)]
-pub fn mset<Root, Value>(
-    keypath: KeyPaths<Root, Value>,
-    value: Value,
-) -> impl FnMut(&mut Root)
+pub fn mset<Root, Value>(keypath: KeyPaths<Root, Value>, value: Value) -> impl FnMut(&mut Root)
 where
     Root: Clone + 'static,
     Value: Clone + 'static,
@@ -458,10 +446,7 @@ where
 }
 
 #[doc(hidden)]
-pub fn mset_ref<Root, Value>(
-    keypath: KeyPaths<Root, Value>,
-    value: Value,
-) -> impl Fn(Root)
+pub fn mset_ref<Root, Value>(keypath: KeyPaths<Root, Value>, value: Value) -> impl Fn(Root)
 where
     Root: Clone + 'static,
     Value: Clone + 'static,
