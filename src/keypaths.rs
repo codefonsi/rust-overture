@@ -18,16 +18,16 @@ use key_paths_core::KeyPaths;
 ///     age: u32,
 /// }
 ///
-/// let name_keypath = KeyPaths::readable(|person: &Person| &person.name);
+/// let name_keypath = KeyPaths::owned(|person: Person| person.name);
 /// let get_name = get(name_keypath);
 /// let person = Person { name: "Alice".to_string(), age: 30 };
-/// assert_eq!(get_name(&person), "Alice");
+/// assert_eq!(get_name(person), "Alice");
 /// ```
-pub fn get<Root, Value>(keypath: KeyPaths<Root, Value>) -> impl Fn(&Root) -> Option<Value>
+pub fn get<Root, Value>(keypath: KeyPaths<Root, Value>) -> impl FnOnce(Root) -> Option<Value>
 where
     Value: Clone,
 {
-    move |root: &Root| keypath.get(root).cloned()
+    move |root: Root| {keypath.get_failable_owned(root)}
 }
 
 /// Produces an immutable setter function for a given key path. Useful for composing property changes.

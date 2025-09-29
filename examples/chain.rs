@@ -2,6 +2,12 @@ use overture_core::chain::{
     chain, chain3, chain3_throwing, chain3_vec_throwing, chain4, chain4_vec, chain5,
 };
 
+enum SomeEnum<Root,Value> 
+where 
+{
+        FailableOwnedWritable(Box<dyn Fn(Root) -> Option<Value>>),
+
+}
 fn main() {
     println!("Chain Examples:");
 

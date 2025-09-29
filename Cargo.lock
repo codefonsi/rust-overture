@@ -4,15 +4,15 @@ version = 4
 
 [[package]]
 name = "key-paths-core"
-version = "1.0.0"
+version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "811ece31ff64da896ac1b6648685031f22e56f4f672ae23e5bc6541cfb1d0721"
+checksum = "233ee033155bb0cf8332c77ba58dc49ee928ceccaf230bac5eea9cd42bff6d28"
 
 [[package]]
 name = "key-paths-derive"
-version = "0.4.0"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "73ffb99bfb015e2bd7b2e5dbd5e0717c101e261a04ac8b2587465b8d3cc7b37b"
+checksum = "9951facec01891582869a1b03d3e41c8272b1c78619cf8154b8dcd0bda9842a3"
 dependencies = [
  "proc-macro2",
  "quote",
