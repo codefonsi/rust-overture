@@ -47,10 +47,10 @@ fn main() {
 
     // Example 1: get() function
     println!("1. get() function:");
-    let name_keypath = KeyPaths::readable(|person: &Person| &person.name);
+    let name_keypath = KeyPaths::failable_owned(|person: Person| Some(person.name));
     let get_name = get(name_keypath);
-    let name_result = get_name(&person);
-    println!("get(name_keypath)(&person) = {:?}", name_result);
+    let name_result = get_name(person.clone());
+    println!("get(name_keypath)(person) = {:?}", name_result);
     println!();
 
     // Example 2: prop() function
@@ -252,13 +252,14 @@ fn main() {
 
     // Create keypaths for different fields
     let name_keypath = KeyPaths::writable(|person: &mut Person| &mut person.name);
+    let name_keypath_for_get = KeyPaths::failable_owned(|person: Person| Some(person.name));
     let age_keypath = KeyPaths::writable(|person: &mut Person| &mut person.age);
     let email_keypath = KeyPaths::writable(|person: &mut Person| &mut person.email);
     let active_keypath = KeyPaths::writable(|person: &mut Person| &mut person.is_active);
 
     // Use get() to read values
-    let name_reader = get(name_keypath.clone());
-    let name_value = name_reader(&user);
+    let name_reader = get(name_keypath_for_get);
+    let name_value = name_reader(user.clone());
     println!("Original name (via get): {:?}", name_value);
 
     // Use prop() for complex transformations

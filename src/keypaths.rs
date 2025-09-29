@@ -9,7 +9,7 @@ use key_paths_core::KeyPaths;
 ///
 /// # Examples
 /// ```
-/// use overture_core::keypath::get;
+/// use rust_overture::keypaths::get;
 /// use key_paths_core::KeyPaths;
 ///
 /// #[derive(Clone)]
@@ -18,10 +18,10 @@ use key_paths_core::KeyPaths;
 ///     age: u32,
 /// }
 ///
-/// let name_keypath = KeyPaths::owned(|person: Person| person.name);
+/// let name_keypath = KeyPaths::failable_owned(|person: Person| Some(person.name));
 /// let get_name = get(name_keypath);
 /// let person = Person { name: "Alice".to_string(), age: 30 };
-/// assert_eq!(get_name(person), "Alice");
+/// assert_eq!(get_name(person), Some("Alice".to_string()));
 /// ```
 pub fn get<Root, Value>(keypath: KeyPaths<Root, Value>) -> impl FnOnce(Root) -> Option<Value>
 where
@@ -35,7 +35,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use overture_core::keypath::prop;
+/// use rust_overture::keypaths::prop;
 /// use key_paths_core::KeyPaths;
 ///
 /// #[derive(Clone)]
@@ -44,10 +44,7 @@ where
 ///     age: u32,
 /// }
 ///
-/// let age_keypath = KeyPaths::writable(
-///     |person: &Person| person.age,
-///     |person: &mut Person, age| person.age = age
-/// );
+/// let age_keypath = KeyPaths::writable(|person: &mut Person| &mut person.age);
 /// let update_age = prop(age_keypath);
 /// let double_age = update_age(Box::new(|age| age * 2));
 /// let person = Person { name: "Alice".to_string(), age: 30 };
@@ -65,11 +62,10 @@ where
         let keypath = keypath.clone();
         Box::new(move |root: Root| {
             let mut copy = root.clone();
-            if let Some(value) = keypath.get(&copy) {
-                let new_value = update(value.clone());
-                if let Some(mut_ref) = keypath.get_mut(&mut copy) {
-                    *mut_ref = new_value;
-                }
+            if let Some(mut_ref) = keypath.get_mut(&mut copy) {
+                let current_value = mut_ref.clone();
+                let new_value = update(current_value);
+                *mut_ref = new_value;
             }
             copy
         })
@@ -81,7 +77,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use overture_core::keypath::over;
+/// use rust_overture::keypaths::over;
 /// use key_paths_core::KeyPaths;
 ///
 /// #[derive(Clone)]
@@ -90,10 +86,7 @@ where
 ///     age: u32,
 /// }
 ///
-/// let age_keypath = KeyPaths::writable(
-///     |person: &Person| person.age,
-///     |person: &mut Person, age| person.age = age
-/// );
+/// let age_keypath = KeyPaths::writable(|person: &mut Person| &mut person.age);
 /// let double_age = over(age_keypath, |age| age * 2);
 /// let person = Person { name: "Alice".to_string(), age: 30 };
 /// let updated = double_age(person);
@@ -116,7 +109,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use overture_core::keypath::set;
+/// use rust_overture::keypaths::set;
 /// use key_paths_core::KeyPaths;
 ///
 /// #[derive(Clone)]
@@ -125,10 +118,7 @@ where
 ///     age: u32,
 /// }
 ///
-/// let age_keypath = KeyPaths::writable(
-///     |person: &Person| person.age,
-///     |person: &mut Person, age| person.age = age
-/// );
+/// let age_keypath = KeyPaths::writable(|person: &mut Person| &mut person.age);
 /// let set_age_25 = set(age_keypath, 25);
 /// let person = Person { name: "Alice".to_string(), age: 30 };
 /// let updated = set_age_25(person);
@@ -149,7 +139,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use overture_core::keypath::mprop;
+/// use rust_overture::keypaths::mprop;
 /// use key_paths_core::KeyPaths;
 ///
 /// #[derive(Clone)]
@@ -158,10 +148,7 @@ where
 ///     age: u32,
 /// }
 ///
-/// let age_keypath = KeyPaths::writable(
-///     |person: &Person| person.age,
-///     |person: &mut Person, age| person.age = age
-/// );
+/// let age_keypath = KeyPaths::writable(|person: &mut Person| &mut person.age);
 /// let mut_update_age = mprop(age_keypath);
 /// let mut double_age = mut_update_age(Box::new(|age| *age *= 2));
 /// let mut person = Person { name: "Alice".to_string(), age: 30 };
@@ -190,7 +177,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use overture_core::keypath::mver;
+/// use rust_overture::keypaths::mver;
 /// use key_paths_core::KeyPaths;
 ///
 /// #[derive(Clone)]
@@ -199,10 +186,7 @@ where
 ///     age: u32,
 /// }
 ///
-/// let age_keypath = KeyPaths::writable(
-///     |person: &Person| person.age,
-///     |person: &mut Person, age| person.age = age
-/// );
+/// let age_keypath = KeyPaths::writable(|person: &mut Person| &mut person.age);
 /// let mut double_age = mver(age_keypath, |age| *age *= 2);
 /// let mut person = Person { name: "Alice".to_string(), age: 30 };
 /// double_age(&mut person);
@@ -227,7 +211,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use overture_core::keypath::mprop_ref;
+/// use rust_overture::keypaths::mprop_ref;
 /// use key_paths_core::KeyPaths;
 ///
 /// #[derive(Clone)]
@@ -236,12 +220,9 @@ where
 ///     age: u32,
 /// }
 ///
-/// let name_keypath = KeyPaths::writable(
-///     |person: &Person| person.name.clone(),
-///     |person: &mut Person, name| person.name = name
-/// );
+/// let name_keypath = KeyPaths::writable(|person: &mut Person| &mut person.name);
 /// let mut_update_name = mprop_ref(name_keypath);
-/// let mut uppercase_name = mut_update_name(Box::new(|name| name.make_ascii_uppercase()));
+/// let mut uppercase_name = mut_update_name(Box::new(|mut name| name.make_ascii_uppercase()));
 /// let person = Person { name: "alice".to_string(), age: 30 };
 /// uppercase_name(person);
 /// ```
@@ -267,7 +248,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use overture_core::keypath::mver_object;
+/// use rust_overture::keypaths::mver_object;
 /// use key_paths_core::KeyPaths;
 ///
 /// #[derive(Clone)]
@@ -276,11 +257,8 @@ where
 ///     age: u32,
 /// }
 ///
-/// let name_keypath = KeyPaths::writable(
-///     |person: &Person| person.name.clone(),
-///     |person: &mut Person, name| person.name = name
-/// );
-/// let uppercase_name = mver_object(name_keypath, |name| name.make_ascii_uppercase());
+/// let name_keypath = KeyPaths::writable(|person: &mut Person| &mut person.name);
+/// let uppercase_name = mver_object(name_keypath, |mut name| name.make_ascii_uppercase());
 /// let person = Person { name: "alice".to_string(), age: 30 };
 /// uppercase_name(person);
 /// ```
@@ -302,7 +280,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use overture_core::keypath::mprop_ref_mut;
+/// use rust_overture::keypaths::mprop_ref_mut;
 /// use key_paths_core::KeyPaths;
 ///
 /// #[derive(Clone)]
@@ -311,12 +289,9 @@ where
 ///     age: u32,
 /// }
 ///
-/// let name_keypath = KeyPaths::writable(
-///     |person: &Person| person.name.clone(),
-///     |person: &mut Person, name| person.name = name
-/// );
-/// let mut_update_name = mprop_ref_mut(name_keypath);
-/// let mut uppercase_name = mut_update_name(Box::new(|name| name.make_ascii_uppercase()));
+/// let name_keypath = KeyPaths::writable(|person: &mut Person| &mut person.name);
+/// let mut mut_update_name = mprop_ref_mut(name_keypath);
+/// let mut uppercase_name = mut_update_name(Box::new(|mut name| name.make_ascii_uppercase()));
 /// let person = Person { name: "alice".to_string(), age: 30 };
 /// uppercase_name(person);
 /// ```
@@ -344,7 +319,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use overture_core::keypath::mver_ref;
+/// use rust_overture::keypaths::mver_ref;
 /// use key_paths_core::KeyPaths;
 ///
 /// #[derive(Clone)]
@@ -353,10 +328,7 @@ where
 ///     age: u32,
 /// }
 ///
-/// let name_keypath = KeyPaths::writable(
-///     |person: &Person| person.name.clone(),
-///     |person: &mut Person, name| person.name = name
-/// );
+/// let name_keypath = KeyPaths::writable(|person: &mut Person| &mut person.name);
 /// let mut uppercase_name = mver_ref(name_keypath, |name| name.make_ascii_uppercase());
 /// let person = Person { name: "alice".to_string(), age: 30 };
 /// uppercase_name(person);
@@ -379,7 +351,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use overture_core::keypath::mut_set;
+/// use rust_overture::keypaths::mut_set;
 /// use key_paths_core::KeyPaths;
 ///
 /// #[derive(Clone)]
@@ -388,10 +360,7 @@ where
 ///     age: u32,
 /// }
 ///
-/// let age_keypath = KeyPaths::writable(
-///     |person: &Person| person.age,
-///     |person: &mut Person, age| person.age = age
-/// );
+/// let age_keypath = KeyPaths::writable(|person: &mut Person| &mut person.age);
 /// let mut set_age_25 = mut_set(age_keypath, 25);
 /// let mut person = Person { name: "Alice".to_string(), age: 30 };
 /// set_age_25(&mut person);
@@ -410,7 +379,7 @@ where
 ///
 /// # Examples
 /// ```
-/// use overture_core::keypath::mut_set_ref;
+/// use rust_overture::keypaths::mut_set_ref;
 /// use key_paths_core::KeyPaths;
 ///
 /// #[derive(Clone)]
@@ -419,10 +388,7 @@ where
 ///     age: u32,
 /// }
 ///
-/// let name_keypath = KeyPaths::writable(
-///     |person: &Person| person.name.clone(),
-///     |person: &mut Person, name| person.name = name
-/// );
+/// let name_keypath = KeyPaths::writable(|person: &mut Person| &mut person.name);
 /// let set_name_bob = mut_set_ref(name_keypath, "Bob".to_string());
 /// let person = Person { name: "Alice".to_string(), age: 30 };
 /// set_name_bob(person);
